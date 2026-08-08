@@ -11,17 +11,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.aether.application.ui.theme.AetherMobileTheme
+import com.aether.application.feature.auth.presentation.screen.LoginScreen
+import com.aether.core.ui.theme.AetherTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AetherMobileTheme {
+            AetherTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    LoginScreen(
+                        onLoginClick = {_, _, _ ->},
+                        onForgotPasswordClick = {},
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -30,18 +33,14 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    AetherMobileTheme {
-        Greeting("Android")
+fun LoginScreenPreview() {
+    AetherTheme {
+        LoginScreen(
+            onLoginClick = { _, _, _ -> },
+            onForgotPasswordClick = {}
+        )
     }
 }

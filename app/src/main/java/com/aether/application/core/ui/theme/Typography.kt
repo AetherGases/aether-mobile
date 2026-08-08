@@ -27,7 +27,7 @@ val displayLarge = TextStyle(
 
 val displayMedium = TextStyle(
     fontFamily = DMSansFontFamily,
-    fontWeight = FontWeight.SemiBold,
+    fontWeight = FontWeight.Bold,
     fontSize = 36.sp
 )
 
@@ -84,3 +84,4 @@ val labelSmall = TextStyle(
     fontWeight = FontWeight.Medium,
     fontSize = 11.sp
 )
+
