@@ -35,7 +35,7 @@ val textDisabled = Color(0x70789A);
 // Fundos
 
 val backgroundDark = Color(0x0B101E);
-val backgroundDarkElevated = (0x161C2D);
+val backgroundDarkElevated = Color(0x161C2D);
 val backgroundLight = Color(0xF0F4F8);
 val backgroundLightElevated = Color(0xFFFFFF);
 
