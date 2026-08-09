@@ -109,7 +109,7 @@ fun VerificationScreen(
                 .fillMaxSize()
                 .padding(horizontal = 24.dp)
         ) {
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(64.dp))
 
             Box(modifier = Modifier.fillMaxWidth()) {
                 GlassIconButton(

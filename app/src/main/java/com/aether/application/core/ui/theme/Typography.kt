@@ -71,6 +71,13 @@ val bodySmall = TextStyle(
     fontSize = 12.sp
 )
 
+val bodySmallMedium = TextStyle(
+    fontFamily = DMSansFontFamily,
+    fontWeight = FontWeight.Medium,
+    fontSize = 12.sp
+)
+
+
 val labelLarge = TextStyle(
     fontFamily = DMSansFontFamily,
     fontWeight = FontWeight.SemiBold,
