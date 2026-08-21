@@ -6,6 +6,6 @@ interface AuthRepository {
 
     suspend fun login(
         email: String,
-        senha: String
+        password: String
     ): Result<Session>
 }
