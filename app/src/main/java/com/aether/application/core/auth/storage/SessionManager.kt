@@ -1,6 +1,7 @@
 package com.aether.application.core.auth.storage
 
 import com.aether.application.core.auth.model.Session
+import com.aether.application.core.domain.model.UserRole
 
 interface SessionManager {
     fun getSession(): Session?
@@ -9,7 +10,7 @@ interface SessionManager {
 
     suspend fun save(session: Session): Boolean
 
-    suspend fun getUserRole(): Boolean
+    suspend fun getUserRole(): UserRole?
 
     suspend fun logout()
 }
