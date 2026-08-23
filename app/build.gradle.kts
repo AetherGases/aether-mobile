@@ -56,4 +56,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("com.composables:icons-lucide-android:2.2.1")
     implementation("io.github.fletchmckee.liquid:liquid:1.1.1")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
 }
