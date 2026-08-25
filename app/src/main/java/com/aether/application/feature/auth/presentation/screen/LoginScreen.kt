@@ -1,6 +1,5 @@
 package com.aether.application.feature.auth.presentation.screen
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,9 +25,11 @@ import com.aether.core.ui.theme.*
 
 @Composable
 fun LoginScreen(
+    modifier: Modifier = Modifier,
     onLoginClick: (email: String, password: String, rememberMe: Boolean) -> Unit,
     onForgotPasswordClick: () -> Unit,
-    modifier: Modifier = Modifier
+    isLoading: Boolean = false,
+    errorMessage: String? = null
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -196,6 +197,15 @@ fun LoginScreen(
                 }
             }
 
+            if (errorMessage != null) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = errorMessage,
+                    style = labelMedium,
+                    color = lightRed
+                )
+            }
+
             Spacer(Modifier.height(24.dp))
 
             Row(
@@ -204,6 +214,7 @@ fun LoginScreen(
             ) {
                 Button(
                     onClick = { onLoginClick(email, password, rememberMe) },
+                    enabled = !isLoading,
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = green500),
                     modifier = Modifier
@@ -215,7 +226,15 @@ fun LoginScreen(
                         )
                         .height(54.dp)
                 ) {
-                    Text(text = "Começar", style = titleMedium, color = textPrimaryDark)
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = textPrimaryDark,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(text = "Começar", style = titleMedium, color = textPrimaryDark)
+                    }
                 }
             }
         }
@@ -229,7 +248,9 @@ fun LoginScreenPreview() {
     AetherTheme {
         LoginScreen(
             onLoginClick = { _, _, _ -> },
-            onForgotPasswordClick = {}
+            onForgotPasswordClick = {},
+            isLoading = false,
+            errorMessage = null
         )
     }
 }
