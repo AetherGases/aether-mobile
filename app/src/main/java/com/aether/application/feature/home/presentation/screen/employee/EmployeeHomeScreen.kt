@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +41,8 @@ import com.aether.core.ui.components.ReportsSummaryCard
 import com.aether.core.ui.components.SealProgressCard
 import com.aether.core.ui.components.UnitEmissionsCard
 import com.aether.core.ui.theme.*
+
+
 
 data class QuickAction(
     val label: String,
@@ -349,6 +352,18 @@ fun RecentReportItem(
             }
         }
     }
+}
+
+@Composable
+fun AsyncImage(
+    model: String?,
+    contentDescription: String,
+    placeholder: Painter,
+    error: Painter,
+    contentScale: ContentScale,
+    modifier: Modifier
+) {
+    TODO("Not yet implemented")
 }
 
 @Composable
