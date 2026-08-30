@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.ui.graphics)
+    implementation(libs.ui.graphics)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -57,5 +58,5 @@ dependencies {
     implementation("com.composables:icons-lucide-android:2.2.1")
     implementation("io.github.fletchmckee.liquid:liquid:1.1.1")
     implementation("io.coil-kt:coil-compose:2.6.0")
-
+    implementation("dev.chrisbanes.haze:haze:1.6.10")
 }
