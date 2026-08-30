@@ -19,6 +19,11 @@ val DMSansFontFamily = FontFamily(
     Font(R.font.dmsans_thin, FontWeight.Thin)
 )
 
+val displayLargeBold = TextStyle(
+    fontFamily = DMSansFontFamily,
+    fontWeight = FontWeight.Bold,
+    fontSize = 52.sp
+)
 val displayLarge = TextStyle(
     fontFamily = DMSansFontFamily,
     fontWeight = FontWeight.SemiBold,
@@ -59,6 +64,11 @@ val bodyLarge = TextStyle(
     fontSize = 16.sp
 )
 
+val bodyMediumMd = TextStyle(
+    fontFamily = DMSansFontFamily,
+    fontWeight = FontWeight.Medium,
+    fontSize = 14.sp
+)
 val bodyMedium = TextStyle(
     fontFamily = DMSansFontFamily,
     fontWeight = FontWeight.Normal,
