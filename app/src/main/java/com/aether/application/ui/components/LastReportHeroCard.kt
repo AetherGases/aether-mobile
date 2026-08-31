@@ -23,6 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.core.ui.theme.*
+import dev.chrisbanes.haze.HazeEffectScope
+import dev.chrisbanes.haze.HazeStyle
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 @Composable
 fun LastReportHeroCard(
@@ -45,7 +49,7 @@ fun LastReportHeroCard(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .haze(hazeState)
+                .hazeSource(hazeState)
         )
 
         Column(
@@ -67,9 +71,7 @@ fun LastReportHeroCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .hazeChild(hazeState) {
-                        blurRadius = 20.dp
-                    }
+                    .hazeEffect(hazeState, HazeStyle.Unspecified) { blurRadius = 20.dp }
                     .background(Color.White.copy(alpha = 0.15f))
                     .border(
                         width = 1.dp,

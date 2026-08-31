@@ -30,7 +30,7 @@ class LoginViewModel(
                     _uiState.update { it.copy(errorMessage = "Uhul, you did it!") } // TODO: placeholder
                 }
                 .onFailure { throwable ->
-                    _uiState.update { it.copy(errorMessage = throwable.message ?: "Something went wrong") }
+                    _uiState.update { it.copy(errorMessage = throwable.message ?: "Erro inesperado, tente novamente!") }
                 }
 
             _uiState.update { it.copy(isLoading = false) }

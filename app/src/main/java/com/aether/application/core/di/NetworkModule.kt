@@ -6,8 +6,10 @@ import com.aether.application.feature.auth.data.remote.AuthApi
 import com.aether.application.feature.auth.data.repository.AuthRepositoryImpl
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
+import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import okhttp3.OkHttpClient
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -41,6 +43,10 @@ object NetworkModule {
 
         single<LoginUseCase> {
             LoginUseCase(authRepository = get())
+        }
+
+        viewModel {
+            LoginViewModel(loginUseCase = get())
         }
     }
 }

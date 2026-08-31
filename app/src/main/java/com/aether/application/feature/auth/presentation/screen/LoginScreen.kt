@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -38,13 +39,17 @@ fun LoginScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.linearGradient(
+            .drawWithCache {
+                val brush = Brush.linearGradient(
                     colors = listOf(green100, purple100, backgroundLightElevated),
-                    start = Offset(0f, 0f),
-                    end = Offset(800f, 1200f)
+                    start = Offset.Zero,
+                    end = Offset(size.width, size.height / 2f)
                 )
-            )
+
+                onDrawBehind {
+                    drawRect(brush)
+                }
+            }
     ) {
         Box(
             modifier = Modifier
@@ -130,6 +135,8 @@ fun LoginScreen(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = textPrimaryLight,
+                    unfocusedTextColor = textPrimaryLight,
                     focusedBorderColor = purple300,
                     unfocusedBorderColor = textDisabledLight,
                     disabledBorderColor = textDisabledLight,
@@ -154,6 +161,8 @@ fun LoginScreen(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = textPrimaryLight,
+                    unfocusedTextColor = textPrimaryLight,
                     focusedBorderColor = purple300,
                     unfocusedBorderColor = textDisabledLight,
                     disabledBorderColor = textDisabledLight,

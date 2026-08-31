@@ -1,3 +1,5 @@
+package com.aether.application.core.di
+
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -8,5 +10,8 @@ import org.koin.dsl.module
 private val Context.sessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "session_prefs")
 
 val dataStoreModule = module {
-    single<DataStore<Preferences>> { androidContext().sessionDataStore }
+
+    single<DataStore<Preferences>> {
+        androidContext().sessionDataStore
+    }
 }

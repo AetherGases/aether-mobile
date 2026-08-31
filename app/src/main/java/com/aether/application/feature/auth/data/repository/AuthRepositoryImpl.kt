@@ -4,6 +4,7 @@ import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.data.remote.AuthApi
 import com.aether.application.feature.auth.data.remote.dto.LoginRequest
+import com.aether.application.feature.auth.domain.exception.AuthException
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 
 class AuthRepositoryImpl(
@@ -25,7 +26,9 @@ class AuthRepositoryImpl(
 
             Result.success(session)
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(
+                e as? AuthException ?: AuthException.Unexpected(e)
+            )
         }
     }
 
