@@ -1,5 +1,6 @@
 package com.aether.application.feature.auth.presentation.screen
 
+import com.aether.application.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -187,8 +189,18 @@ fun LoginScreen(
                             .clip(RoundedCornerShape(6.dp))
                             .background(if (rememberMe) purple500 else Color.Transparent)
                             .border(2.dp, purple500, RoundedCornerShape(6.dp))
-                            .clickable { rememberMe = !rememberMe }
-                    )
+                            .clickable { rememberMe = !rememberMe },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (rememberMe) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_checked),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
+                    }
                     Spacer(Modifier.width(6.dp))
                     Text(
                         text = "Lembrar-se de mim",

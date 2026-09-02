@@ -1,5 +1,7 @@
 package com.aether.application.core.network
 
+import com.aether.application.BuildConfig
+
 object ApiConfig {
-    const val BASE_URL = "https://api.aether.app/"
+    val BASE_URL: String = BuildConfig.BASE_URL
 }

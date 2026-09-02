@@ -1,5 +1,6 @@
 package com.aether.application.feature.auth.data.repository
 
+import android.util.Log
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.data.remote.AuthApi
@@ -26,6 +27,7 @@ class AuthRepositoryImpl(
 
             Result.success(session)
         } catch (e: Exception) {
+            Log.e("AuthRepositoryImpl", e.message ?: "unexpected error")
             Result.failure(
                 e as? AuthException ?: AuthException.Unexpected(e)
             )
