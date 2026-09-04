@@ -1,6 +1,6 @@
 package com.aether.application.feature.auth.presentation.screen
 
-import android.R
+import com.aether.application.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,9 +28,11 @@ import com.aether.core.ui.theme.*
 
 @Composable
 fun LoginScreen(
+    modifier: Modifier = Modifier,
     onLoginClick: (email: String, password: String, rememberMe: Boolean) -> Unit,
     onForgotPasswordClick: () -> Unit,
-    modifier: Modifier = Modifier
+    isLoading: Boolean = false,
+    errorMessage: String? = null
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -37,13 +41,17 @@ fun LoginScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.linearGradient(
+            .drawWithCache {
+                val brush = Brush.linearGradient(
                     colors = listOf(green100, purple100, backgroundLightElevated),
-                    start = Offset(0f, 0f),
-                    end = Offset(800f, 1200f)
+                    start = Offset.Zero,
+                    end = Offset(size.width, size.height / 2f)
                 )
-            )
+
+                onDrawBehind {
+                    drawRect(brush)
+                }
+            }
     ) {
         Box(
             modifier = Modifier
@@ -129,6 +137,8 @@ fun LoginScreen(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = textPrimaryLight,
+                    unfocusedTextColor = textPrimaryLight,
                     focusedBorderColor = purple300,
                     unfocusedBorderColor = textDisabledLight,
                     disabledBorderColor = textDisabledLight,
@@ -153,6 +163,8 @@ fun LoginScreen(
                     )
                 },
                 colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = textPrimaryLight,
+                    unfocusedTextColor = textPrimaryLight,
                     focusedBorderColor = purple300,
                     unfocusedBorderColor = textDisabledLight,
                     disabledBorderColor = textDisabledLight,
@@ -166,7 +178,8 @@ fun LoginScreen(
             )
 
             Row(
-                modifier = Modifier.padding(start = 12.dp),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 5.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -177,8 +190,18 @@ fun LoginScreen(
                             .clip(RoundedCornerShape(6.dp))
                             .background(if (rememberMe) purple500 else Color.Transparent)
                             .border(2.dp, purple500, RoundedCornerShape(6.dp))
-                            .clickable { rememberMe = !rememberMe }
-                    )
+                            .clickable { rememberMe = !rememberMe },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (rememberMe) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_checked),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(14.dp)
+                            )
+                        }
+                    }
                     Spacer(Modifier.width(6.dp))
                     Text(
                         text = "Lembrar-se de mim",
@@ -186,7 +209,6 @@ fun LoginScreen(
                         color = textTertiaryLight
                     )
                 }
-                Spacer(Modifier.width(30.dp))
                 TextButton(onForgotPasswordClick) {
                     Text(
                         text = "Esqueceu sua senha?",
@@ -194,6 +216,15 @@ fun LoginScreen(
                         color = purple500
                     )
                 }
+            }
+
+            if (errorMessage != null) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = errorMessage,
+                    style = labelMedium,
+                    color = lightRed
+                )
             }
 
             Spacer(Modifier.height(24.dp))
@@ -204,6 +235,7 @@ fun LoginScreen(
             ) {
                 Button(
                     onClick = { onLoginClick(email, password, rememberMe) },
+                    enabled = !isLoading,
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = green500),
                     modifier = Modifier
@@ -215,7 +247,15 @@ fun LoginScreen(
                         )
                         .height(54.dp)
                 ) {
-                    Text(text = "Começar", style = titleMedium, color = textPrimaryDark)
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = textPrimaryDark,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(text = "Começar", style = titleMedium, color = textPrimaryDark)
+                    }
                 }
             }
         }
@@ -229,7 +269,9 @@ fun LoginScreenPreview() {
     AetherTheme {
         LoginScreen(
             onLoginClick = { _, _, _ -> },
-            onForgotPasswordClick = {}
+            onForgotPasswordClick = {},
+            isLoading = false,
+            errorMessage = null
         )
     }
 }
