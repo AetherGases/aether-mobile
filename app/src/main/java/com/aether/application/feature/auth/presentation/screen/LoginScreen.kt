@@ -178,7 +178,8 @@ fun LoginScreen(
             )
 
             Row(
-                modifier = Modifier.padding(start = 12.dp),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 5.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -208,7 +209,6 @@ fun LoginScreen(
                         color = textTertiaryLight
                     )
                 }
-                Spacer(Modifier.width(30.dp))
                 TextButton(onForgotPasswordClick) {
                     Text(
                         text = "Esqueceu sua senha?",
