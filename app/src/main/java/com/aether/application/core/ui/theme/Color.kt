@@ -30,7 +30,7 @@ val textDisabledLight = Color(0xFFB3B7C9);
 val textPrimaryDark = Color(0xFFF3F7F5);
 val textSecondaryDark = Color(0xFFE8ECF8);
 val textTertiaryDark = Color(0xFF98A2C7);
-val textDisabled = Color(0xFF70789A);
+val textDisabledDark = Color(0xFF70789A);
 
 // Fundos
 
