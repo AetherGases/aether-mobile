@@ -1,7 +1,8 @@
 [versions]
 agp = "9.1.0"
-navigationCompose = "2.9.5"
+coil = "3.2.0"
 coilCompose = "2.7.0"
+navigationCompose = "2.8.0"
 coreKtx = "1.19.0"
 datastorePreferencesCore = "1.2.1"
 datastorePreferences = "1.2.1"
@@ -21,13 +22,16 @@ retrofitKotlinxSerializationConverter = "1.0.0"
 liquid = "1.1.1"
 
 [libraries]
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
 icons-lucide-android = { module = "com.composables:icons-lucide-android", version.ref = "iconsLucideAndroid" }
 insert-koin-koin-android = { module = "io.insert-koin:koin-android" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -49,7 +53,6 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
