@@ -48,6 +48,12 @@ val titleMedium = TextStyle(
     fontSize = 17.sp
 )
 
+val titleMediumMD = TextStyle(
+    fontFamily = DMSansFontFamily,
+    fontWeight = FontWeight.Medium,
+    fontSize = 17.sp
+)
+
 val titleSmall = TextStyle(
     fontFamily = DMSansFontFamily,
     fontWeight = FontWeight.SemiBold,
