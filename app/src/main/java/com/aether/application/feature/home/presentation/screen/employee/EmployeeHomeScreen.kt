@@ -273,7 +273,7 @@ fun RecentReportItem(
             .background(backgroundLightElevated)
             .border(
                 width = 0.5.dp,
-                color = textDisabled.copy(alpha = 0.4f),
+                color = textDisabledDark.copy(alpha = 0.4f),
                 shape = RoundedCornerShape(20.dp) 
             )
             .padding(16.dp),
