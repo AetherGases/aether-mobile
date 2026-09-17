@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-
 android {
     namespace = "com.aether.application"
 
@@ -80,7 +79,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.navigation.compose)
 
 
     // =========================
@@ -119,8 +117,10 @@ dependencies {
     implementation(libs.icons.lucide.android)
     implementation(libs.liquid)
     implementation(libs.coil.compose)
+    implementation(libs.coil.network)
     implementation(libs.haze)
-
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     // =========================
     // Debug
