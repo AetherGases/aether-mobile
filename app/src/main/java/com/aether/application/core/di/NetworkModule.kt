@@ -40,13 +40,5 @@ object NetworkModule {
                 sessionManager = get()
             )
         }
-
-        single<LoginUseCase> {
-            LoginUseCase(authRepository = get())
-        }
-
-        viewModel {
-            LoginViewModel(loginUseCase = get())
-        }
     }
 }
