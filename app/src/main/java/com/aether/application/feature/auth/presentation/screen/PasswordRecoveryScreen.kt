@@ -1,9 +1,7 @@
 package com.aether.application.feature.auth.presentation.screen
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,29 +13,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.core.ui.components.GlassIconButton
 import com.aether.core.ui.theme.*
+
 @Composable
 fun PasswordRecoveryScreen(
-    email: String,
     onBackClick: () -> Unit,
-    onResendClick: () -> Unit,
+    onSendCodeClick: (String) -> Unit,
     onBackToLoginClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    errorMessage: String? = null
 ) {
+    var email by remember { mutableStateOf("") }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -124,7 +119,8 @@ fun PasswordRecoveryScreen(
                         painter = painterResource(id = com.aether.application.R.drawable.ic_chevron_left),
                         contentDescription = "Voltar",
                         tint = textPrimaryLight
-                    )                }
+                    )
+                }
                 Text(
                     text = "Recuperação de senha",
                     style = titleMedium,
@@ -132,41 +128,55 @@ fun PasswordRecoveryScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+
             Spacer(Modifier.height(64.dp))
 
             Text(
-                text = "Verifique o email cadastrado",
+                text = "Nos informe seu email",
                 style = displayMedium,
                 color = textPrimaryLight
             )
 
-            Spacer(Modifier.height(35.dp))
+            Spacer(Modifier.height(24.dp))
 
-            val message = buildAnnotatedString {
-                append("Enviamos um email para ")
-                withStyle(style = androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append(email)
-                }
-                append(". Clique no link enviado para redefinir sua senha.")
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                placeholder = {
+                    Text(
+                        text = "Email:",
+                        style = bodyLarge,
+                        color = textPrimaryLight
+                    )
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = textPrimaryLight,
+                    unfocusedTextColor = textPrimaryLight,
+                    focusedBorderColor = purple300,
+                    unfocusedBorderColor = textDisabledLight,
+                    disabledBorderColor = textDisabledLight,
+                    errorBorderColor = lightRed
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                shape = RoundedCornerShape(50.dp),
+                isError = errorMessage != null
+            )
+
+            if (errorMessage != null) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = errorMessage,
+                    style = labelMedium,
+                    color = lightRed
+                )
             }
-            Text(
-                text = message,
-                style = bodyLargeMedium,
-                color = textPrimaryLight
-            )
 
-            Spacer(Modifier.height(20.dp))
-
-            Text(
-                text = "Não recebeu um email? Verifique a caixa de spam ou solicite um novo envio.",
-                style = bodySmallMedium,
-                color = textSecondaryLight
-            )
-
-            Spacer(Modifier.height(284.dp))
+            Spacer(Modifier.weight(1f))
 
             Button(
-                onClick = onResendClick,
+                onClick = { onSendCodeClick(email) },
                 modifier = Modifier.fillMaxWidth().height(50.dp).shadow(
                     elevation = 8.dp,
                     shape = RoundedCornerShape(28.dp),
@@ -177,7 +187,7 @@ fun PasswordRecoveryScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = green500)
 
             ) {
-                Text(text = "Reenviar email de recuperação", style = titleMedium, color = textPrimaryDark)
+                Text(text = "Enviar código de recuperação", style = titleMedium, color = textPrimaryDark)
             }
 
             Spacer(Modifier.height(12.dp))
@@ -199,6 +209,8 @@ fun PasswordRecoveryScreen(
             ) {
                 Text(text = "Voltar ao login", style = titleMedium, color = textPrimaryLight)
             }
+
+            Spacer(Modifier.height(24.dp))
         }
     }
 }
@@ -207,10 +219,10 @@ fun PasswordRecoveryScreen(
 fun PasswordRecoveryScreenPreview() {
     AetherTheme {
         PasswordRecoveryScreen(
-            email = "daniel.sagaz@empresajbs.com", // aq nao é hardcode nao,o email entra como parametro. Aq é só pra visualizar
             onBackClick = {},
-            onResendClick = {},
-            onBackToLoginClick = {}
+            onSendCodeClick = {},
+            onBackToLoginClick = {},
+            errorMessage = "Erro!"
         )
     }
 }
