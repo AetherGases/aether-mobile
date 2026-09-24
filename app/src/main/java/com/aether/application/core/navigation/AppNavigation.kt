@@ -116,6 +116,8 @@ fun AppNavigation(
                 }
 
                 VerificationScreen(
+                    code = uiState.code,
+                    onCodeChange = viewModel::onCodeChange,
                     onBackClick = { navController.popBackStack() },
                     onVerifyClick = viewModel::onVerifyClick,
                     onResendClick = viewModel::onResendClick,

@@ -25,7 +25,11 @@ class VerificationViewModel(
     private val _events = Channel<VerificationEvent>(Channel.BUFFERED)
     val events: Flow<VerificationEvent> = _events.receiveAsFlow()
 
-    fun onVerifyClick(code: String) {
+    fun onCodeChange(code: List<String>) {
+        _uiState.update { it.copy(code = code) }
+    }
+
+    fun onVerifyClick(code: String = _uiState.value.code.joinToString(separator = "")) {
         val email = recoveryCodeStorage.email ?: return
 
         viewModelScope.launch {
@@ -61,6 +65,7 @@ class VerificationViewModel(
 }
 
 data class VerificationUiState(
+    val code: List<String> = List(6) { "" },
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )

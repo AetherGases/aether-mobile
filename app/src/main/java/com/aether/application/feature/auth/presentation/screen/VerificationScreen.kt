@@ -28,12 +28,13 @@ import com.aether.core.ui.theme.*
 
 @Composable
 fun VerificationScreen(
+    code: List<String>,
+    onCodeChange: (List<String>) -> Unit,
     onBackClick: () -> Unit,
-    onVerifyClick: (code: String) -> Unit,
+    onVerifyClick: () -> Unit,
     onResendClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
-    var code by remember { mutableStateOf(List(6) { "" }) }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -148,7 +149,7 @@ fun VerificationScreen(
                         value = digit,
                         onValueChange = { newValue ->
                             if (newValue.length <= 1){
-                                code = code.toMutableList().also { it[index] = newValue }
+                                onCodeChange(code.toMutableList().also { it[index] = newValue })
                             }
                         },
                         modifier = Modifier.width(48.dp).height(54.dp),
@@ -192,7 +193,7 @@ fun VerificationScreen(
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(
-                    onClick = { onVerifyClick(code.joinToString(separator = "")) },
+                    onClick = onVerifyClick,
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = green500),
                     modifier = Modifier
@@ -216,6 +217,8 @@ fun VerificationScreen(
 fun VerificationScreenPreview(){
     AetherTheme() {
         VerificationScreen(
+            code = List(6) { "" },
+            onCodeChange = {},
             onBackClick = {},
             onVerifyClick = {},
             onResendClick = {}
