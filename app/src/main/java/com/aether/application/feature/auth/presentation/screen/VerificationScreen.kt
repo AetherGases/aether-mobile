@@ -28,6 +28,7 @@ import com.aether.core.ui.theme.*
 
 @Composable
 fun VerificationScreen(
+    email: String,
     code: List<String>,
     onCodeChange: (List<String>) -> Unit,
     onBackClick: () -> Unit,
@@ -167,7 +168,7 @@ fun VerificationScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Digite o código de 4 digitos enviado\npara o seu e-mail."
+                text = "Digite o código de 4 digitos enviado\npara o seu e-mail '$email'."
             )
             Spacer(Modifier.height(16.dp))
 
@@ -217,6 +218,7 @@ fun VerificationScreen(
 fun VerificationScreenPreview(){
     AetherTheme() {
         VerificationScreen(
+            email = "Sei lá cara",
             code = List(6) { "" },
             onCodeChange = {},
             onBackClick = {},

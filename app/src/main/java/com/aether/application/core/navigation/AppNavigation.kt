@@ -123,6 +123,7 @@ fun AppNavigation(
                 }
 
                 VerificationScreen(
+                    email = route.email,
                     code = uiState.code,
                     onCodeChange = viewModel::onCodeChange,
                     onBackClick = { navController.popBackStack() },
