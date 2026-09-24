@@ -10,7 +10,7 @@ class SessionManagerImpl(
 ): SessionManager {
     private var session: Session? = null
 
-    suspend fun init() {
+    override suspend fun restoreSession() {
         session = sessionStorage.get()
     }
 
