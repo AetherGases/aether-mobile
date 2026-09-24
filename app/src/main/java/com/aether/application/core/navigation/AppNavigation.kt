@@ -61,10 +61,16 @@ fun AppNavigation(
                 }
 
                 LoginScreen(
+                    email = uiState.email,
+                    onEmailChange = viewModel::onEmailChange,
+                    password = uiState.password,
+                    onPasswordChange = viewModel::onPasswordChange,
+                    rememberMe = uiState.rememberMe,
+                    onRememberMeChange = viewModel::onRememberMeChange,
                     onLoginClick = viewModel::onLoginClick,
-                    onForgotPasswordClick = { email ->
-                        if (email.isNotBlank()) {
-                            passwordRecoveryViewModel.onSendCodeClick(email)
+                    onForgotPasswordClick = {
+                        if (uiState.email.isNotBlank()) {
+                            passwordRecoveryViewModel.onSendCodeClick(uiState.email)
                         } else {
                             navController.navigate(PasswordRecoveryRoute)
                         }

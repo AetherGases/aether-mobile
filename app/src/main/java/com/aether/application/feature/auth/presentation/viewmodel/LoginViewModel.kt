@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class LoginUiState(
+    val email: String = "",
+    val password: String = "",
+    val rememberMe: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
@@ -32,7 +35,23 @@ class LoginViewModel(
     private val _events = Channel<LoginEvent>(Channel.BUFFERED)
     val events: Flow<LoginEvent> = _events.receiveAsFlow()
 
-    fun onLoginClick(email: String, password: String, rememberMe: Boolean) {
+    fun onEmailChange(email: String) {
+        _uiState.update { it.copy(email = email) }
+    }
+
+    fun onPasswordChange(password: String) {
+        _uiState.update { it.copy(password = password) }
+    }
+
+    fun onRememberMeChange(rememberMe: Boolean) {
+        _uiState.update { it.copy(rememberMe = rememberMe) }
+    }
+
+    fun onLoginClick(
+        email: String = _uiState.value.email,
+        password: String = _uiState.value.password,
+        rememberMe: Boolean = _uiState.value.rememberMe
+    ) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
