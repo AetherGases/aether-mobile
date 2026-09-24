@@ -4,14 +4,21 @@ import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.domain.model.UserRole
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class SessionManagerImpl(
     private val sessionStorage: SessionStorage
 ): SessionManager {
     private var session: Session? = null
 
+    private val _authState = MutableStateFlow(false)
+    override val authState: StateFlow<Boolean> = _authState.asStateFlow()
+
     suspend fun init() {
         session = sessionStorage.get()
+        _authState.value = session != null
     }
 
     override fun getSession(): Session? {
@@ -26,6 +33,7 @@ class SessionManagerImpl(
         return try {
             sessionStorage.save(session)
             this.session = session
+            _authState.value = true
             true
         } catch (e: Exception) {
             false
@@ -41,5 +49,6 @@ class SessionManagerImpl(
     override suspend fun logout() {
         sessionStorage.clear()
         session = null
+        _authState.value = false
     }
 }
