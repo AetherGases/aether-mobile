@@ -1,15 +1,23 @@
 package com.aether.application.core.network
 
+import com.aether.application.BuildConfig
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 object ApiClient {
-    fun getOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+    fun getOkHttpClient(
+        authInterceptor: AuthInterceptor,
+        baseUrlInterceptor: BaseUrlInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(baseUrlInterceptor)
+                }
+            }
             .addInterceptor(authInterceptor)
             .build()
     }
