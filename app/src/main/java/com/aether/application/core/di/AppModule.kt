@@ -6,9 +6,11 @@ import com.aether.application.core.security.AndroidEncryptor
 import com.aether.application.core.security.Encryptor
 import com.aether.application.feature.auth.data.local.SessionStorageImpl
 import com.aether.application.feature.auth.data.storage.SessionManagerImpl
+import com.aether.application.feature.auth.domain.usecase.ChangePasswordUseCase
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
 import com.aether.application.feature.auth.domain.usecase.RequestPasswordRecoveryUseCase
 import com.aether.application.feature.auth.domain.usecase.VerifyCodeUseCase
+import com.aether.application.feature.auth.presentation.viewmodel.ChangePasswordViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
@@ -58,6 +60,16 @@ object AppModule {
                 email = email,
                 verifyCodeUseCase = get(),
                 requestPasswordRecoveryUseCase = get()
+            )
+        }
+        single<ChangePasswordUseCase> {
+            ChangePasswordUseCase(authRepository = get())
+        }
+        viewModel { (email: String, key: String) ->
+            ChangePasswordViewModel(
+                email = email,
+                key = key,
+                changePasswordUseCase = get()
             )
         }
     }

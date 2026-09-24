@@ -1,6 +1,6 @@
 package com.aether.application.core.navigation
 
-import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -12,9 +12,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.aether.application.feature.auth.presentation.screen.ChangePasswordScreen
 import com.aether.application.feature.auth.presentation.screen.LoginScreen
 import com.aether.application.feature.auth.presentation.screen.PasswordRecoveryScreen
 import com.aether.application.feature.auth.presentation.screen.VerificationScreen
+import com.aether.application.feature.auth.presentation.viewmodel.ChangePasswordEvent
+import com.aether.application.feature.auth.presentation.viewmodel.ChangePasswordViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.LoginEvent
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
@@ -129,6 +132,41 @@ fun AppNavigation(
                     onBackClick = { navController.popBackStack() },
                     onVerifyClick = viewModel::onVerifyClick,
                     onResendClick = viewModel::onResendClick,
+                )
+            }
+
+            composable<ChangePasswordRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ChangePasswordRoute>()
+                val viewModel = koinViewModel<ChangePasswordViewModel> {
+                    parametersOf(route.email, route.key)
+                }
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                BackHandler(enabled = uiState.isConfirmStep, onBack = viewModel::onBackClick)
+
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is ChangePasswordEvent.PasswordChanged ->
+                                navController.navigate(LoginRoute) {
+                                    popUpTo<LoginRoute> { inclusive = true }
+                                }
+                            is ChangePasswordEvent.NavigateBack ->
+                                navController.popBackStack()
+                        }
+                    }
+                }
+
+                ChangePasswordScreen(
+                    password = uiState.password,
+                    onPasswordChange = viewModel::onPasswordChange,
+                    confirmPassword = uiState.confirmPassword,
+                    onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
+                    isConfirmStep = uiState.isConfirmStep,
+                    onBackClick = viewModel::onBackClick,
+                    onSubmitClick = viewModel::onSubmitClick,
+                    isLoading = uiState.isLoading,
+                    errorMessage = uiState.errorMessage,
                 )
             }
         }
