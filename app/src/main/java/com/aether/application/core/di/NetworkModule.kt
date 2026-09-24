@@ -3,6 +3,7 @@ package com.aether.application.core.di
 import com.aether.application.core.network.ApiClient
 import com.aether.application.core.network.AuthInterceptor
 import com.aether.application.feature.auth.data.remote.AuthApi
+import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.auth.data.repository.AuthRepositoryImpl
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
@@ -34,9 +35,15 @@ object NetworkModule {
             retrofit.create(AuthApi::class.java)
         }
 
+        single<ProfileApi> {
+            val retrofit: Retrofit = get()
+            retrofit.create(ProfileApi::class.java)
+        }
+
         single<AuthRepository> {
             AuthRepositoryImpl(
                 api = get(),
+                profileApi = get(),
                 sessionManager = get()
             )
         }
