@@ -2,6 +2,7 @@ package com.aether.application.core.di
 
 import com.aether.application.core.network.ApiClient
 import com.aether.application.core.network.AuthInterceptor
+import com.aether.application.core.network.TokenAuthenticator
 import com.aether.application.feature.auth.data.remote.AuthApi
 import com.aether.application.feature.auth.data.repository.AuthRepositoryImpl
 import com.aether.application.feature.auth.domain.repository.AuthRepository
@@ -21,8 +22,15 @@ object NetworkModule {
             AuthInterceptor(sessionManager = get())
         }
 
+        single<TokenAuthenticator> {
+            // authApiProvider is resolved lazily on first 401, not eagerly here —
+            // AuthApi depends on Retrofit which depends on this same OkHttpClient,
+            // so an eager get() here would deadlock Koin's graph construction.
+            TokenAuthenticator(sessionManager = get()) { get() }
+        }
+
         single<OkHttpClient> {
-            ApiClient.getOkHttpClient(authInterceptor = get())
+            ApiClient.getOkHttpClient(authInterceptor = get(), tokenAuthenticator = get())
         }
 
         single<Retrofit> {
