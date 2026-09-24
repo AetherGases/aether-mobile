@@ -94,7 +94,8 @@ fun AppNavigation(
                 }
 
                 PasswordRecoveryScreen(
-                    onBackClick = { navController.popBackStack() },
+                    email = uiState.email,
+                    onEmailChange = viewModel::onEmailChange,
                     onBackToLoginClick = { navController.navigate(LoginRoute) },
                     onSendCodeClick = viewModel::onSendCodeClick,
                     errorMessage = uiState.errorMessage

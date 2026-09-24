@@ -24,7 +24,11 @@ class PasswordRecoveryViewModel(
     private val _events = Channel<SendCodeEvent>(Channel.BUFFERED)
     val events: Flow<SendCodeEvent> = _events.receiveAsFlow()
 
-    fun onSendCodeClick(email: String) {
+    fun onEmailChange(email: String) {
+        _uiState.update { it.copy(email = email) }
+    }
+
+    fun onSendCodeClick(email: String = _uiState.value.email) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
@@ -45,6 +49,7 @@ class PasswordRecoveryViewModel(
 }
 
 data class RecoveryUiState(
+    val email: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )

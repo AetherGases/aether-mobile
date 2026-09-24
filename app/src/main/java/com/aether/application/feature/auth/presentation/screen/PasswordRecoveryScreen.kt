@@ -25,14 +25,13 @@ import com.aether.core.ui.theme.*
 
 @Composable
 fun PasswordRecoveryScreen(
-    onBackClick: () -> Unit,
-    onSendCodeClick: (String) -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    onSendCodeClick: () -> Unit,
     onBackToLoginClick: () -> Unit,
     modifier: Modifier = Modifier,
     errorMessage: String? = null
 ) {
-    var email by remember { mutableStateOf("") }
-
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -111,16 +110,6 @@ fun PasswordRecoveryScreen(
             Spacer(Modifier.height(64.dp))
 
             Box(modifier = Modifier.fillMaxWidth()) {
-                GlassIconButton(
-                    onClick = onBackClick,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        painter = painterResource(id = com.aether.application.R.drawable.ic_chevron_left),
-                        contentDescription = "Voltar",
-                        tint = textPrimaryLight
-                    )
-                }
                 Text(
                     text = "Recuperação de senha",
                     style = titleMedium,
@@ -141,7 +130,7 @@ fun PasswordRecoveryScreen(
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = onEmailChange,
                 placeholder = {
                     Text(
                         text = "Email:",
@@ -155,7 +144,10 @@ fun PasswordRecoveryScreen(
                     focusedBorderColor = purple300,
                     unfocusedBorderColor = textDisabledLight,
                     disabledBorderColor = textDisabledLight,
-                    errorBorderColor = lightRed
+                    errorBorderColor = MaterialTheme.colorScheme.error,
+                    errorTextColor = MaterialTheme.colorScheme.error,
+                    errorLabelColor = MaterialTheme.colorScheme.error,
+                    errorCursorColor = MaterialTheme.colorScheme.error
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -176,7 +168,7 @@ fun PasswordRecoveryScreen(
             Spacer(Modifier.weight(1f))
 
             Button(
-                onClick = { onSendCodeClick(email) },
+                onClick = onSendCodeClick,
                 modifier = Modifier.fillMaxWidth().height(50.dp).shadow(
                     elevation = 8.dp,
                     shape = RoundedCornerShape(28.dp),
@@ -219,10 +211,10 @@ fun PasswordRecoveryScreen(
 fun PasswordRecoveryScreenPreview() {
     AetherTheme {
         PasswordRecoveryScreen(
-            onBackClick = {},
+            email = "",
+            onEmailChange = {},
             onSendCodeClick = {},
-            onBackToLoginClick = {},
-            errorMessage = "Erro!"
+            onBackToLoginClick = {}
         )
     }
 }
