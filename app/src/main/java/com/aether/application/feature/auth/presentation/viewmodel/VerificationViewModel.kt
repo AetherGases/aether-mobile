@@ -2,7 +2,6 @@ package com.aether.application.feature.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aether.application.feature.auth.domain.repository.RecoveryCodeStorage
 import com.aether.application.feature.auth.domain.usecase.RequestPasswordRecoveryUseCase
 import com.aether.application.feature.auth.domain.usecase.VerifyCodeUseCase
 import kotlinx.coroutines.channels.Channel
@@ -15,9 +14,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class VerificationViewModel(
+    private val email: String,
     private val verifyCodeUseCase: VerifyCodeUseCase,
-    private val requestPasswordRecoveryUseCase: RequestPasswordRecoveryUseCase,
-    private val recoveryCodeStorage: RecoveryCodeStorage
+    private val requestPasswordRecoveryUseCase: RequestPasswordRecoveryUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(VerificationUiState())
     val uiState: StateFlow<VerificationUiState> = _uiState.asStateFlow()
@@ -30,15 +29,12 @@ class VerificationViewModel(
     }
 
     fun onVerifyClick(code: String = _uiState.value.code.joinToString(separator = "")) {
-        val email = recoveryCodeStorage.email ?: return
-
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             verifyCodeUseCase.invoke(email, code)
                 .onSuccess { response ->
-                    recoveryCodeStorage.saveKey(response.key)
-                    _events.send(VerificationEvent.Verified)
+                    _events.send(VerificationEvent.Verified(response.key))
                 }
                 .onFailure { throwable ->
                     _uiState.update {
@@ -51,8 +47,6 @@ class VerificationViewModel(
     }
 
     fun onResendClick() {
-        val email = recoveryCodeStorage.email ?: return
-
         viewModelScope.launch {
             requestPasswordRecoveryUseCase.invoke(email)
                 .onFailure { throwable ->
@@ -71,5 +65,5 @@ data class VerificationUiState(
 )
 
 sealed interface VerificationEvent {
-    data object Verified : VerificationEvent
+    data class Verified(val key: String) : VerificationEvent
 }

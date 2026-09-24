@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.aether.application.feature.auth.presentation.screen.LoginScreen
 import com.aether.application.feature.auth.presentation.screen.PasswordRecoveryScreen
 import com.aether.application.feature.auth.presentation.screen.VerificationScreen
@@ -23,6 +24,7 @@ import com.aether.application.feature.auth.presentation.viewmodel.VerificationVi
 import com.aether.application.feature.home.presentation.screen.EmployeeHomeScreen
 import com.aether.application.feature.home.presentation.screen.ManagerHomeScreen
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun AppNavigation(
@@ -55,7 +57,7 @@ fun AppNavigation(
                     passwordRecoveryViewModel.events.collect { event ->
                         when (event) {
                             is SendCodeEvent.CodeSent ->
-                                navController.navigate(ValidateRecoveryCodeRoute)
+                                navController.navigate(ValidateRecoveryCodeRoute(email = event.email))
                         }
                     }
                 }
@@ -88,7 +90,7 @@ fun AppNavigation(
                     viewModel.events.collect { event ->
                         when (event) {
                             is SendCodeEvent.CodeSent ->
-                                navController.navigate(ValidateRecoveryCodeRoute)
+                                navController.navigate(ValidateRecoveryCodeRoute(email = event.email))
                         }
                     }
                 }
@@ -102,15 +104,20 @@ fun AppNavigation(
                 )
             }
 
-            composable<ValidateRecoveryCodeRoute> {
-                val viewModel = koinViewModel<VerificationViewModel>()
+            composable<ValidateRecoveryCodeRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ValidateRecoveryCodeRoute>()
+                val viewModel = koinViewModel<VerificationViewModel> {
+                    parametersOf(route.email)
+                }
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                 LaunchedEffect(Unit) {
                     viewModel.events.collect { event ->
                         when (event) {
                             is VerificationEvent.Verified ->
-                                navController.navigate(ChangePasswordRoute)
+                                navController.navigate(
+                                    ChangePasswordRoute(email = route.email, key = event.key)
+                                )
                         }
                     }
                 }

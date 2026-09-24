@@ -2,7 +2,6 @@ package com.aether.application.feature.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aether.application.feature.auth.domain.repository.RecoveryCodeStorage
 import com.aether.application.feature.auth.domain.usecase.RequestPasswordRecoveryUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -15,8 +14,7 @@ import kotlinx.coroutines.launch
 
 
 class PasswordRecoveryViewModel(
-    private val requestPasswordRecoveryUseCase: RequestPasswordRecoveryUseCase,
-    private val recoveryCodeStorage: RecoveryCodeStorage
+    private val requestPasswordRecoveryUseCase: RequestPasswordRecoveryUseCase
 ): ViewModel() {
     private val _uiState = MutableStateFlow(RecoveryUiState())
     val uiState: StateFlow<RecoveryUiState> = _uiState.asStateFlow()
@@ -34,8 +32,7 @@ class PasswordRecoveryViewModel(
 
             requestPasswordRecoveryUseCase.invoke(email)
                 .onSuccess {
-                    recoveryCodeStorage.saveEmail(email.trim())
-                    _events.send(SendCodeEvent.CodeSent)
+                    _events.send(SendCodeEvent.CodeSent(email.trim()))
                 }
                 .onFailure { throwable ->
                     _uiState.update {
@@ -55,5 +52,5 @@ data class RecoveryUiState(
 )
 
 sealed interface SendCodeEvent {
-    data object CodeSent : SendCodeEvent
+    data class CodeSent(val email: String) : SendCodeEvent
 }
