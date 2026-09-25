@@ -6,7 +6,6 @@ import com.aether.application.feature.auth.data.remote.dto.ResetPasswordChangePa
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordSendCodeRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeResponse
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -31,7 +30,7 @@ interface AuthApi {
     @POST("$AUTH/reset-password/send-code")
     suspend fun resetPasswordSendCode(
         @Body request: ResetPasswordSendCodeRequest
-    ): Response<Unit>
+    )
 
     @POST("$AUTH/reset-password/validate-code")
     suspend fun resetPasswordValidateCode(
@@ -41,5 +40,5 @@ interface AuthApi {
     @POST("$AUTH/reset-password/change-password")
     suspend fun resetPasswordChangePassword(
         @Body request: ResetPasswordChangePasswordRequest
-    ): Response<Unit>
+    )
 }
