@@ -34,7 +34,9 @@ fun VerificationScreen(
     onBackClick: () -> Unit,
     onVerifyClick: () -> Unit,
     onResendClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    errorMessage: String? = null
 ){
     Box(
         modifier = modifier
@@ -158,6 +160,8 @@ fun VerificationScreen(
                         textStyle = bodyLarge.copy(textAlign = TextAlign.Center),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         shape = RoundedCornerShape(12.dp),
+                        enabled = !isLoading,
+                        isError = errorMessage != null,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = purple500,
                             unfocusedTextColor = purple300
@@ -165,6 +169,16 @@ fun VerificationScreen(
                     )
                 }
             }
+
+            if (errorMessage != null) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = errorMessage,
+                    style = labelMedium,
+                    color = lightRed
+                )
+            }
+
             Spacer(Modifier.height(24.dp))
 
             Text(
@@ -183,7 +197,7 @@ fun VerificationScreen(
                     text = "Reenviar",
                     style = bodyLargeMedium,
                     color = purple500,
-                    modifier = Modifier.clickable {onResendClick()}
+                    modifier = Modifier.clickable(enabled = !isLoading) { onResendClick() }
                 )
             }
 
@@ -195,6 +209,7 @@ fun VerificationScreen(
             ) {
                 Button(
                     onClick = onVerifyClick,
+                    enabled = !isLoading,
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = green500),
                     modifier = Modifier
@@ -206,7 +221,15 @@ fun VerificationScreen(
                         )
                         .height(54.dp)
                 ) {
-                    Text(text = "Verificar", style = titleMedium, color = textPrimaryDark)
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = textPrimaryDark,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(text = "Verificar", style = titleMedium, color = textPrimaryDark)
+                    }
                 }
             }
         }

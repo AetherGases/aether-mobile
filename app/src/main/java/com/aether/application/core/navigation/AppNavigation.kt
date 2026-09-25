@@ -132,6 +132,8 @@ fun AppNavigation(
                     onBackClick = { navController.popBackStack() },
                     onVerifyClick = viewModel::onVerifyClick,
                     onResendClick = viewModel::onResendClick,
+                    isLoading = uiState.isLoading,
+                    errorMessage = uiState.errorMessage,
                 )
             }
 

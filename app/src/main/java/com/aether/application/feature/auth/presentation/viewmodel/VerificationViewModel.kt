@@ -29,6 +29,8 @@ class VerificationViewModel(
     }
 
     fun onVerifyClick(code: String = _uiState.value.code.joinToString(separator = "")) {
+        if (_uiState.value.isLoading) return
+
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
