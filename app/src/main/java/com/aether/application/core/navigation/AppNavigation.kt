@@ -73,13 +73,7 @@ fun AppNavigation(
                     rememberMe = uiState.rememberMe,
                     onRememberMeChange = viewModel::onRememberMeChange,
                     onLoginClick = viewModel::onLoginClick,
-                    onForgotPasswordClick = {
-                        if (uiState.email.isNotBlank()) {
-                            passwordRecoveryViewModel.onSendCodeClick(uiState.email)
-                        } else {
-                            navController.navigate(PasswordRecoveryRoute)
-                        }
-                    },
+                    onForgotPasswordClick = { navController.navigate(PasswordRecoveryRoute(email = uiState.email)) },
                     isLoading = uiState.isLoading,
                     errorMessage = uiState.errorMessage,
                 )
