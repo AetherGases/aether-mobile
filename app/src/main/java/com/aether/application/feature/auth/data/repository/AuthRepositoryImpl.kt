@@ -8,6 +8,7 @@ import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.auth.data.remote.dto.LoginRequest
 import com.aether.application.feature.auth.domain.exception.AuthException
 import com.aether.application.feature.auth.domain.repository.AuthRepository
+import kotlin.coroutines.cancellation.CancellationException
 
 class AuthRepositoryImpl(
     private val api: AuthApi,
@@ -24,17 +25,27 @@ class AuthRepositoryImpl(
             )
 
             var session = response.toDomain()
-            sessionManager.save(session)
+            if (!sessionManager.save(session)) {
+                return Result.failure(AuthException.Unexpected(IllegalStateException("Failed to persist session")))
+            }
 
             try {
                 val profile = profileApi.getUserProfile()
-                session = session.copy(permissions = profile.permissions)
-                sessionManager.save(session)
+                val sessionWithPermissions = session.copy(permissions = profile.permissions)
+                if (sessionManager.save(sessionWithPermissions)) {
+                    session = sessionWithPermissions
+                } else {
+                    return Result.failure(AuthException.Unexpected(IllegalStateException("Failed to persist permissions")))
+                }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Log.e("AuthRepositoryImpl", "Failed to fetch permissions: ${e.message}")
             }
 
             Result.success(session)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e("AuthRepositoryImpl", e.message ?: "unexpected error")
             Result.failure(
