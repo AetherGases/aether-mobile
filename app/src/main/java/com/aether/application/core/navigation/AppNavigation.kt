@@ -13,8 +13,9 @@ import androidx.navigation.compose.rememberNavController
 import com.aether.application.feature.auth.presentation.screen.LoginScreen
 import com.aether.application.feature.auth.presentation.viewmodel.LoginEvent
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
-import com.aether.application.feature.home.presentation.screen.EmployeeHomeScreen
-import com.aether.application.feature.home.presentation.screen.ManagerHomeScreen
+import com.aether.application.feature.home.presentation.screen.HomeScreen
+import com.aether.core.ui.components.EmployeeHeroCard
+import com.aether.core.ui.components.ManagerHeroCard
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -53,15 +54,17 @@ fun AppNavigation(
         }
         navigation<EmployeeGraph>(startDestination = EmployeeHomeRoute) {
             composable<EmployeeHomeRoute> {
-                EmployeeHomeScreen(
+                HomeScreen(
                     userName = TODO(),
                     userLastName = TODO(),
                     avatarUrl = TODO(),
                     hasUnreadNotifications = TODO(),
-                    lastSubmittedLabel = TODO(),
-                    reportingPeriodLabel = TODO(),
-                    reportStatusLabel = TODO(),
-                    reportsCount = TODO(),
+                    heroCard = EmployeeHeroCard(
+                        lastSubmittedLabel = TODO(),
+                        reportingPeriodLabel = TODO(),
+                        statusLabel = TODO(),
+                        summaryCount = TODO()
+                    ),
                     unitEmissionsValue = TODO(),
                     unitEmissionsChangeLabel = TODO(),
                     sealLevelPercent = TODO(),
@@ -73,7 +76,6 @@ fun AppNavigation(
                     onViewHistoryClick = TODO(),
                     onSeeAllReportsClick = TODO(),
                     onReportMenuClick = TODO(),
-                    onHomeClick = TODO(),
                     modifier = TODO()
                 )
             }
@@ -81,15 +83,17 @@ fun AppNavigation(
 
         navigation<ManagerGraph>(startDestination = ManagerHomeRoute) {
             composable<ManagerHomeRoute> {
-                ManagerHomeScreen(
+                HomeScreen(
                     userName = TODO(),
                     userLastName = TODO(),
                     avatarUrl = TODO(),
                     hasUnreadNotifications = TODO(),
-                    lastSubmittedLabel = TODO(),
-                    totalEmissionsValue = TODO(),
-                    reductionAchievedLabel = TODO(),
-                    reviewedReportsCount = TODO(),
+                    heroCard = ManagerHeroCard(
+                        lastSubmittedLabel = TODO(),
+                        totalEmissions = TODO(),
+                        reductionAchieved = TODO(),
+                        summaryCount = TODO()
+                    ),
                     unitEmissionsValue = TODO(),
                     unitEmissionsChangeLabel = TODO(),
                     sealLevelPercent = TODO(),
