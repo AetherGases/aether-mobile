@@ -8,5 +8,5 @@ interface ServerConfigStorage {
 
     fun observeSelectedDomain(): Flow<String?>
 
-    suspend fun saveDomain(domain: String)
+    suspend fun saveDomain(domain: String): List<String>
 }

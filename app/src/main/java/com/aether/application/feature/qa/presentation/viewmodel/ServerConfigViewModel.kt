@@ -52,8 +52,8 @@ class ServerConfigViewModel(
         if (domain.isBlank()) return
 
         viewModelScope.launch {
-            serverConfigStorage.saveDomain(domain)
-            _uiState.update { it.copy(savedDomains = serverConfigStorage.getSavedDomains()) }
+            val updatedDomains = serverConfigStorage.saveDomain(domain)
+            _uiState.update { it.copy(savedDomains = updatedDomains) }
             _events.send(ServerConfigEvent.Saved)
         }
     }

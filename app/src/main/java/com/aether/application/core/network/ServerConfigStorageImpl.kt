@@ -27,13 +27,15 @@ class ServerConfigStorageImpl(
             prefs[Keys.DOMAINS]?.let { decodeDomains(it).firstOrNull() }
         }
 
-    override suspend fun saveDomain(domain: String) {
+    override suspend fun saveDomain(domain: String): List<String> {
         val normalized = normalize(domain)
         val updated = listOf(normalized) + getSavedDomains().filterNot { it == normalized }
 
         dataStore.edit { prefs ->
             prefs[Keys.DOMAINS] = Json.encodeToString(updated)
         }
+
+        return updated
     }
 
     private fun decodeDomains(json: String): List<String> =
@@ -44,11 +46,11 @@ class ServerConfigStorageImpl(
         }
 
     private fun normalize(domain: String): String {
-        val trimmed = domain.trim().trimEnd('/')
-        return if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-            trimmed
+        val normalized = domain.trim().trimEnd('/')
+        return if (normalized.startsWith("http://", ignoreCase = true) || normalized.startsWith("https://", ignoreCase = true)) {
+            normalized
         } else {
-            "http://$trimmed"
+            "http://$normalized"
         }
     }
 }
