@@ -25,9 +25,5 @@ class AetherApplication : Application(), KoinComponent {
             androidContext(this@AetherApplication)
             modules(AppModule.module, NetworkModule.module, dataStoreModule)
         }
-
-        applicationScope.launch {
-            sessionManager.restoreSession()
-        }
     }
 }
