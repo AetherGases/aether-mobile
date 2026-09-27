@@ -3,6 +3,7 @@ package com.aether.application.feature.auth.data.storage
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
+import kotlin.coroutines.cancellation.CancellationException
 
 class SessionManagerImpl(
     private val sessionStorage: SessionStorage
@@ -30,6 +31,8 @@ class SessionManagerImpl(
             sessionStorage.save(session)
             this.session = session
             true
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             false
         }
