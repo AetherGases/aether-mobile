@@ -3,31 +3,47 @@ package com.aether.application.core.network
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.data.remote.AuthApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import retrofit2.HttpException
+import java.io.IOException
 
 class TokenAuthenticator(
     private val sessionManager: SessionManager,
     private val authApiProvider: () -> AuthApi
 ) : okhttp3.Authenticator {
 
-    override fun authenticate(route: Route?, response: Response): Request? {
-        if (responseCount(response) > 2) return null
+    private val refreshMutex = Mutex()
 
-        val session = sessionManager.getSession() ?: return null
+    override fun authenticate(route: Route?, response: Response): Request? {
+        if (responseCount(response) > 3) return null
+
+        val failedAccessToken = response.request.header("Authorization")
 
         val refreshedAccessToken = runBlocking {
-            try {
-                val loginResponse = authApiProvider().refreshToken(
-                    email = session.email,
-                    refreshToken = "Bearer ${session.refreshToken}"
-                )
-                sessionManager.save(loginResponse.toDomain())
-                loginResponse.accessToken
-            } catch (e: Exception) {
-                sessionManager.logout()
-                null
+            refreshMutex.withLock {
+                val session = sessionManager.getSession() ?: return@withLock null
+
+                if (failedAccessToken != null && failedAccessToken != "Bearer ${session.accessToken}") {
+                    return@withLock session.accessToken
+                }
+
+                try {
+                    val loginResponse = authApiProvider().refreshToken(
+                        email = session.email,
+                        refreshToken = "Bearer ${session.refreshToken}"
+                    )
+                    sessionManager.save(loginResponse.toDomain())
+                    loginResponse.accessToken
+                } catch (e: HttpException) {
+                    sessionManager.logout()
+                    null
+                } catch (e: IOException) {
+                    null
+                }
             }
         } ?: return null
 
