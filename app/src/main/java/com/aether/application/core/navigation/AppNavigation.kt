@@ -13,7 +13,10 @@ import androidx.navigation.compose.rememberNavController
 import com.aether.application.feature.auth.presentation.screen.LoginScreen
 import com.aether.application.feature.auth.presentation.viewmodel.LoginEvent
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
+import com.aether.application.feature.auth.presentation.viewmodel.SplashEvent
+import com.aether.application.feature.auth.presentation.viewmodel.SplashViewModel
 import com.aether.application.feature.home.presentation.screen.EmployeeHomeScreen
+import com.aether.application.feature.auth.presentation.screen.SplashScreen
 import com.aether.application.feature.home.presentation.screen.ManagerHomeScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -27,7 +30,35 @@ fun AppNavigation(
         startDestination = AuthGraph,
         modifier = modifier,
     ) {
-        navigation<AuthGraph>(startDestination = LoginRoute) {
+        navigation<AuthGraph>(startDestination = SplashRoute) {
+
+            composable<SplashRoute> {
+                val viewModel = koinViewModel<SplashViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is SplashEvent.NavigateToAuth ->
+                                navController.navigate(LoginRoute) {
+                                    popUpTo<SplashRoute> { inclusive = true }
+                                }
+                            is SplashEvent.NavigateToHome ->
+                                TODO()
+                        }
+                    }
+                }
+
+                SplashScreen(
+                    circleDurationMillis = viewModel.circleDurationMillis,
+                    onIrisOpened = viewModel::onIrisOpened,
+                    greenClosing = uiState.greenClosing,
+                    whiteClosing = uiState.whiteClosing,
+                    showLogo = uiState.showLogo,
+                    player = viewModel.player
+                )
+            }
+
             composable<LoginRoute> {
                 val viewModel = koinViewModel<LoginViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -51,6 +82,7 @@ fun AppNavigation(
                 )
             }
         }
+
         navigation<EmployeeGraph>(startDestination = EmployeeHomeRoute) {
             composable<EmployeeHomeRoute> {
                 EmployeeHomeScreen(
