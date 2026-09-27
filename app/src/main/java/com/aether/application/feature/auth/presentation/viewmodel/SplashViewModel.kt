@@ -1,11 +1,13 @@
 package com.aether.application.feature.auth.presentation.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.RawRes
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.aether.application.core.auth.storage.SessionManager
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
 
 class SplashViewModel(
@@ -54,16 +57,23 @@ class SplashViewModel(
         player.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
                     if (state == Player.STATE_ENDED) {
-                        viewModelScope.launch {
-                            videoFinished = true
-                            navigate()
-                        }
+                        markVideoFinished()
                     }
+            }
+            override fun onPlayerError(error: PlaybackException) {
+                Log.e("SplashViewModel", "Splash video failed to play", error)
+                markVideoFinished()
             }
         })
         // autenticação termina -> tenta mudar de página
         viewModelScope.launch {
-            sessionManager.restoreSession()
+            try {
+                sessionManager.restoreSession()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e("SplashViewModel", "Failed to restore session", e)
+            }
             sessionRestored = true
             navigate()
         }
@@ -77,6 +87,13 @@ class SplashViewModel(
     override fun onCleared() {
         super.onCleared()
         player.release()
+    }
+
+    private fun markVideoFinished() {
+        viewModelScope.launch {
+            videoFinished = true
+            navigate()
+        }
     }
 
     private suspend fun navigate() {
