@@ -31,24 +31,26 @@ fun AppNavigation(
         startDestination = AuthGraph,
         modifier = modifier,
     ) {
-        composable<ServerConfigRoute> {
-            val viewModel = koinViewModel<ServerConfigViewModel>()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        if (BuildConfig.DEBUG) {
+            composable<ServerConfigRoute> {
+                val viewModel = koinViewModel<ServerConfigViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-            LaunchedEffect(Unit) {
-                viewModel.events.collect { event ->
-                    when (event) {
-                        is ServerConfigEvent.Saved -> navController.popBackStack()
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is ServerConfigEvent.Saved -> navController.popBackStack()
+                        }
                     }
                 }
-            }
 
-            ServerConfigScreen(
-                domain = uiState.domainInput,
-                onDomainChange = viewModel::onDomainInputChange,
-                savedDomains = uiState.savedDomains,
-                onSaveClick = viewModel::onSaveClick
-            )
+                ServerConfigScreen(
+                    domain = uiState.domainInput,
+                    onDomainChange = viewModel::onDomainInputChange,
+                    savedDomains = uiState.savedDomains,
+                    onSaveClick = viewModel::onSaveClick
+                )
+            }
         }
 
         navigation<AuthGraph>(startDestination = LoginRoute) {
