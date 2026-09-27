@@ -1,5 +1,6 @@
 package com.aether.application.core.di
 
+import com.aether.application.BuildConfig
 import com.aether.application.core.network.ApiClient
 import com.aether.application.core.network.AuthInterceptor
 import com.aether.application.core.network.BaseUrlInterceptor
@@ -32,7 +33,10 @@ object NetworkModule {
         }
 
         single<OkHttpClient> {
-            ApiClient.getOkHttpClient(authInterceptor = get(), baseUrlInterceptor = get())
+            ApiClient.getOkHttpClient(
+                authInterceptor = get(),
+                baseUrlInterceptor = if (BuildConfig.DEBUG) get() else null
+            )
         }
 
         single<Retrofit> {

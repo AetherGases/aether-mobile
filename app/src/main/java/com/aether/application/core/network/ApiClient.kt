@@ -10,11 +10,11 @@ import retrofit2.Retrofit
 object ApiClient {
     fun getOkHttpClient(
         authInterceptor: AuthInterceptor,
-        baseUrlInterceptor: BaseUrlInterceptor
+        baseUrlInterceptor: BaseUrlInterceptor?
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .apply {
-                if (BuildConfig.DEBUG) {
+                if (baseUrlInterceptor != null) {
                     addInterceptor(baseUrlInterceptor)
                 }
             }
