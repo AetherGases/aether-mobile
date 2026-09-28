@@ -50,8 +50,9 @@ object AppModule {
         single<VerifyCodeUseCase> {
             VerifyCodeUseCase(authRepository = get())
         }
-        viewModel {
+        viewModel { (email: String) ->
             PasswordRecoveryViewModel(
+                email = email,
                 requestPasswordRecoveryUseCase = get()
             )
         }

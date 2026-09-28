@@ -14,9 +14,10 @@ import kotlinx.coroutines.launch
 
 
 class PasswordRecoveryViewModel(
+    email: String,
     private val requestPasswordRecoveryUseCase: RequestPasswordRecoveryUseCase
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(RecoveryUiState())
+    private val _uiState = MutableStateFlow(RecoveryUiState(email = email))
     val uiState: StateFlow<RecoveryUiState> = _uiState.asStateFlow()
 
     private val _events = Channel<SendCodeEvent>(Channel.BUFFERED)

@@ -43,7 +43,6 @@ fun AppNavigation(
             composable<LoginRoute> {
                 val viewModel = koinViewModel<LoginViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                val passwordRecoveryViewModel = koinViewModel<PasswordRecoveryViewModel>()
 
                 LaunchedEffect(Unit) {
                     viewModel.events.collect { event ->
@@ -52,15 +51,6 @@ fun AppNavigation(
                                 navController.navigate(EmployeeGraph) {
                                     popUpTo<AuthGraph> { inclusive = true }
                                 }
-                        }
-                    }
-                }
-
-                LaunchedEffect(Unit) {
-                    passwordRecoveryViewModel.events.collect { event ->
-                        when (event) {
-                            is SendCodeEvent.CodeSent ->
-                                navController.navigate(ValidateRecoveryCodeRoute(email = event.email))
                         }
                     }
                 }
@@ -79,8 +69,11 @@ fun AppNavigation(
                 )
             }
 
-            composable<PasswordRecoveryRoute> {
-                val viewModel = koinViewModel<PasswordRecoveryViewModel>()
+            composable<PasswordRecoveryRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<PasswordRecoveryRoute>()
+                val viewModel = koinViewModel<PasswordRecoveryViewModel> {
+                    parametersOf(route.email)
+                }
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                 LaunchedEffect(Unit) {
