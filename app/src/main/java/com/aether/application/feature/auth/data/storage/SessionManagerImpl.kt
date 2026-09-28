@@ -16,12 +16,9 @@ class SessionManagerImpl(
     private val _authState = MutableStateFlow(false)
     override val authState: StateFlow<Boolean> = _authState.asStateFlow()
 
-    init {
-        _authState.value = session != null
-    }
-
     override suspend fun restoreSession() {
         session = sessionStorage.get()
+        _authState.value = isAuthenticated()
     }
 
     override fun getSession(): Session? {
