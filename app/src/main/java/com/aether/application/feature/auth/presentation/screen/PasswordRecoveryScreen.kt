@@ -30,6 +30,7 @@ fun PasswordRecoveryScreen(
     onSendCodeClick: () -> Unit,
     onBackToLoginClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     errorMessage: String? = null
 ) {
     Box(
@@ -175,11 +176,20 @@ fun PasswordRecoveryScreen(
                     ambientColor = Color(0xFF000000),
                     spotColor = green500
                 ),
+                enabled = !isLoading,
                 shape = RoundedCornerShape(28.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = green500)
 
             ) {
-                Text(text = "Enviar código de recuperação", style = titleMedium, color = textPrimaryDark)
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = textPrimaryDark,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(text = "Enviar código de recuperação", style = titleMedium, color = textPrimaryDark)
+                }
             }
 
             Spacer(Modifier.height(12.dp))

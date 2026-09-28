@@ -28,6 +28,8 @@ class PasswordRecoveryViewModel(
     }
 
     fun onSendCodeClick(email: String = _uiState.value.email) {
+        if (_uiState.value.isLoading)
+            return
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
