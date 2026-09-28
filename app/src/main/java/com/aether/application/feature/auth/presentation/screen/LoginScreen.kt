@@ -38,7 +38,8 @@ fun LoginScreen(
     onForgotPasswordClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    errorMessage: String? = null
+    errorMessage: String? = null,
+    onChangeServerClick: (() -> Unit)? = null
 ) {
     Box(
         modifier = modifier
@@ -265,6 +266,22 @@ fun LoginScreen(
                         )
                     } else {
                         Text(text = "Começar", style = titleMedium, color = textPrimaryDark)
+                    }
+                }
+            }
+
+            if (onChangeServerClick != null) {
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onChangeServerClick) {
+                        Text(
+                            text = "Trocar servidor (QA)",
+                            style = labelMedium,
+                            color = textTertiaryLight
+                        )
                     }
                 }
             }

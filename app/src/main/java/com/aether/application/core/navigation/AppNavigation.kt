@@ -4,6 +4,9 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -11,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.aether.application.BuildConfig
+import com.aether.application.core.auth.storage.SessionManager
 import androidx.navigation.toRoute
 import com.aether.application.feature.auth.presentation.screen.ChangePasswordScreen
 import com.aether.application.feature.auth.presentation.screen.LoginScreen
@@ -20,12 +25,20 @@ import com.aether.application.feature.auth.presentation.viewmodel.ChangePassword
 import com.aether.application.feature.auth.presentation.viewmodel.ChangePasswordViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.LoginEvent
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
+import com.aether.application.feature.home.presentation.screen.HomeScreen
+import com.aether.core.ui.components.EmployeeHeroCard
+import com.aether.core.ui.components.ManagerHeroCard
+import com.aether.application.feature.auth.presentation.viewmodel.SplashEvent
+import com.aether.application.feature.auth.presentation.viewmodel.SplashViewModel
+import com.aether.application.feature.auth.presentation.screen.SplashScreen
+import com.aether.application.feature.qa.presentation.screen.ServerConfigScreen
+import com.aether.application.feature.qa.presentation.viewmodel.ServerConfigEvent
+import com.aether.application.feature.qa.presentation.viewmodel.ServerConfigViewModel
+import org.koin.compose.koinInject
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.SendCodeEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
-import com.aether.application.feature.home.presentation.screen.EmployeeHomeScreen
-import com.aether.application.feature.home.presentation.screen.ManagerHomeScreen
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -34,12 +47,74 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
+    val sessionManager = koinInject<SessionManager>()
+    val isAuthenticated by sessionManager.authState.collectAsStateWithLifecycle()
+    var wasAuthenticated by remember { mutableStateOf(isAuthenticated) }
+
+    LaunchedEffect(isAuthenticated) {
+        if (wasAuthenticated && !isAuthenticated) {
+            navController.navigate(AuthGraph) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        wasAuthenticated = isAuthenticated
+    }
+
     NavHost(
         navController = navController,
         startDestination = AuthGraph,
         modifier = modifier,
     ) {
-        navigation<AuthGraph>(startDestination = LoginRoute) {
+        navigation<AuthGraph>(startDestination = SplashRoute) {
+            composable<SplashRoute> {
+                val viewModel = koinViewModel<SplashViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is SplashEvent.NavigateToAuth ->
+                                navController.navigate(LoginRoute) {
+                                    popUpTo<SplashRoute> { inclusive = true }
+                                }
+                            is SplashEvent.NavigateToHome ->
+                                TODO()
+                        }
+                    }
+                }
+
+                SplashScreen(
+                    circleDurationMillis = viewModel.circleDurationMillis,
+                    onIrisOpened = viewModel::onIrisOpened,
+                    greenClosing = uiState.greenClosing,
+                    whiteClosing = uiState.whiteClosing,
+                    showLogo = uiState.showLogo,
+                    player = viewModel.player
+                )
+            }
+
+            if (BuildConfig.DEBUG) {
+                composable<ServerConfigRoute> {
+                    val viewModel = koinViewModel<ServerConfigViewModel>()
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                    LaunchedEffect(Unit) {
+                        viewModel.events.collect { event ->
+                            when (event) {
+                                is ServerConfigEvent.Saved -> navController.popBackStack()
+                            }
+                        }
+                    }
+
+                    ServerConfigScreen(
+                        domain = uiState.domainInput,
+                        onDomainChange = viewModel::onDomainInputChange,
+                        savedDomains = uiState.savedDomains,
+                        onSaveClick = viewModel::onSaveClick
+                    )
+                }
+            }
+
             composable<LoginRoute> {
                 val viewModel = koinViewModel<LoginViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -63,9 +138,14 @@ fun AppNavigation(
                     rememberMe = uiState.rememberMe,
                     onRememberMeChange = viewModel::onRememberMeChange,
                     onLoginClick = viewModel::onLoginClick,
-                    onForgotPasswordClick = { navController.navigate(PasswordRecoveryRoute(email = uiState.email)) },
+                    onForgotPasswordClick = {  navController.navigate(PasswordRecoveryRoute(email = uiState.email)) },
                     isLoading = uiState.isLoading,
                     errorMessage = uiState.errorMessage,
+                    onChangeServerClick = if (BuildConfig.DEBUG) {
+                        { navController.navigate(ServerConfigRoute) }
+                    } else {
+                        null
+                    },
                 )
             }
 
@@ -165,15 +245,17 @@ fun AppNavigation(
 
         navigation<EmployeeGraph>(startDestination = EmployeeHomeRoute) {
             composable<EmployeeHomeRoute> {
-                EmployeeHomeScreen(
+                HomeScreen(
                     userName = TODO(),
                     userLastName = TODO(),
                     avatarUrl = TODO(),
                     hasUnreadNotifications = TODO(),
-                    lastSubmittedLabel = TODO(),
-                    reportingPeriodLabel = TODO(),
-                    reportStatusLabel = TODO(),
-                    reportsCount = TODO(),
+                    heroCard = EmployeeHeroCard(
+                        lastSubmittedLabel = TODO(),
+                        reportingPeriodLabel = TODO(),
+                        statusLabel = TODO(),
+                        summaryCount = TODO()
+                    ),
                     unitEmissionsValue = TODO(),
                     unitEmissionsChangeLabel = TODO(),
                     sealLevelPercent = TODO(),
@@ -185,7 +267,6 @@ fun AppNavigation(
                     onViewHistoryClick = TODO(),
                     onSeeAllReportsClick = TODO(),
                     onReportMenuClick = TODO(),
-                    onHomeClick = TODO(),
                     modifier = TODO()
                 )
             }
@@ -193,15 +274,17 @@ fun AppNavigation(
 
         navigation<ManagerGraph>(startDestination = ManagerHomeRoute) {
             composable<ManagerHomeRoute> {
-                ManagerHomeScreen(
+                HomeScreen(
                     userName = TODO(),
                     userLastName = TODO(),
                     avatarUrl = TODO(),
                     hasUnreadNotifications = TODO(),
-                    lastSubmittedLabel = TODO(),
-                    totalEmissionsValue = TODO(),
-                    reductionAchievedLabel = TODO(),
-                    reviewedReportsCount = TODO(),
+                    heroCard = ManagerHeroCard(
+                        lastSubmittedLabel = TODO(),
+                        totalEmissions = TODO(),
+                        reductionAchieved = TODO(),
+                        summaryCount = TODO()
+                    ),
                     unitEmissionsValue = TODO(),
                     unitEmissionsChangeLabel = TODO(),
                     sealLevelPercent = TODO(),

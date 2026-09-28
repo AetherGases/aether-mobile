@@ -1,21 +1,22 @@
 package com.aether.application.feature.auth.data.repository
 
 import android.util.Log
+import androidx.datastore.core.IOException
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.data.remote.AuthApi
+import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.auth.data.remote.dto.LoginRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordChangePasswordRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordSendCodeRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeRequest
 import com.aether.application.feature.auth.domain.exception.AuthException
 import com.aether.application.feature.auth.domain.repository.AuthRepository
-import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
-import java.io.IOException
 
 class AuthRepositoryImpl(
     private val api: AuthApi,
+    private val profileApi: ProfileApi,
     private val sessionManager: SessionManager
 ): AuthRepository {
 
@@ -23,9 +24,26 @@ class AuthRepositoryImpl(
         email: String,
         password: String
     ): Result<Session> = runCatchingAuth {
-        api.login(LoginRequest(email, password))
-            .toDomain()
-            .also { sessionManager.save(it) }
+        val response = api.login(
+            LoginRequest(email, password)
+        )
+
+        var session = response.toDomain()
+        if (!sessionManager.save(session)) {
+            return Result.failure(AuthException.Unexpected(IllegalStateException("Failed to persist session")))
+        }
+
+        runCatchingAuth {
+            val profile = profileApi.getUserProfile()
+            val sessionWithPermissions = session.copy(permissions = profile.permissions)
+            if (sessionManager.save(sessionWithPermissions)) {
+                session = sessionWithPermissions
+            } else {
+                return Result.failure(AuthException.Unexpected(IllegalStateException("Failed to persist permissions")))
+            }
+        }
+
+        session
     }
 
     override suspend fun sendRecoveryPassword(
@@ -56,7 +74,7 @@ class AuthRepositoryImpl(
     private inline fun <T> runCatchingAuth(block: () -> T): Result<T> =
         try {
             Result.success(block())
-        } catch (e: CancellationException) {
+        } catch (e: kotlinx.coroutines.CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.e("AuthRepositoryImpl", e.message ?: "unexpected error", e)
@@ -72,5 +90,4 @@ class AuthRepositoryImpl(
         is IOException -> AuthException.Network(this)
         else -> AuthException.Unexpected(this)
     }
-
 }

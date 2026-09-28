@@ -3,6 +3,7 @@ package com.aether.application.core.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable data object SplashRoute
+@Serializable data object ServerConfigRoute
 
 @Serializable data object AuthGraph
 @Serializable data object LoginRoute
