@@ -11,5 +11,7 @@ interface SessionManager {
 
     suspend fun save(session: Session): Boolean
 
+    suspend fun restoreSession()
+
     suspend fun logout()
 }

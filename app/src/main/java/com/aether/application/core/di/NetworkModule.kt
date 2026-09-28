@@ -1,7 +1,10 @@
 package com.aether.application.core.di
 
+import com.aether.application.BuildConfig
 import com.aether.application.core.network.ApiClient
 import com.aether.application.core.network.AuthInterceptor
+import com.aether.application.core.network.BaseUrlInterceptor
+import com.aether.application.core.network.ServerConfigCache
 import com.aether.application.feature.auth.data.remote.AuthApi
 import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.auth.data.repository.AuthRepositoryImpl
@@ -22,8 +25,19 @@ object NetworkModule {
             AuthInterceptor(sessionManager = get())
         }
 
+        single {
+            ServerConfigCache(serverConfigStorage = get())
+        }
+
+        single<BaseUrlInterceptor> {
+            BaseUrlInterceptor(serverConfigCache = get())
+        }
+
         single<OkHttpClient> {
-            ApiClient.getOkHttpClient(authInterceptor = get())
+            ApiClient.getOkHttpClient(
+                authInterceptor = get(),
+                baseUrlInterceptor = if (BuildConfig.DEBUG) get() else null
+            )
         }
 
         single<Retrofit> {

@@ -3,6 +3,8 @@ package com.aether.application.feature.auth.data.storage
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.domain.model.UserRole
+import java.time.Instant
 import kotlin.coroutines.cancellation.CancellationException
 
 class SessionManagerImpl(
@@ -10,7 +12,7 @@ class SessionManagerImpl(
 ): SessionManager {
     private var session: Session? = null
 
-    suspend fun init() {
+    override suspend fun restoreSession() {
         session = sessionStorage.get()
     }
 
@@ -19,7 +21,12 @@ class SessionManagerImpl(
     }
 
     override suspend fun isAuthenticated(): Boolean {
-        return session != null
+        val currentSession = session ?: return false
+        if (currentSession.expiration.isBefore(Instant.now())) {
+            logout()
+            return false
+        }
+        return true
     }
 
     override suspend fun hasPermission(name: String): Boolean {
