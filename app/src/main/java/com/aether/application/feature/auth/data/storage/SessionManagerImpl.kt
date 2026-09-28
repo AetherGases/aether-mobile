@@ -3,17 +3,22 @@ package com.aether.application.feature.auth.data.storage
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
-import com.aether.application.core.domain.model.UserRole
 import java.time.Instant
 import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class SessionManagerImpl(
     private val sessionStorage: SessionStorage
 ): SessionManager {
     private var session: Session? = null
+    private val _authState = MutableStateFlow(false)
+    override val authState: StateFlow<Boolean> = _authState.asStateFlow()
 
     override suspend fun restoreSession() {
         session = sessionStorage.get()
+        _authState.value = isAuthenticated()
     }
 
     override fun getSession(): Session? {
@@ -37,6 +42,7 @@ class SessionManagerImpl(
         return try {
             sessionStorage.save(session)
             this.session = session
+            _authState.value = true
             true
         } catch (e: CancellationException) {
             throw e
@@ -48,5 +54,6 @@ class SessionManagerImpl(
     override suspend fun logout() {
         sessionStorage.clear()
         session = null
+        _authState.value = false
     }
 }

@@ -5,6 +5,7 @@ import com.aether.application.core.network.ApiClient
 import com.aether.application.core.network.AuthInterceptor
 import com.aether.application.core.network.BaseUrlInterceptor
 import com.aether.application.core.network.ServerConfigCache
+import com.aether.application.core.network.TokenAuthenticator
 import com.aether.application.feature.auth.data.remote.AuthApi
 import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.auth.data.repository.AuthRepositoryImpl
@@ -33,10 +34,15 @@ object NetworkModule {
             BaseUrlInterceptor(serverConfigCache = get())
         }
 
+        single<TokenAuthenticator> {
+            TokenAuthenticator(sessionManager = get()) { get() }
+        }
+
         single<OkHttpClient> {
             ApiClient.getOkHttpClient(
                 authInterceptor = get(),
-                baseUrlInterceptor = if (BuildConfig.DEBUG) get() else null
+                baseUrlInterceptor = if (BuildConfig.DEBUG) get() else null,
+                tokenAuthenticator = get()
             )
         }
 

@@ -10,7 +10,8 @@ import retrofit2.Retrofit
 object ApiClient {
     fun getOkHttpClient(
         authInterceptor: AuthInterceptor,
-        baseUrlInterceptor: BaseUrlInterceptor?
+        tokenAuthenticator: TokenAuthenticator,
+        baseUrlInterceptor: BaseUrlInterceptor?,
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .apply {
@@ -19,6 +20,7 @@ object ApiClient {
                 }
             }
             .addInterceptor(authInterceptor)
+            .authenticator(tokenAuthenticator)
             .build()
     }
 
