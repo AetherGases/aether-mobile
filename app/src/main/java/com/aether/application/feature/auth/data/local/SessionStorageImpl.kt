@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.security.Encryptor
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -36,6 +37,8 @@ class SessionStorageImpl(
         return try {
             val json = encryptor.decrypt(encrypted)
             Json.decodeFromString<Session>(json)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             clear()
             null

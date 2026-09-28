@@ -33,10 +33,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.aether.application.R
 import com.aether.core.ui.components.AppHeader
-import com.aether.core.ui.components.LastReportHeroCard
+import com.aether.core.ui.components.EmployeeHeroCard
+import com.aether.core.ui.components.HomeHeroCard
+import com.aether.core.ui.components.ManagerHeroCard
 import com.aether.core.ui.components.ReportsSummaryCard
 import com.aether.core.ui.components.SealProgressCard
 import com.aether.core.ui.components.UnitEmissionsCard
@@ -75,15 +76,12 @@ data class RecentReport(
 )
 
 @Composable
-fun EmployeeHomeScreen(
+fun HomeScreen(
     userName: String,
     userLastName: String,
     avatarUrl: String?,
     hasUnreadNotifications: Boolean,
-    lastSubmittedLabel: String,
-    reportingPeriodLabel: String,
-    reportStatusLabel: String,
-    reportsCount: String,
+    heroCard: HomeHeroCard,
     unitEmissionsValue: String,
     unitEmissionsChangeLabel: String,
     sealLevelPercent: String,
@@ -95,7 +93,6 @@ fun EmployeeHomeScreen(
     onViewHistoryClick: () -> Unit,
     onSeeAllReportsClick: () -> Unit,
     onReportMenuClick: (RecentReport) -> Unit,
-    onHomeClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -157,8 +154,8 @@ fun EmployeeHomeScreen(
                     )
                 ) {
                     when (page) {
-                        0 -> LastReportHeroCard(lastSubmittedLabel, reportingPeriodLabel, reportStatusLabel)
-                        1 -> ReportsSummaryCard("Relatórios realizados", lastSubmittedLabel, reportsCount, onViewHistoryClick)
+                        0 -> heroCard.Render()
+                        1 -> ReportsSummaryCard(heroCard.summaryTitle, heroCard.lastSubmittedLabel, heroCard.summaryCount, onViewHistoryClick)
                         2 -> UnitEmissionsCard(unitEmissionsValue, "tCO₂e/mês", unitEmissionsChangeLabel)
                         3 -> SealProgressCard(sealLevelPercent, sealCriteriaLabel)
                     }
@@ -274,7 +271,7 @@ fun RecentReportItem(
             .border(
                 width = 0.5.dp,
                 color = textDisabledDark.copy(alpha = 0.4f),
-                shape = RoundedCornerShape(20.dp) 
+                shape = RoundedCornerShape(20.dp)
             )
             .padding(16.dp),
         verticalAlignment = Alignment.Top
@@ -392,17 +389,19 @@ fun StatusBadge(status: ReportStatus) {
 
 @Preview(showBackground = true)
 @Composable
-fun EmployeeHomeScreenPreview() {
+fun HomeScreenEmployeePreview() {
     AetherTheme {
-        EmployeeHomeScreen(
+        HomeScreen(
             userName = "Daniel",
             userLastName = "Sagaz",
             avatarUrl = "https://i.pravatar.cc/150?img=12",
             hasUnreadNotifications = true,
-            lastSubmittedLabel = "29/05/2026",
-            reportingPeriodLabel = "Jan–Mar 2026",
-            reportStatusLabel = "Aguardando revisão há 2 dias",
-            reportsCount = "506",
+            heroCard = EmployeeHeroCard(
+                lastSubmittedLabel = "29/05/2026",
+                reportingPeriodLabel = "Jan–Mar 2026",
+                statusLabel = "Aguardando revisão há 2 dias",
+                summaryCount = "506"
+            ),
             unitEmissionsValue = "2.403",
             unitEmissionsChangeLabel = "12% ↗ em relação ao período anterior",
             sealLevelPercent = "50%",
@@ -412,8 +411,6 @@ fun EmployeeHomeScreenPreview() {
                 QuickAction("Calcular CO2", R.drawable.ic_calculator_purple, 50.dp,0.dp, 0.dp,Color(0xFFECE2FD)) {},
                 QuickAction("Histórico", R.drawable.ic_history_green, 60.dp,3.dp, 0.dp,Color(0xFFE7FAF2)) {},
                 QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp,Color(0xFFECE2FD)) {}
-
-
                 ),
             recentReports = listOf(
                 RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
@@ -424,8 +421,45 @@ fun EmployeeHomeScreenPreview() {
             onSettingsClick = {},
             onViewHistoryClick = {},
             onSeeAllReportsClick = {},
-            onReportMenuClick = {},
-            onHomeClick = {}
+            onReportMenuClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenManagerPreview() {
+    AetherTheme {
+        HomeScreen(
+            userName = "Nisflei",
+            userLastName = "Grandão",
+            avatarUrl = "https://i.pravatar.cc/150?img=33",
+            hasUnreadNotifications = true,
+            heroCard = ManagerHeroCard(
+                lastSubmittedLabel = "26/01/2026",
+                totalEmissions = "2.1M",
+                reductionAchieved = "8,3%",
+                summaryCount = "450"
+            ),
+            unitEmissionsValue = "2.403",
+            unitEmissionsChangeLabel = "12% ↗ em relação ao período anterior",
+            sealLevelPercent = "50%",
+            sealCriteriaLabel = "2 de 4 critérios atendidos",
+            quickActions = listOf(
+                QuickAction("Histórico", R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, Color(0xFFECE2FD)) {},
+                QuickAction("Calcular CO2", R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, Color(0xFFE7FAF2)) {},
+                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, Color(0xFFECE2FD)) {}
+            ),
+            recentReports = listOf(
+                RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
+                RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
+                RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
+            ),
+            onNotificationsClick = {},
+            onSettingsClick = {},
+            onViewHistoryClick = {},
+            onSeeAllReportsClick = {},
+            onReportMenuClick = {}
         )
     }
 }

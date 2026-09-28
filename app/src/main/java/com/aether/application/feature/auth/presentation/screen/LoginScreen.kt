@@ -32,7 +32,8 @@ fun LoginScreen(
     onLoginClick: (email: String, password: String, rememberMe: Boolean) -> Unit,
     onForgotPasswordClick: () -> Unit,
     isLoading: Boolean = false,
-    errorMessage: String? = null
+    errorMessage: String? = null,
+    onChangeServerClick: (() -> Unit)? = null
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -147,7 +148,8 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                shape = RoundedCornerShape(50.dp)
+                shape = RoundedCornerShape(50.dp),
+                isError = errorMessage != null
             )
 
             Spacer(modifier = Modifier.height(14.dp))
@@ -174,7 +176,8 @@ fun LoginScreen(
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                shape = RoundedCornerShape(50.dp)
+                shape = RoundedCornerShape(50.dp),
+                isError = errorMessage != null
             )
 
             Row(
@@ -209,7 +212,7 @@ fun LoginScreen(
                         color = textTertiaryLight
                     )
                 }
-                TextButton(onForgotPasswordClick) {
+                TextButton(onClick = onForgotPasswordClick) {
                     Text(
                         text = "Esqueceu sua senha?",
                         style = labelMedium,
@@ -255,6 +258,22 @@ fun LoginScreen(
                         )
                     } else {
                         Text(text = "Começar", style = titleMedium, color = textPrimaryDark)
+                    }
+                }
+            }
+
+            if (onChangeServerClick != null) {
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onChangeServerClick) {
+                        Text(
+                            text = "Trocar servidor (QA)",
+                            style = labelMedium,
+                            color = textTertiaryLight
+                        )
                     }
                 }
             }
