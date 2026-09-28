@@ -5,6 +5,7 @@ import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.domain.model.UserRole
 import java.time.Instant
+import kotlin.coroutines.cancellation.CancellationException
 
 class SessionManagerImpl(
     private val sessionStorage: SessionStorage
@@ -28,20 +29,20 @@ class SessionManagerImpl(
         return true
     }
 
+    override suspend fun hasPermission(name: String): Boolean {
+        return session?.permissions.orEmpty().any { it.name == name }
+    }
+
     override suspend fun save(session: Session): Boolean {
         return try {
             sessionStorage.save(session)
             this.session = session
             true
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             false
         }
-    }
-
-    override suspend fun getUserRole(): UserRole? {
-        // TODO: LoginResponse/Session carries no role field yet — derive this once
-        // the backend contract includes one (or decode it from the access token).
-        TODO("Not yet implemented")
     }
 
     override suspend fun logout() {

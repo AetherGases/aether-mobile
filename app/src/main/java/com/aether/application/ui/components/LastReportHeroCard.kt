@@ -28,83 +28,87 @@ import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 
-@Composable
-fun LastReportHeroCard(
-    lastSubmittedLabel: String,
-    reportingPeriodLabel: String,
-    statusLabel: String,
-    modifier: Modifier = Modifier
-) {
-    val hazeState = remember { HazeState() }
+data class EmployeeHeroCard(
+    override val lastSubmittedLabel: String,
+    val reportingPeriodLabel: String,
+    val statusLabel: String,
+    override val summaryCount: String
+) : HomeHeroCard {
+    override val summaryTitle = "Relatórios realizados"
 
-    Box(
-        modifier = modifier
-            .width(335.dp)
-            .height(205.dp)
-            .clip(RoundedCornerShape(18.dp))
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.bg_hero_card_purple),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .hazeSource(hazeState)
-        )
+    @Composable
+    override fun Render() {
+        val hazeState = remember { HazeState() }
 
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .width(335.dp)
+                .height(205.dp)
+                .clip(RoundedCornerShape(18.dp))
         ) {
-            Column {
-                Text("Último relatório", style = titleSmall, color = textPrimaryDark)
-                Text(
-                    "Enviado em $lastSubmittedLabel",
-                    style = bodySmallMedium,
-                    color = textPrimaryDark
-                )
-            }
-
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.bg_hero_card_purple),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .hazeEffect(hazeState, HazeStyle.Unspecified) { blurRadius = 20.dp }
-                    .background(Color.White.copy(alpha = 0.15f))
-                    .border(
-                        width = 1.dp,
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                backgroundLightElevated.copy(alpha = 0.8f),
-                                backgroundLightElevated.copy(alpha = 0.3f),
-                                backgroundLightElevated
-                            )
-                        ),
-                        shape = RoundedCornerShape(16.dp)
-                    )
-                    .padding(16.dp)
+                    .fillMaxSize()
+                    .hazeSource(hazeState)
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
+                    Text("Último relatório", style = titleSmall, color = textPrimaryDark)
                     Text(
-                        "Período do relatório",
+                        "Enviado em $lastSubmittedLabel",
                         style = bodySmallMedium,
                         color = textPrimaryDark
                     )
-                    Text(reportingPeriodLabel, style = displayMedium, color = textPrimaryDark)
                 }
-            }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(lightYellow)
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(statusLabel, style = bodySmall, color = textPrimaryDark)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .hazeEffect(hazeState, HazeStyle.Unspecified) { blurRadius = 20.dp }
+                        .background(Color.White.copy(alpha = 0.15f))
+                        .border(
+                            width = 1.dp,
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    backgroundLightElevated.copy(alpha = 0.8f),
+                                    backgroundLightElevated.copy(alpha = 0.3f),
+                                    backgroundLightElevated
+                                )
+                            ),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .padding(16.dp)
+                ) {
+                    Column {
+                        Text(
+                            "Período do relatório",
+                            style = bodySmallMedium,
+                            color = textPrimaryDark
+                        )
+                        Text(reportingPeriodLabel, style = displayMedium, color = textPrimaryDark)
+                    }
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(lightYellow)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(statusLabel, style = bodySmall, color = textPrimaryDark)
+                }
             }
         }
     }
@@ -115,10 +119,11 @@ fun LastReportHeroCard(
 @Composable
 fun LastReportHeroCardPreview() {
     AetherTheme {
-        LastReportHeroCard(
+        EmployeeHeroCard(
             lastSubmittedLabel = "29/05/2026",
             reportingPeriodLabel = "Jan–Mar 2026",
-            statusLabel = "Aguardando revisão há 2 dias"
-        )
+            statusLabel = "Aguardando revisão há 2 dias",
+            summaryCount = "506"
+        ).Render()
     }
 }
