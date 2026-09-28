@@ -51,6 +51,11 @@ class VerificationViewModel(
     fun onResendClick() {
         viewModelScope.launch {
             requestPasswordRecoveryUseCase.invoke(email)
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(errorMessage = "")
+                    }
+                }
                 .onFailure { throwable ->
                     _uiState.update {
                         it.copy(errorMessage = throwable.message ?: "Erro inesperado, tente novamente!")

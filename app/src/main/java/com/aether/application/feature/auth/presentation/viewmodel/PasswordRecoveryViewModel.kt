@@ -33,9 +33,11 @@ class PasswordRecoveryViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            requestPasswordRecoveryUseCase.invoke(email)
+            val trimmedEmail = email.trim()
+
+            requestPasswordRecoveryUseCase.invoke(trimmedEmail)
                 .onSuccess {
-                    _events.send(SendCodeEvent.CodeSent(email.trim()))
+                    _events.send(SendCodeEvent.CodeSent(trimmedEmail))
                 }
                 .onFailure { throwable ->
                     _uiState.update {

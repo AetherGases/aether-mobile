@@ -56,7 +56,7 @@ class LoginViewModel(
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             loginUseCase(email, password)
-                .onSuccess { session ->
+                .onSuccess {
                     _events.send(LoginEvent.LoggedIn)
                 }
                 .onFailure { throwable ->
