@@ -12,5 +12,7 @@ interface SessionManager {
 
     suspend fun getUserRole(): UserRole?
 
+    suspend fun restoreSession()
+
     suspend fun logout()
 }

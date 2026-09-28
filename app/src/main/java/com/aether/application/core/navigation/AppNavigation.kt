@@ -14,7 +14,10 @@ import com.aether.application.BuildConfig
 import com.aether.application.feature.auth.presentation.screen.LoginScreen
 import com.aether.application.feature.auth.presentation.viewmodel.LoginEvent
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
+import com.aether.application.feature.auth.presentation.viewmodel.SplashEvent
+import com.aether.application.feature.auth.presentation.viewmodel.SplashViewModel
 import com.aether.application.feature.home.presentation.screen.EmployeeHomeScreen
+import com.aether.application.feature.auth.presentation.screen.SplashScreen
 import com.aether.application.feature.home.presentation.screen.ManagerHomeScreen
 import com.aether.application.feature.qa.presentation.screen.ServerConfigScreen
 import com.aether.application.feature.qa.presentation.viewmodel.ServerConfigEvent
@@ -31,29 +34,56 @@ fun AppNavigation(
         startDestination = AuthGraph,
         modifier = modifier,
     ) {
-        if (BuildConfig.DEBUG) {
-            composable<ServerConfigRoute> {
-                val viewModel = koinViewModel<ServerConfigViewModel>()
+        navigation<AuthGraph>(startDestination = SplashRoute) {
+            composable<SplashRoute> {
+                val viewModel = koinViewModel<SplashViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                 LaunchedEffect(Unit) {
                     viewModel.events.collect { event ->
                         when (event) {
-                            is ServerConfigEvent.Saved -> navController.popBackStack()
+                            is SplashEvent.NavigateToAuth ->
+                                navController.navigate(LoginRoute) {
+                                    popUpTo<SplashRoute> { inclusive = true }
+                                }
+                            is SplashEvent.NavigateToHome ->
+                                TODO()
                         }
                     }
                 }
 
-                ServerConfigScreen(
-                    domain = uiState.domainInput,
-                    onDomainChange = viewModel::onDomainInputChange,
-                    savedDomains = uiState.savedDomains,
-                    onSaveClick = viewModel::onSaveClick
+                SplashScreen(
+                    circleDurationMillis = viewModel.circleDurationMillis,
+                    onIrisOpened = viewModel::onIrisOpened,
+                    greenClosing = uiState.greenClosing,
+                    whiteClosing = uiState.whiteClosing,
+                    showLogo = uiState.showLogo,
+                    player = viewModel.player
                 )
             }
-        }
 
-        navigation<AuthGraph>(startDestination = LoginRoute) {
+            if (BuildConfig.DEBUG) {
+                composable<ServerConfigRoute> {
+                    val viewModel = koinViewModel<ServerConfigViewModel>()
+                    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                    LaunchedEffect(Unit) {
+                        viewModel.events.collect { event ->
+                            when (event) {
+                                is ServerConfigEvent.Saved -> navController.popBackStack()
+                            }
+                        }
+                    }
+
+                    ServerConfigScreen(
+                        domain = uiState.domainInput,
+                        onDomainChange = viewModel::onDomainInputChange,
+                        savedDomains = uiState.savedDomains,
+                        onSaveClick = viewModel::onSaveClick
+                    )
+                }
+            }
+
             composable<LoginRoute> {
                 val viewModel = koinViewModel<LoginViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -82,6 +112,7 @@ fun AppNavigation(
                 )
             }
         }
+
         navigation<EmployeeGraph>(startDestination = EmployeeHomeRoute) {
             composable<EmployeeHomeRoute> {
                 EmployeeHomeScreen(
