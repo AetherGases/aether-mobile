@@ -1,6 +1,5 @@
 package com.aether.application.feature.auth.domain.usecase
 
-import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeResponse
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 
 class VerifyCodeUseCase(
@@ -9,7 +8,7 @@ class VerifyCodeUseCase(
     suspend operator fun invoke(
         email: String,
         code: String
-    ): Result<ResetPasswordValidateCodeResponse> {
+    ): Result<String> {
         return authRepository.validateRecoveryCode(email, code)
     }
 }

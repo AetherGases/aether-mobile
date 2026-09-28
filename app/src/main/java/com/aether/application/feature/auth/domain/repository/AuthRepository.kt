@@ -1,7 +1,6 @@
 package com.aether.application.feature.auth.domain.repository
 
 import com.aether.application.core.auth.model.Session
-import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeResponse
 
 interface AuthRepository {
 
@@ -17,7 +16,7 @@ interface AuthRepository {
     suspend fun validateRecoveryCode(
         email: String,
         code: String
-    ): Result<ResetPasswordValidateCodeResponse>
+    ): Result<String>
 
     suspend fun changePassword(
         email: String,

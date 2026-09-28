@@ -8,7 +8,6 @@ import com.aether.application.feature.auth.data.remote.dto.LoginRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordChangePasswordRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordSendCodeRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeRequest
-import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeResponse
 import com.aether.application.feature.auth.domain.exception.AuthException
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 import kotlinx.coroutines.CancellationException
@@ -38,10 +37,10 @@ class AuthRepositoryImpl(
     override suspend fun validateRecoveryCode(
         email: String,
         code: String
-    ): Result<ResetPasswordValidateCodeResponse> = runCatchingAuth {
+    ): Result<String> = runCatchingAuth {
         api.resetPasswordValidateCode(
             ResetPasswordValidateCodeRequest(email = email, code = code)
-        )
+        ).toDomain()
     }
 
     override suspend fun changePassword(

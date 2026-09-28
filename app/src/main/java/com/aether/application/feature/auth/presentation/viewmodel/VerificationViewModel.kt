@@ -35,8 +35,8 @@ class VerificationViewModel(
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             verifyCodeUseCase.invoke(email, code)
-                .onSuccess { response ->
-                    _events.send(VerificationEvent.Verified(response.key))
+                .onSuccess { key ->
+                    _events.send(VerificationEvent.Verified(key))
                 }
                 .onFailure { throwable ->
                     _uiState.update {
