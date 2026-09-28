@@ -182,7 +182,7 @@ fun VerificationScreen(
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Digite o código de 4 digitos enviado\npara o seu e-mail '$email'."
+                text = "Digite o código de 6 digitos enviado\npara o seu e-mail '$email'."
             )
             Spacer(Modifier.height(16.dp))
 
