@@ -1,7 +1,6 @@
 package com.aether.application.feature.auth.data.repository
 
 import android.util.Log
-import androidx.datastore.core.IOException
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.data.remote.AuthApi
@@ -13,6 +12,7 @@ import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidate
 import com.aether.application.feature.auth.domain.exception.AuthException
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 import retrofit2.HttpException
+import java.io.IOException
 
 class AuthRepositoryImpl(
     private val api: AuthApi,
