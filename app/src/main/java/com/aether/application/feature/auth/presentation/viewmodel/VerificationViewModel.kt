@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aether.application.feature.auth.domain.usecase.RequestPasswordRecoveryUseCase
 import com.aether.application.feature.auth.domain.usecase.VerifyCodeUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,6 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
+
+private const val RESEND_COOLDOWN_SECONDS = 60
 
 class VerificationViewModel(
     private val email: String,
@@ -23,6 +28,12 @@ class VerificationViewModel(
 
     private val _events = Channel<VerificationEvent>(Channel.BUFFERED)
     val events: Flow<VerificationEvent> = _events.receiveAsFlow()
+
+    private var resendCooldownJob: Job? = null
+
+    init {
+        startResendCooldown()
+    }
 
     fun onCodeChange(code: List<String>) {
         _uiState.update { it.copy(code = code) }
@@ -49,18 +60,31 @@ class VerificationViewModel(
     }
 
     fun onResendClick() {
+        val state = _uiState.value
+        if (state.isResending || state.resendCooldownSeconds > 0) return
+
         viewModelScope.launch {
+            _uiState.update { it.copy(isResending = true, errorMessage = null) }
+
             requestPasswordRecoveryUseCase.invoke(email)
-                .onSuccess {
-                    _uiState.update {
-                        it.copy(errorMessage = "")
-                    }
-                }
+                .onSuccess { startResendCooldown() }
                 .onFailure { throwable ->
                     _uiState.update {
                         it.copy(errorMessage = throwable.message ?: "Erro inesperado, tente novamente!")
                     }
                 }
+
+            _uiState.update { it.copy(isResending = false) }
+        }
+    }
+
+    private fun startResendCooldown() {
+        resendCooldownJob?.cancel()
+        resendCooldownJob = viewModelScope.launch {
+            for (secondsLeft in RESEND_COOLDOWN_SECONDS downTo 0) {
+                _uiState.update { it.copy(resendCooldownSeconds = secondsLeft) }
+                if (secondsLeft > 0) delay(1.seconds)
+            }
         }
     }
 }
@@ -68,6 +92,8 @@ class VerificationViewModel(
 data class VerificationUiState(
     val code: List<String> = List(6) { "" },
     val isLoading: Boolean = false,
+    val isResending: Boolean = false,
+    val resendCooldownSeconds: Int = 60,
     val errorMessage: String? = null
 )
 

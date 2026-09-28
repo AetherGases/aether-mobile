@@ -36,8 +36,12 @@ fun VerificationScreen(
     onResendClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
+    isResending: Boolean = false,
+    resendCooldownSeconds: Int = 0,
     errorMessage: String? = null
 ){
+    val canResend = !isLoading && !isResending && resendCooldownSeconds == 0
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -194,10 +198,14 @@ fun VerificationScreen(
                 )
                 Spacer(Modifier.width(4.dp))
                 Text(
-                    text = "Reenviar",
+                    text = if (resendCooldownSeconds > 0) {
+                        "Reenviar em %d:%02d".format(resendCooldownSeconds / 60, resendCooldownSeconds % 60)
+                    } else {
+                        "Reenviar"
+                    },
                     style = bodyLargeMedium,
-                    color = purple500,
-                    modifier = Modifier.clickable(enabled = !isLoading) { onResendClick() }
+                    color = if (canResend) purple500 else textSecondaryLight,
+                    modifier = Modifier.clickable(enabled = canResend) { onResendClick() }
                 )
             }
 
@@ -209,7 +217,7 @@ fun VerificationScreen(
             ) {
                 Button(
                     onClick = onVerifyClick,
-                    enabled = !isLoading,
+                    enabled = !isLoading && !isResending && code.all { it.isNotBlank() },
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = green500),
                     modifier = Modifier
@@ -241,7 +249,7 @@ fun VerificationScreen(
 fun VerificationScreenPreview(){
     AetherTheme() {
         VerificationScreen(
-            email = "Sei lá cara",
+            email = "meu.email@gmail.com",
             code = List(6) { "" },
             onCodeChange = {},
             onBackClick = {},

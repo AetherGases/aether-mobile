@@ -121,6 +121,8 @@ fun AppNavigation(
                     onVerifyClick = viewModel::onVerifyClick,
                     onResendClick = viewModel::onResendClick,
                     isLoading = uiState.isLoading,
+                    isResending = uiState.isResending,
+                    resendCooldownSeconds = uiState.resendCooldownSeconds,
                     errorMessage = uiState.errorMessage,
                 )
             }
