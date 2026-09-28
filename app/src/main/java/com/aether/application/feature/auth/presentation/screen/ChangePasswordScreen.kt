@@ -201,7 +201,7 @@ fun ChangePasswordScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            Column(modifier) {
+            Column {
                 Text(
                     text = "A sua senha deve conter",
                     color = textPrimaryLight,
