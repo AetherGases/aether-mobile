@@ -6,7 +6,8 @@ class PasswordRule(
 )
 
 val DefaultPasswordRules = listOf(
-    PasswordRule("8 caracteres no mínimo") { it.length >= 8 },
+    PasswordRule("8-28 caracteres") { it.length in 8..28 },
     PasswordRule("Pelo menos uma letra maiúscula") { pw -> pw.any { it.isUpperCase() } },
+    PasswordRule("Pelo menos uma letra minúscula") { pw -> pw.any { it.isLowerCase() } },
     PasswordRule("Pelo menos um número") { pw -> pw.any { it.isDigit() } },
 )
