@@ -13,6 +13,10 @@ interface AuthRepository {
         email: String,
     ): Result<Unit>
 
+    suspend fun resendRecoveryCode(
+        email: String,
+    ): Result<Unit>
+
     suspend fun validateRecoveryCode(
         email: String,
         code: String

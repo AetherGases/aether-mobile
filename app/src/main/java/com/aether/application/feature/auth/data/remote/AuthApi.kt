@@ -3,6 +3,7 @@ package com.aether.application.feature.auth.data.remote
 import com.aether.application.feature.auth.data.remote.dto.LoginRequest
 import com.aether.application.feature.auth.data.remote.dto.LoginResponse
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordChangePasswordRequest
+import com.aether.application.feature.auth.data.remote.dto.ResetPasswordResendCodeRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordSendCodeRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeResponse
@@ -30,6 +31,11 @@ interface AuthApi {
     @POST("$AUTH/reset-password/send-code")
     suspend fun resetPasswordSendCode(
         @Body request: ResetPasswordSendCodeRequest
+    )
+
+    @POST("$AUTH/reset-password/resend-code")
+    suspend fun resetPasswordResendCode(
+        @Body request: ResetPasswordResendCodeRequest
     )
 
     @POST("$AUTH/reset-password/validate-code")

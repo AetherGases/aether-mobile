@@ -14,6 +14,7 @@ import com.aether.application.feature.qa.presentation.viewmodel.ServerConfigView
 import com.aether.application.feature.auth.domain.usecase.ChangePasswordUseCase
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
 import com.aether.application.feature.auth.domain.usecase.RequestPasswordRecoveryUseCase
+import com.aether.application.feature.auth.domain.usecase.ResendRecoveryCodeUseCase
 import com.aether.application.feature.auth.domain.usecase.VerifyCodeUseCase
 import com.aether.application.feature.auth.presentation.viewmodel.ChangePasswordViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
@@ -70,6 +71,9 @@ object AppModule {
         single<RequestPasswordRecoveryUseCase> {
             RequestPasswordRecoveryUseCase(authRepository = get())
         }
+        single<ResendRecoveryCodeUseCase> {
+            ResendRecoveryCodeUseCase(authRepository = get())
+        }
         single<VerifyCodeUseCase> {
             VerifyCodeUseCase(authRepository = get())
         }
@@ -83,7 +87,7 @@ object AppModule {
             VerificationViewModel(
                 email = email,
                 verifyCodeUseCase = get(),
-                requestPasswordRecoveryUseCase = get()
+                resendRecoveryCodeUseCase = get()
             )
         }
         single<ChangePasswordUseCase> {

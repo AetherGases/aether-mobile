@@ -5,14 +5,21 @@ import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.data.remote.AuthApi
 import com.aether.application.feature.auth.data.remote.ProfileApi
+import com.aether.application.feature.auth.data.remote.dto.ErrorResponse
 import com.aether.application.feature.auth.data.remote.dto.LoginRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordChangePasswordRequest
+import com.aether.application.feature.auth.data.remote.dto.ResetPasswordResendCodeRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordSendCodeRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeRequest
 import com.aether.application.feature.auth.domain.exception.AuthException
 import com.aether.application.feature.auth.domain.repository.AuthRepository
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import java.io.IOException
+import java.net.HttpURLConnection.HTTP_FORBIDDEN
+
+private val errorJson = Json { ignoreUnknownKeys = true }
 
 class AuthRepositoryImpl(
     private val api: AuthApi,
@@ -52,6 +59,12 @@ class AuthRepositoryImpl(
         api.resetPasswordSendCode(ResetPasswordSendCodeRequest(email))
     }
 
+    override suspend fun resendRecoveryCode(
+        email: String
+    ): Result<Unit> = runCatchingAuth {
+        api.resetPasswordResendCode(ResetPasswordResendCodeRequest(email))
+    }
+
     override suspend fun validateRecoveryCode(
         email: String,
         code: String
@@ -83,11 +96,27 @@ class AuthRepositoryImpl(
 
     private fun Exception.toAuthException(): AuthException = when (this) {
         is AuthException -> this
-        is HttpException -> when (code()) {
-            401, 403, 404 -> AuthException.InvalidCredentials()
-            else -> AuthException.Unexpected(this)
-        }
+        is HttpException -> toHttpAuthException()
         is IOException -> AuthException.Network(this)
         else -> AuthException.Unexpected(this)
+    }
+
+    private fun HttpException.toHttpAuthException(): AuthException {
+        if (code() == HTTP_FORBIDDEN) return AuthException.InvalidCredentials()
+
+        val message = readErrorMessage()
+        if (message.isNullOrBlank()) return AuthException.Unexpected(this)
+
+        return AuthException.Api(message)
+    }
+
+    private fun HttpException.readErrorMessage(): String? {
+        val body = response()?.errorBody()?.string() ?: return null
+
+        return try {
+            errorJson.decodeFromString<ErrorResponse>(body).message
+        } catch (_: SerializationException) {
+            null
+        }
     }
 }

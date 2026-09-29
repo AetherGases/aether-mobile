@@ -2,7 +2,7 @@ package com.aether.application.feature.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aether.application.feature.auth.domain.usecase.RequestPasswordRecoveryUseCase
+import com.aether.application.feature.auth.domain.usecase.ResendRecoveryCodeUseCase
 import com.aether.application.feature.auth.domain.usecase.VerifyCodeUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -21,7 +21,7 @@ private const val RESEND_COOLDOWN_SECONDS = 60
 class VerificationViewModel(
     private val email: String,
     private val verifyCodeUseCase: VerifyCodeUseCase,
-    private val requestPasswordRecoveryUseCase: RequestPasswordRecoveryUseCase
+    private val resendRecoveryCodeUseCase: ResendRecoveryCodeUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(VerificationUiState())
     val uiState: StateFlow<VerificationUiState> = _uiState.asStateFlow()
@@ -66,7 +66,7 @@ class VerificationViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isResending = true, errorMessage = null) }
 
-            requestPasswordRecoveryUseCase.invoke(email)
+            resendRecoveryCodeUseCase.invoke(email)
                 .onSuccess { startResendCooldown() }
                 .onFailure { throwable ->
                     _uiState.update {
