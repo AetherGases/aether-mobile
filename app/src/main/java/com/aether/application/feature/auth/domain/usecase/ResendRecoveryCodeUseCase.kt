@@ -2,13 +2,12 @@ package com.aether.application.feature.auth.domain.usecase
 
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 
-class VerifyCodeUseCase(
+class ResendRecoveryCodeUseCase(
     private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(
-        email: String,
-        code: String
-    ): Result<String> {
-        return authRepository.validateRecoveryCode(email, code)
+        email: String
+    ): Result<Unit> {
+        return authRepository.resendRecoveryCode(email)
     }
 }

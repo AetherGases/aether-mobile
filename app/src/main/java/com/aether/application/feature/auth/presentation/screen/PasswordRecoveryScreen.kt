@@ -1,9 +1,7 @@
 package com.aether.application.feature.auth.presentation.screen
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,28 +13,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.core.ui.components.GlassIconButton
 import com.aether.core.ui.theme.*
+
 @Composable
 fun PasswordRecoveryScreen(
     email: String,
-    onBackClick: () -> Unit,
-    onResendClick: () -> Unit,
+    onEmailChange: (String) -> Unit,
+    onSendCodeClick: () -> Unit,
     onBackToLoginClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    errorMessage: String? = null
 ) {
     Box(
         modifier = modifier
@@ -116,15 +111,6 @@ fun PasswordRecoveryScreen(
             Spacer(Modifier.height(64.dp))
 
             Box(modifier = Modifier.fillMaxWidth()) {
-                GlassIconButton(
-                    onClick = onBackClick,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Icon(
-                        painter = painterResource(id = com.aether.application.R.drawable.ic_chevron_left),
-                        contentDescription = "Voltar",
-                        tint = textPrimaryLight
-                    )                }
                 Text(
                     text = "Recuperação de senha",
                     style = titleMedium,
@@ -132,52 +118,78 @@ fun PasswordRecoveryScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+
             Spacer(Modifier.height(64.dp))
 
             Text(
-                text = "Verifique o email cadastrado",
+                text = "Nos informe seu email",
                 style = displayMedium,
                 color = textPrimaryLight
             )
 
-            Spacer(Modifier.height(35.dp))
+            Spacer(Modifier.height(24.dp))
 
-            val message = buildAnnotatedString {
-                append("Enviamos um email para ")
-                withStyle(style = androidx.compose.ui.text.SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append(email)
-                }
-                append(". Clique no link enviado para redefinir sua senha.")
+            OutlinedTextField(
+                value = email,
+                onValueChange = onEmailChange,
+                placeholder = {
+                    Text(
+                        text = "Email:",
+                        style = bodyLarge,
+                        color = textPrimaryLight
+                    )
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = textPrimaryLight,
+                    unfocusedTextColor = textPrimaryLight,
+                    focusedBorderColor = purple300,
+                    unfocusedBorderColor = textDisabledLight,
+                    disabledBorderColor = textDisabledLight,
+                    errorBorderColor = MaterialTheme.colorScheme.error,
+                    errorTextColor = MaterialTheme.colorScheme.error,
+                    errorLabelColor = MaterialTheme.colorScheme.error,
+                    errorCursorColor = MaterialTheme.colorScheme.error
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                shape = RoundedCornerShape(50.dp),
+                isError = errorMessage != null
+            )
+
+            if (errorMessage != null) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = errorMessage,
+                    style = labelMedium,
+                    color = lightRed
+                )
             }
-            Text(
-                text = message,
-                style = bodyLargeMedium,
-                color = textPrimaryLight
-            )
 
-            Spacer(Modifier.height(20.dp))
-
-            Text(
-                text = "Não recebeu um email? Verifique a caixa de spam ou solicite um novo envio.",
-                style = bodySmallMedium,
-                color = textSecondaryLight
-            )
-
-            Spacer(Modifier.height(284.dp))
+            Spacer(Modifier.weight(1f))
 
             Button(
-                onClick = onResendClick,
+                onClick = onSendCodeClick,
                 modifier = Modifier.fillMaxWidth().height(50.dp).shadow(
                     elevation = 8.dp,
                     shape = RoundedCornerShape(28.dp),
                     ambientColor = Color(0xFF000000),
                     spotColor = green500
                 ),
+                enabled = !isLoading,
                 shape = RoundedCornerShape(28.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = green500)
 
             ) {
-                Text(text = "Reenviar email de recuperação", style = titleMedium, color = textPrimaryDark)
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = textPrimaryDark,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(text = "Enviar código de recuperação", style = titleMedium, color = textPrimaryDark)
+                }
             }
 
             Spacer(Modifier.height(12.dp))
@@ -199,6 +211,8 @@ fun PasswordRecoveryScreen(
             ) {
                 Text(text = "Voltar ao login", style = titleMedium, color = textPrimaryLight)
             }
+
+            Spacer(Modifier.height(24.dp))
         }
     }
 }
@@ -207,9 +221,9 @@ fun PasswordRecoveryScreen(
 fun PasswordRecoveryScreenPreview() {
     AetherTheme {
         PasswordRecoveryScreen(
-            email = "daniel.sagaz@empresajbs.com", // aq nao é hardcode nao,o email entra como parametro. Aq é só pra visualizar
-            onBackClick = {},
-            onResendClick = {},
+            email = "",
+            onEmailChange = {},
+            onSendCodeClick = {},
             onBackToLoginClick = {}
         )
     }

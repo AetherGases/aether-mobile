@@ -16,8 +16,10 @@
         android:theme="@style/Theme.AetherMobile">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
-            android:theme="@style/Theme.AetherMobile">
+            android:theme="@style/Theme.AetherMobile"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

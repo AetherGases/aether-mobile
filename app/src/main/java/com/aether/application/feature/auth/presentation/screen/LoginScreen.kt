@@ -28,17 +28,19 @@ import com.aether.core.ui.theme.*
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier,
-    onLoginClick: (email: String, password: String, rememberMe: Boolean) -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    rememberMe: Boolean,
+    onRememberMeChange: (Boolean) -> Unit,
+    onLoginClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
+    modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     errorMessage: String? = null,
     onChangeServerClick: (() -> Unit)? = null
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var rememberMe by remember { mutableStateOf(false) }
-
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -129,7 +131,7 @@ fun LoginScreen(
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = onEmailChange,
                 placeholder = {
                     Text(
                         text = "Email:",
@@ -143,7 +145,10 @@ fun LoginScreen(
                     focusedBorderColor = purple300,
                     unfocusedBorderColor = textDisabledLight,
                     disabledBorderColor = textDisabledLight,
-                    errorBorderColor = lightRed
+                    errorBorderColor = MaterialTheme.colorScheme.error,
+                    errorTextColor = MaterialTheme.colorScheme.error,
+                    errorLabelColor = MaterialTheme.colorScheme.error,
+                    errorCursorColor = MaterialTheme.colorScheme.error
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -156,7 +161,7 @@ fun LoginScreen(
 
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = onPasswordChange,
                 placeholder = {
                     Text(
                         text = "Senha:",
@@ -170,7 +175,10 @@ fun LoginScreen(
                     focusedBorderColor = purple300,
                     unfocusedBorderColor = textDisabledLight,
                     disabledBorderColor = textDisabledLight,
-                    errorBorderColor = lightRed
+                    errorBorderColor = MaterialTheme.colorScheme.error,
+                    errorTextColor = MaterialTheme.colorScheme.error,
+                    errorLabelColor = MaterialTheme.colorScheme.error,
+                    errorCursorColor = MaterialTheme.colorScheme.error
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -193,7 +201,7 @@ fun LoginScreen(
                             .clip(RoundedCornerShape(6.dp))
                             .background(if (rememberMe) purple500 else Color.Transparent)
                             .border(2.dp, purple500, RoundedCornerShape(6.dp))
-                            .clickable { rememberMe = !rememberMe },
+                            .clickable { onRememberMeChange(!rememberMe) },
                         contentAlignment = Alignment.Center
                     ) {
                         if (rememberMe) {
@@ -237,7 +245,7 @@ fun LoginScreen(
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(
-                    onClick = { onLoginClick(email, password, rememberMe) },
+                    onClick = onLoginClick,
                     enabled = !isLoading,
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = green500),
@@ -287,7 +295,13 @@ fun LoginScreen(
 fun LoginScreenPreview() {
     AetherTheme {
         LoginScreen(
-            onLoginClick = { _, _, _ -> },
+            email = "",
+            onEmailChange = {},
+            password = "",
+            onPasswordChange = {},
+            rememberMe = false,
+            onRememberMeChange = {},
+            onLoginClick = {},
             onForgotPasswordClick = {},
             isLoading = false,
             errorMessage = null

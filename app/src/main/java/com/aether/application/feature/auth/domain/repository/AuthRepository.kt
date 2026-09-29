@@ -8,4 +8,23 @@ interface AuthRepository {
         email: String,
         password: String
     ): Result<Session>
+
+    suspend fun sendRecoveryPassword(
+        email: String,
+    ): Result<Unit>
+
+    suspend fun resendRecoveryCode(
+        email: String,
+    ): Result<Unit>
+
+    suspend fun validateRecoveryCode(
+        email: String,
+        code: String
+    ): Result<String>
+
+    suspend fun changePassword(
+        email: String,
+        password: String,
+        key: String
+    ): Result<Unit>
 }

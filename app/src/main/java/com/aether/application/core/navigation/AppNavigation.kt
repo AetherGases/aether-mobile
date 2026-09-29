@@ -1,5 +1,6 @@
 package com.aether.application.core.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,7 +16,13 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.aether.application.BuildConfig
 import com.aether.application.core.auth.storage.SessionManager
+import androidx.navigation.toRoute
+import com.aether.application.feature.auth.presentation.screen.ChangePasswordScreen
 import com.aether.application.feature.auth.presentation.screen.LoginScreen
+import com.aether.application.feature.auth.presentation.screen.PasswordRecoveryScreen
+import com.aether.application.feature.auth.presentation.screen.VerificationScreen
+import com.aether.application.feature.auth.presentation.viewmodel.ChangePasswordEvent
+import com.aether.application.feature.auth.presentation.viewmodel.ChangePasswordViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.LoginEvent
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.home.presentation.screen.HomeScreen
@@ -28,7 +35,12 @@ import com.aether.application.feature.qa.presentation.screen.ServerConfigScreen
 import com.aether.application.feature.qa.presentation.viewmodel.ServerConfigEvent
 import com.aether.application.feature.qa.presentation.viewmodel.ServerConfigViewModel
 import org.koin.compose.koinInject
+import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
+import com.aether.application.feature.auth.presentation.viewmodel.SendCodeEvent
+import com.aether.application.feature.auth.presentation.viewmodel.VerificationEvent
+import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun AppNavigation(
@@ -119,8 +131,14 @@ fun AppNavigation(
                 }
 
                 LoginScreen(
+                    email = uiState.email,
+                    onEmailChange = viewModel::onEmailChange,
+                    password = uiState.password,
+                    onPasswordChange = viewModel::onPasswordChange,
+                    rememberMe = uiState.rememberMe,
+                    onRememberMeChange = viewModel::onRememberMeChange,
                     onLoginClick = viewModel::onLoginClick,
-                    onForgotPasswordClick = { /* TODO */ },
+                    onForgotPasswordClick = {  navController.navigate(PasswordRecoveryRoute(email = uiState.email)) },
                     isLoading = uiState.isLoading,
                     errorMessage = uiState.errorMessage,
                     onChangeServerClick = if (BuildConfig.DEBUG) {
@@ -128,6 +146,99 @@ fun AppNavigation(
                     } else {
                         null
                     },
+                )
+            }
+
+            composable<PasswordRecoveryRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<PasswordRecoveryRoute>()
+                val viewModel = koinViewModel<PasswordRecoveryViewModel> {
+                    parametersOf(route.email)
+                }
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is SendCodeEvent.CodeSent ->
+                                navController.navigate(ValidateRecoveryCodeRoute(email = event.email))
+                        }
+                    }
+                }
+
+                PasswordRecoveryScreen(
+                    email = uiState.email,
+                    isLoading = uiState.isLoading,
+                    onEmailChange = viewModel::onEmailChange,
+                    onBackToLoginClick = navController::popBackStack,
+                    onSendCodeClick = viewModel::onSendCodeClick,
+                    errorMessage = uiState.errorMessage
+                )
+            }
+
+            composable<ValidateRecoveryCodeRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ValidateRecoveryCodeRoute>()
+                val viewModel = koinViewModel<VerificationViewModel> {
+                    parametersOf(route.email)
+                }
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is VerificationEvent.Verified ->
+                                navController.navigate(
+                                    ChangePasswordRoute(email = route.email, key = event.key)
+                                )
+                        }
+                    }
+                }
+
+                VerificationScreen(
+                    email = route.email,
+                    code = uiState.code,
+                    onCodeChange = viewModel::onCodeChange,
+                    onBackClick = { navController.popBackStack() },
+                    onVerifyClick = viewModel::onVerifyClick,
+                    onResendClick = viewModel::onResendClick,
+                    isLoading = uiState.isLoading,
+                    isResending = uiState.isResending,
+                    resendCooldownSeconds = uiState.resendCooldownSeconds,
+                    errorMessage = uiState.errorMessage,
+                )
+            }
+
+            composable<ChangePasswordRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ChangePasswordRoute>()
+                val viewModel = koinViewModel<ChangePasswordViewModel> {
+                    parametersOf(route.email, route.key)
+                }
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                BackHandler(enabled = uiState.isConfirmStep, onBack = viewModel::onBackClick)
+
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is ChangePasswordEvent.PasswordChanged ->
+                                navController.navigate(LoginRoute) {
+                                    popUpTo<LoginRoute> { inclusive = true }
+                                }
+                            is ChangePasswordEvent.NavigateBack ->
+                                navController.popBackStack()
+                        }
+                    }
+                }
+
+                ChangePasswordScreen(
+                    password = uiState.password,
+                    onPasswordChange = viewModel::onPasswordChange,
+                    confirmPassword = uiState.confirmPassword,
+                    onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
+                    isConfirmStep = uiState.isConfirmStep,
+                    onBackClick = viewModel::onBackClick,
+                    onSubmitClick = viewModel::onSubmitClick,
+                    isLoading = uiState.isLoading,
+                    errorMessage = uiState.errorMessage,
                 )
             }
         }

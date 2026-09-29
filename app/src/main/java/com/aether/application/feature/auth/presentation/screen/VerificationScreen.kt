@@ -28,12 +28,20 @@ import com.aether.core.ui.theme.*
 
 @Composable
 fun VerificationScreen(
+    email: String,
+    code: List<String>,
+    onCodeChange: (List<String>) -> Unit,
     onBackClick: () -> Unit,
-    onVerifyClick: (code: String) -> Unit,
+    onVerifyClick: () -> Unit,
     onResendClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    isResending: Boolean = false,
+    resendCooldownSeconds: Int = 0,
+    errorMessage: String? = null
 ){
-    var code by remember { mutableStateOf(List(6) { "" }) }
+    val canResend = !isLoading && !isResending && resendCooldownSeconds == 0
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -148,7 +156,7 @@ fun VerificationScreen(
                         value = digit,
                         onValueChange = { newValue ->
                             if (newValue.length <= 1){
-                                code = code.toMutableList().also { it[index] = newValue }
+                                onCodeChange(code.toMutableList().also { it[index] = newValue })
                             }
                         },
                         modifier = Modifier.width(48.dp).height(54.dp),
@@ -156,6 +164,8 @@ fun VerificationScreen(
                         textStyle = bodyLarge.copy(textAlign = TextAlign.Center),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         shape = RoundedCornerShape(12.dp),
+                        enabled = !isLoading,
+                        isError = errorMessage != null,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = purple500,
                             unfocusedTextColor = purple300
@@ -163,10 +173,20 @@ fun VerificationScreen(
                     )
                 }
             }
+
+            if (errorMessage != null) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    text = errorMessage,
+                    style = labelMedium,
+                    color = lightRed
+                )
+            }
+
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Digite o código de 4 digitos enviado\npara o seu e-mail."
+                text = "Digite o código de 6 digitos enviado\npara o seu e-mail '$email'."
             )
             Spacer(Modifier.height(16.dp))
 
@@ -178,10 +198,14 @@ fun VerificationScreen(
                 )
                 Spacer(Modifier.width(4.dp))
                 Text(
-                    text = "Reenviar",
+                    text = if (resendCooldownSeconds > 0) {
+                        "Reenviar em %d:%02d".format(resendCooldownSeconds / 60, resendCooldownSeconds % 60)
+                    } else {
+                        "Reenviar"
+                    },
                     style = bodyLargeMedium,
-                    color = purple500,
-                    modifier = Modifier.clickable {onResendClick()}
+                    color = if (canResend) purple500 else textSecondaryLight,
+                    modifier = Modifier.clickable(enabled = canResend) { onResendClick() }
                 )
             }
 
@@ -192,7 +216,8 @@ fun VerificationScreen(
                 horizontalArrangement = Arrangement.End
             ) {
                 Button(
-                    onClick = { onVerifyClick(code.joinToString(separator = "")) },
+                    onClick = onVerifyClick,
+                    enabled = !isLoading && !isResending && code.all { it.isNotBlank() },
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = green500),
                     modifier = Modifier
@@ -204,7 +229,15 @@ fun VerificationScreen(
                         )
                         .height(54.dp)
                 ) {
-                    Text(text = "Verificar", style = titleMedium, color = textPrimaryDark)
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = textPrimaryDark,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(text = "Verificar", style = titleMedium, color = textPrimaryDark)
+                    }
                 }
             }
         }
@@ -216,6 +249,9 @@ fun VerificationScreen(
 fun VerificationScreenPreview(){
     AetherTheme() {
         VerificationScreen(
+            email = "meu.email@gmail.com",
+            code = List(6) { "" },
+            onCodeChange = {},
             onBackClick = {},
             onVerifyClick = {},
             onResendClick = {}
