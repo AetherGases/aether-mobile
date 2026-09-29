@@ -1,5 +1,7 @@
 package com.aether.application.feature.auth.domain.exception
 
+import com.aether.application.core.utils.DEFAULT_ERROR_MESSAGE
+
 sealed class AuthException(
     message: String,
     cause: Throwable? = null
@@ -23,7 +25,7 @@ sealed class AuthException(
     class Unexpected(
         cause: Throwable
     ) : AuthException(
-        "Ocorreu um erro inesperado. Tente novamente mais tarde.",
+        DEFAULT_ERROR_MESSAGE,
         cause
     )
 }

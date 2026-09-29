@@ -2,6 +2,7 @@ package com.aether.application.feature.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.core.utils.userMessage
 import com.aether.application.feature.auth.domain.usecase.ResendRecoveryCodeUseCase
 import com.aether.application.feature.auth.domain.usecase.VerifyCodeUseCase
 import kotlinx.coroutines.Job
@@ -51,7 +52,7 @@ class VerificationViewModel(
                 }
                 .onFailure { throwable ->
                     _uiState.update {
-                        it.copy(errorMessage = throwable.message ?: "Erro inesperado, tente novamente!")
+                        it.copy(errorMessage = throwable.userMessage())
                     }
                 }
 
@@ -70,7 +71,7 @@ class VerificationViewModel(
                 .onSuccess { startResendCooldown() }
                 .onFailure { throwable ->
                     _uiState.update {
-                        it.copy(errorMessage = throwable.message ?: "Erro inesperado, tente novamente!")
+                        it.copy(errorMessage = throwable.userMessage())
                     }
                 }
 

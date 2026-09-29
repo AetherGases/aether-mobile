@@ -1,4 +1,4 @@
-package com.aether.application.feature.auth.data.remote.dto
+package com.aether.application.core.network
 
 import kotlinx.serialization.Serializable
 

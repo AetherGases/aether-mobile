@@ -3,9 +3,9 @@ package com.aether.application.feature.auth.data.repository
 import android.util.Log
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.network.readErrorMessage
 import com.aether.application.feature.auth.data.remote.AuthApi
 import com.aether.application.feature.auth.data.remote.ProfileApi
-import com.aether.application.feature.auth.data.remote.dto.ErrorResponse
 import com.aether.application.feature.auth.data.remote.dto.LoginRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordChangePasswordRequest
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordResendCodeRequest
@@ -13,13 +13,9 @@ import com.aether.application.feature.auth.data.remote.dto.ResetPasswordSendCode
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeRequest
 import com.aether.application.feature.auth.domain.exception.AuthException
 import com.aether.application.feature.auth.domain.repository.AuthRepository
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.HttpURLConnection.HTTP_FORBIDDEN
-
-private val errorJson = Json { ignoreUnknownKeys = true }
 
 class AuthRepositoryImpl(
     private val api: AuthApi,
@@ -108,15 +104,5 @@ class AuthRepositoryImpl(
         if (message.isNullOrBlank()) return AuthException.Unexpected(this)
 
         return AuthException.Api(message)
-    }
-
-    private fun HttpException.readErrorMessage(): String? {
-        val body = response()?.errorBody()?.string() ?: return null
-
-        return try {
-            errorJson.decodeFromString<ErrorResponse>(body).message
-        } catch (_: SerializationException) {
-            null
-        }
     }
 }
