@@ -8,7 +8,7 @@ sealed class AuthException(
 ) : Exception(message, cause) {
 
     class InvalidCredentials : AuthException(
-        "Email ou senha inválidos."
+        "Usuário e/ou senha inválidos."
     )
 
     class Api(

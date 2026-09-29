@@ -3,7 +3,8 @@ package com.aether.application.feature.auth.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aether.application.core.utils.userMessage
-import com.aether.application.feature.auth.domain.model.DefaultPasswordRules
+import com.aether.application.feature.auth.domain.model.PASSWORD_REQUIREMENTS_MESSAGE
+import com.aether.application.feature.auth.domain.model.meetsPasswordRules
 import com.aether.application.feature.auth.domain.usecase.ChangePasswordUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -48,8 +49,8 @@ class ChangePasswordViewModel(
     private fun onConfirmClick() {
         val password = _uiState.value.password
 
-        if (DefaultPasswordRules.any { !it.isSatisfiedBy(password) }) {
-            _uiState.update { it.copy(errorMessage = "A senha não atende aos requisitos!") }
+        if (!password.meetsPasswordRules()) {
+            _uiState.update { it.copy(errorMessage = PASSWORD_REQUIREMENTS_MESSAGE) }
             return
         }
 

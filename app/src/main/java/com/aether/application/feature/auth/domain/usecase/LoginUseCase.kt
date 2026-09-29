@@ -13,10 +13,10 @@ class LoginUseCase(
         val trimmedEmail = email.trim()
         // Empty fields
         if (trimmedEmail.isBlank())
-            return Result.failure(IllegalArgumentException("Email não pode estar vazio!"))
+            return Result.failure(IllegalArgumentException("É necessário informar um e-mail."))
 
         if (password.isBlank())
-            return Result.failure(IllegalArgumentException("Senha não pode estar vazia!"))
+            return Result.failure(IllegalArgumentException("A senha é obrigatória."))
 
         return authRepository.login(trimmedEmail, password)
     }
