@@ -9,6 +9,10 @@ sealed class AuthException(
         "Email ou senha inválidos."
     )
 
+    class Api(
+        message: String
+    ) : AuthException(message)
+
     class Network(
         cause: Throwable
     ) : AuthException(
