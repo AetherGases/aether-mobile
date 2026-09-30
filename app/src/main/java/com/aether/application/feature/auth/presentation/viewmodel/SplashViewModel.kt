@@ -45,6 +45,7 @@ class SplashViewModel(
     private var sessionRestored = false
     private var videoFinished = false
     private var hasNavigated = false
+    private var playbackStarted = false
 
     init {
         viewModelScope.launch {
@@ -59,6 +60,9 @@ class SplashViewModel(
                     if (state == Player.STATE_ENDED) {
                         markVideoFinished()
                     }
+            }
+            override fun onRenderedFirstFrame() {
+                startPlayback()
             }
             override fun onPlayerError(error: PlaybackException) {
                 Log.e("SplashViewModel", "Splash video failed to play", error)
@@ -81,7 +85,10 @@ class SplashViewModel(
 
     fun onIrisOpened() {
         _uiState.update { it.copy(showLogo = true) }
-        player.play()
+        viewModelScope.launch {
+            delay(1000.milliseconds)
+            startPlayback()
+        }
     }
 
     override fun onCleared() {
@@ -94,6 +101,12 @@ class SplashViewModel(
             videoFinished = true
             navigate()
         }
+    }
+
+    private fun startPlayback() {
+        if (playbackStarted || !_uiState.value.showLogo) return
+        playbackStarted = true
+        player.play()
     }
 
     private suspend fun navigate() {
