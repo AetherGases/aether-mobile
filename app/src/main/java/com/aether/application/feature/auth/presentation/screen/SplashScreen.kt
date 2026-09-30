@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
@@ -88,14 +89,19 @@ fun SplashScreen(
 fun LogoVideo(
     player: Player,
     modifier: Modifier = Modifier,
+    videoScale: Float = 1.1f,
 ) {
     val presentationState = rememberPresentationState(player)
 
-    Box(modifier) {
+    Box(modifier.clipToBounds()) {
         PlayerSurface(
             player = player,
             surfaceType = SURFACE_TYPE_TEXTURE_VIEW,
             modifier = Modifier.matchParentSize()
+                .graphicsLayer {
+                    scaleX = videoScale
+                    scaleY = videoScale
+                },
         )
         if (presentationState.coverSurface) {
             Box(Modifier.matchParentSize().background(Color.White))
