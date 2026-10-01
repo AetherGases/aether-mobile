@@ -13,3 +13,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object AppGraph
 @Serializable data object HomeRoute
+@Serializable data object ReportAnalysisRoute
+@Serializable data object ReportHistoryRoute
+@Serializable data object NotificationsRoute
+@Serializable data object SettingsRoute
