@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -318,16 +317,6 @@ fun RecentReportItem(
                     maxLines = 2,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(
-                    onClick = onMenuClick,
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Mais opções",
-                        tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f)
-                    )
-                }
             }
 
             Spacer(Modifier.height(6.dp))
@@ -352,7 +341,7 @@ fun RecentReportItem(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    text = "Feito em ${report.createdAt}",
+                    text = report.createdAt,
                     style = bodySmall.copy(fontWeight = FontWeight.Medium),
                     color = MaterialTheme.colorScheme.secondary
                 )
