@@ -11,8 +11,5 @@ import kotlinx.serialization.Serializable
 @Serializable data class ValidateRecoveryCodeRoute(val email: String)
 @Serializable data class ChangePasswordRoute(val email: String, val key: String)
 
-@Serializable data object EmployeeGraph
-@Serializable data object EmployeeHomeRoute
-
-@Serializable data object ManagerGraph
-@Serializable data object ManagerHomeRoute
+@Serializable data object AppGraph
+@Serializable data object HomeRoute
