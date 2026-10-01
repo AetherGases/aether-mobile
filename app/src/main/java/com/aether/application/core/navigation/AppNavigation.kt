@@ -263,12 +263,28 @@ fun AppNavigation(
                     sealCriteriaLabel = uiState.sealCriteriaLabel,
                     quickActions = uiState.quickActions,
                     recentReports = uiState.recentReports,
-                    onNotificationsClick = viewModel::onNotificationsClick,
-                    onSettingsClick = viewModel::onSettingsClick,
-                    onViewHistoryClick = viewModel::onViewHistoryClick,
-                    onSeeAllReportsClick = viewModel::onSeeAllReportsClick,
-                    onReportMenuClick = viewModel::onReportMenuClick,
+                    onNotificationsClick = { navController.navigate(NotificationsRoute) },
+                    onSettingsClick = { navController.navigate(SettingsRoute) },
+                    onViewHistoryClick = { navController.navigate(ReportHistoryRoute) },
+                    onSeeAllReportsClick = { navController.navigate(ReportHistoryRoute) },
+                    onReportMenuClick = { navController.navigate(ReportAnalysisRoute) },
                 )
+            }
+
+            composable<ReportAnalysisRoute> {
+                TODO()
+            }
+
+            composable<ReportHistoryRoute> {
+                TODO()
+            }
+
+            composable<NotificationsRoute> {
+                TODO()
+            }
+
+            composable<SettingsRoute> {
+                TODO()
             }
         }
     }
