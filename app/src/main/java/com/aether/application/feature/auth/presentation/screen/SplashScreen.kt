@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
@@ -34,6 +35,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.compose.PlayerSurface
+import androidx.media3.ui.compose.SURFACE_TYPE_TEXTURE_VIEW
 import androidx.media3.ui.compose.state.rememberPresentationState
 import com.aether.core.ui.theme.green500
 import kotlinx.coroutines.delay
@@ -87,11 +89,20 @@ fun SplashScreen(
 fun LogoVideo(
     player: Player,
     modifier: Modifier = Modifier,
+    videoScale: Float = 1.1f,
 ) {
     val presentationState = rememberPresentationState(player)
 
-    Box(modifier) {
-        PlayerSurface(player = player, modifier = Modifier.matchParentSize())
+    Box(modifier.clipToBounds()) {
+        PlayerSurface(
+            player = player,
+            surfaceType = SURFACE_TYPE_TEXTURE_VIEW,
+            modifier = Modifier.matchParentSize()
+                .graphicsLayer {
+                    scaleX = videoScale
+                    scaleY = videoScale
+                },
+        )
         if (presentationState.coverSurface) {
             Box(Modifier.matchParentSize().background(Color.White))
         }
