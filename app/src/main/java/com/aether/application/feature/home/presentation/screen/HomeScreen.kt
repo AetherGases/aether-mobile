@@ -26,15 +26,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.aether.application.R
-import com.aether.core.ui.components.AppHeader
+import com.aether.application.ui.components.AppHeader
 import com.aether.core.ui.components.EmployeeHeroCard
 import com.aether.core.ui.components.HomeHeroCard
 import com.aether.core.ui.components.ManagerHeroCard
@@ -199,19 +199,31 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("Últimos Relatórios", style = titleLarge, color = textPrimaryLight)
-                Text(
-                    "Ver tudo",
-                    style = titleSmall,
-                    color = textTertiaryLight,
-                    modifier = Modifier.clickable { onSeeAllReportsClick() }
-                )
+                if (!recentReports.isEmpty()) {
+                    Text(
+                        "Ver tudo",
+                        style = titleSmall,
+                        color = textTertiaryLight,
+                        modifier = Modifier.clickable { onSeeAllReportsClick() }
+                    )
+                }
             }
 
             Spacer(Modifier.height(16.dp))
 
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                recentReports.forEach { report ->
-                    RecentReportItem(report = report, onMenuClick = { onReportMenuClick(report) })
+                if (recentReports.isEmpty()) {
+                    Image(
+                        painter = painterResource(id = R.drawable.empty_inventory),
+                        contentDescription = "Sem relatórios recentes",
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                } else {
+                    recentReports.forEach { report ->
+                        RecentReportItem(
+                            report = report,
+                            onMenuClick = { onReportMenuClick(report) })
+                    }
                 }
             }
 
@@ -349,18 +361,6 @@ fun RecentReportItem(
             }
         }
     }
-}
-
-@Composable
-fun AsyncImage(
-    model: String?,
-    contentDescription: String,
-    placeholder: Painter,
-    error: Painter,
-    contentScale: ContentScale,
-    modifier: Modifier
-) {
-    TODO("Not yet implemented")
 }
 
 @Composable
