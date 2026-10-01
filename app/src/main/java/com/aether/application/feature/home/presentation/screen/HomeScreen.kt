@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,8 +41,6 @@ import com.aether.core.ui.components.ReportsSummaryCard
 import com.aether.core.ui.components.SealProgressCard
 import com.aether.core.ui.components.UnitEmissionsCard
 import com.aether.core.ui.theme.*
-
-
 
 data class QuickAction(
     val label: String,
@@ -316,16 +313,6 @@ fun RecentReportItem(
                     maxLines = 2,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(
-                    onClick = onMenuClick,
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Mais opções",
-                        tint = textTertiaryLight.copy(alpha = 0.7f)
-                    )
-                }
             }
 
             Spacer(Modifier.height(6.dp))
@@ -350,7 +337,7 @@ fun RecentReportItem(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    text = "Feito em ${report.createdAt}",
+                    text = report.createdAt,
                     style = bodySmall.copy(fontWeight = FontWeight.Medium),
                     color = green500
                 )
