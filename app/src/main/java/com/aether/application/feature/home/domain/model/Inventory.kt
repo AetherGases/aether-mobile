@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class Inventory(
-    val id: Int,
+    val id: Long,
     val name: String,
     val createdAt: LocalDateTime,
     val period: ReportingPeriod,
