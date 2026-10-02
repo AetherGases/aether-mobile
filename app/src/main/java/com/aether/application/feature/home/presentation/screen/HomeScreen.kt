@@ -61,7 +61,7 @@ fun HomeScreen(
     onSettingsClick: () -> Unit,
     onViewHistoryClick: () -> Unit,
     onSeeAllReportsClick: () -> Unit,
-    onReportMenuClick: (RecentReport) -> Unit,
+    onReportClick: (RecentReport) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -200,7 +200,7 @@ fun HomeScreen(
                     recentReports.forEach { report ->
                         RecentReportItem(
                             report = report,
-                            onMenuClick = { onReportMenuClick(report) })
+                            onClick = { onReportClick(report) })
                     }
                 }
             }
@@ -245,7 +245,7 @@ fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier) {
 @Composable
 fun RecentReportItem(
     report: RecentReport,
-    onMenuClick: () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -264,7 +264,8 @@ fun RecentReportItem(
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
                 shape = RoundedCornerShape(20.dp)
             )
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable { onClick() },
         verticalAlignment = Alignment.Top
     ) {
         AsyncImage(
@@ -395,7 +396,7 @@ fun HomeScreenEmployeePreview() {
             onSettingsClick = {},
             onViewHistoryClick = {},
             onSeeAllReportsClick = {},
-            onReportMenuClick = {}
+            onReportClick = {}
         )
     }
 }
@@ -433,7 +434,7 @@ fun HomeScreenManagerPreview() {
             onSettingsClick = {},
             onViewHistoryClick = {},
             onSeeAllReportsClick = {},
-            onReportMenuClick = {}
+            onReportClick = {}
         )
     }
 }

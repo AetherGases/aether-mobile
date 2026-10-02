@@ -283,7 +283,7 @@ fun AppNavigation(
                     onSettingsClick = { navController.navigate(SettingsRoute) },
                     onViewHistoryClick = { navController.navigate(ReportHistoryRoute) },
                     onSeeAllReportsClick = { navController.navigate(ReportHistoryRoute) },
-                    onReportMenuClick = viewModel::onReportClick,
+                    onReportClick = viewModel::onReportClick,
                 )
             }
 
