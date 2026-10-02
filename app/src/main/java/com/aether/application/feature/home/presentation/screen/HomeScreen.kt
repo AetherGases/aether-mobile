@@ -29,48 +29,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.aether.application.R
+import com.aether.application.feature.home.presentation.components.QuickAction
+import com.aether.application.feature.home.presentation.components.RecentReport
 import com.aether.application.ui.components.AppHeader
 import com.aether.core.ui.components.EmployeeHeroCard
 import com.aether.core.ui.components.HomeHeroCard
 import com.aether.core.ui.components.ManagerHeroCard
+import com.aether.application.feature.home.presentation.model.ReportStatus
 import com.aether.core.ui.components.ReportsSummaryCard
 import com.aether.core.ui.components.SealProgressCard
 import com.aether.core.ui.components.UnitEmissionsCard
 import com.aether.core.ui.theme.*
-
-data class QuickAction(
-    val label: String,
-    val iconRes: Int,
-    val iconSize: Dp = 28.dp,
-    val offsetX: Dp = 0.dp,
-    val offsetY: Dp = 0.dp,
-    val backgroundColor: Color,
-    val onClick: () -> Unit
-)
-
-enum class ReportStatus(
-    val label: String,
-    val color: Color,
-    val backgroundColor: Color,
-    val iconRes: Int
-){
-    PENDENTE("Pendente", Color(0xFF7848C5), Color(0xFFECE7FE), R.drawable.ic_pendent),
-    APROVADO("Aprovado", Color(0xFF498371), Color(0xFFD6F6E8), R.drawable.ic_approved),
-    RECUSADO("Recusado", lightRed, Color(0xFFF9C5CC), R.drawable.ic_rejected)
-}
-
-data class RecentReport(
-    val id: Int,
-    val name: String,
-    val ownerName: String,
-    val ownerAvatarUrl: String?,
-    val createdAt: String,
-    val status: ReportStatus
-)
 
 @Composable
 fun HomeScreen(
@@ -151,10 +123,10 @@ fun HomeScreen(
                     )
                 ) {
                     when (page) {
-                        0 -> heroCard.Render()
+                        0 -> SealProgressCard(sealLevelPercent, sealCriteriaLabel)
                         1 -> ReportsSummaryCard(heroCard.summaryTitle, heroCard.lastSubmittedLabel, heroCard.summaryCount, onViewHistoryClick)
                         2 -> UnitEmissionsCard(unitEmissionsValue, "tCO₂e/mês", unitEmissionsChangeLabel)
-                        3 -> SealProgressCard(sealLevelPercent, sealCriteriaLabel)
+                        3 ->SealProgressCard(sealLevelPercent, sealCriteriaLabel)
                     }
                 }
             }
