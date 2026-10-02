@@ -9,6 +9,7 @@ data class UserProfileResponse(
     val cpf: String,
     val email: String,
     val name: String,
+    val avatarUrl: String, // TODO(confirmar nome no back)
     val phone: String,
     val permissions: List<Permission>
 )

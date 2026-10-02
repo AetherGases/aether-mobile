@@ -29,43 +29,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.aether.application.R
+import com.aether.application.feature.home.presentation.components.QuickAction
+import com.aether.application.feature.home.presentation.components.RecentReport
 import com.aether.application.ui.components.AppHeader
 import com.aether.core.ui.components.EmployeeHeroCard
 import com.aether.core.ui.components.HomeHeroCard
 import com.aether.core.ui.components.ManagerHeroCard
+import com.aether.application.feature.home.presentation.model.ReportStatus
 import com.aether.core.ui.components.ReportsSummaryCard
 import com.aether.core.ui.components.SealProgressCard
 import com.aether.core.ui.components.UnitEmissionsCard
 import com.aether.core.ui.theme.*
-
-data class QuickAction(
-    val label: String,
-    val iconRes: Int,
-    val iconSize: Dp = 28.dp,
-    val offsetX: Dp = 0.dp,
-    val offsetY: Dp = 0.dp,
-    val backgroundColor: Color,
-    val onClick: () -> Unit
-)
-
-enum class ReportStatus(val label: String, val iconRes: Int) {
-    PENDENTE("Pendente", R.drawable.ic_pendent),
-    APROVADO("Aprovado", R.drawable.ic_approved),
-    RECUSADO("Recusado", R.drawable.ic_rejected)
-}
-
-data class RecentReport(
-    val id: Int,
-    val name: String,
-    val ownerName: String,
-    val ownerAvatarUrl: String?,
-    val createdAt: String,
-    val status: ReportStatus
-)
 
 @Composable
 fun HomeScreen(

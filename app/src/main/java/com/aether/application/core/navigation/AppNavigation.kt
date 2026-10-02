@@ -39,6 +39,7 @@ import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecove
 import com.aether.application.feature.auth.presentation.viewmodel.SendCodeEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
+import com.aether.application.feature.home.presentation.viewmodel.HomeEvent
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -251,6 +252,21 @@ fun AppNavigation(
                 val viewModel = koinViewModel<HomeViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            HomeEvent.NavigateToCalculator ->
+                                navController.navigate(CalculatorRoute)
+                            HomeEvent.NavigateToChatBot ->
+                                navController.navigate(ChatbotRoute)
+                            HomeEvent.NavigateToCreateReport ->
+                                navController.navigate(CreateReportRoute)
+                            HomeEvent.NavigateToHistory ->
+                                navController.navigate(ReportHistoryRoute)
+                        }
+                    }
+                }
+
                 HomeScreen(
                     userName = uiState.userName,
                     userLastName = uiState.userLastName,
@@ -284,6 +300,14 @@ fun AppNavigation(
             }
 
             composable<SettingsRoute> {
+                TODO()
+            }
+
+            composable<CalculatorRoute> {
+                TODO()
+            }
+
+            composable<ChatbotRoute> {
                 TODO()
             }
         }
