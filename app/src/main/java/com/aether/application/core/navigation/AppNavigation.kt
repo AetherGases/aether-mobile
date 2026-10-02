@@ -26,8 +26,6 @@ import com.aether.application.feature.auth.presentation.viewmodel.ChangePassword
 import com.aether.application.feature.auth.presentation.viewmodel.LoginEvent
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.home.presentation.screen.HomeScreen
-import com.aether.core.ui.components.EmployeeHeroCard
-import com.aether.core.ui.components.ManagerHeroCard
 import com.aether.application.feature.auth.presentation.viewmodel.SplashEvent
 import com.aether.application.feature.auth.presentation.viewmodel.SplashViewModel
 import com.aether.application.feature.auth.presentation.screen.SplashScreen
@@ -263,6 +261,8 @@ fun AppNavigation(
                                 navController.navigate(CreateReportRoute)
                             HomeEvent.NavigateToHistory ->
                                 navController.navigate(ReportHistoryRoute)
+                            is HomeEvent.NavigateToReport ->
+                                navController.navigate(ReportAnalysisRoute(event.reportId))
                         }
                     }
                 }
@@ -283,7 +283,7 @@ fun AppNavigation(
                     onSettingsClick = { navController.navigate(SettingsRoute) },
                     onViewHistoryClick = { navController.navigate(ReportHistoryRoute) },
                     onSeeAllReportsClick = { navController.navigate(ReportHistoryRoute) },
-                    onReportMenuClick = { navController.navigate(ReportAnalysisRoute) },
+                    onReportMenuClick = viewModel::onReportClick,
                 )
             }
 

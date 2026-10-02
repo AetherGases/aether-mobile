@@ -50,7 +50,9 @@ sealed interface HomeEvent {
     data object NavigateToCalculator : HomeEvent
     data object NavigateToChatBot : HomeEvent
     data object NavigateToCreateReport : HomeEvent
+    data class NavigateToReport(val reportId: Long) : HomeEvent
 }
+
 class HomeViewModel(
     private val homeRepository: HomeRepository,
     private val sessionManager: SessionManager
@@ -90,6 +92,12 @@ class HomeViewModel(
                 quickActions = quickActions,
                 recentReports = recentReports
             ) }
+        }
+    }
+
+    fun onReportClick(recentReport: RecentReport) {
+        viewModelScope.launch {
+            _events.send(HomeEvent.NavigateToReport(recentReport.id))
         }
     }
 
