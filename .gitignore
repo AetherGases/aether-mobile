@@ -31,3 +31,4 @@ TestResults.xml
 .externalNativeBuild
 .cxx
 local.properties
+.kotlin
