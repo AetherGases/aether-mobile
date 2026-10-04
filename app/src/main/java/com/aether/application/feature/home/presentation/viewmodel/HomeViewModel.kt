@@ -71,7 +71,12 @@ class HomeViewModel(
             val session = sessionManager.getSession()
                 ?: throw Exception("nah man, u need to be authed")
 
-            val (userName, userLastName) = session.name.split(" ", limit = 2)
+            val (userName, userLastName) = if (" " in session.name) {
+                session.name.split(" ", limit = 2)
+            } else {
+                listOf(session.name, "")
+            }
+
             val avatar = session.avatar
             val unitEmissionsValue = homeRepository.getMonthlyUnitEmission()
             val unitEmissionsChangeLabel = homeRepository.getMonthlyUnitChange()
@@ -123,7 +128,7 @@ class HomeViewModel(
                     "MMM",
                     Locale.forLanguageTag("pt-BR")
                 )
-            val statusLabel = buildString {
+            val reportingPeriodLabel = buildString {
                 append(lastSubmittedInventory.period.start.format(monthFormatter))
                 append("-")
                 append(lastSubmittedInventory.period.end.format(monthFormatter))
@@ -139,8 +144,8 @@ class HomeViewModel(
 
             return EmployeeHeroCard(
                 lastSubmittedLabel = lastSubmittedInventory.createdAt.format(dateFormatter),
-                reportingPeriodLabel = "${lastSubmittedInventory.period.start}",
-                statusLabel = statusLabel,
+                reportingPeriodLabel = reportingPeriodLabel,
+                statusLabel = lastSubmittedInventory.status.toReportStatus().name,
                 summaryCount = "$countSubmittedInventories"
             )
         }
