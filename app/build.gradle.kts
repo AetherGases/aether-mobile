@@ -60,7 +60,6 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.compose.foundation)
     // =========================
     // Android
     // =========================
