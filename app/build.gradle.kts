@@ -42,7 +42,6 @@ android {
     signingConfigs {
         create("release") {
             if (keystorePropertiesFile.exists()) {
-                // Local
                 storeFile = rootProject.file(
                     keystoreProperties["storeFile"] as String
                 )
@@ -50,13 +49,19 @@ android {
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
             } else {
-                // CI/CD
-                storeFile = rootProject.file(
-                    System.getenv("KEYSTORE_FILE")
-                )
+                val keystoreFile = System.getenv("KEYSTORE_FILE")
+                    ?: error("KEYSTORE_FILE environment variable is not set")
+
+                storeFile = rootProject.file(keystoreFile)
+
                 storePassword = System.getenv("KEYSTORE_PASSWORD")
+                    ?: error("KEYSTORE_PASSWORD environment variable is not set")
+
                 keyAlias = System.getenv("KEY_ALIAS")
+                    ?: error("KEY_ALIAS environment variable is not set")
+
                 keyPassword = System.getenv("KEY_PASSWORD")
+                    ?: error("KEY_PASSWORD environment variable is not set")
             }
         }
     }
