@@ -13,6 +13,9 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(keystorePropertiesFile.inputStream())
 }
 
+val keystoreFileEnv: String? = System.getenv("KEYSTORE_FILE")?.takeIf { it.isNotBlank() }
+val hasReleaseSigning = keystorePropertiesFile.exists() || keystoreFileEnv != null
+
 android {
     namespace = "com.aether.application"
 
@@ -48,19 +51,16 @@ android {
                 storePassword = keystoreProperties["storePassword"] as String
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
-            } else {
-                val keystoreFile = System.getenv("KEYSTORE_FILE")
-                    ?: error("KEYSTORE_FILE environment variable is not set")
+            } else if (keystoreFileEnv != null) {
+                storeFile = rootProject.file(keystoreFileEnv)
 
-                storeFile = rootProject.file(keystoreFile)
-
-                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                storePassword = System.getenv("KEYSTORE_PASSWORD")?.takeIf { it.isNotBlank() }
                     ?: error("KEYSTORE_PASSWORD environment variable is not set")
 
-                keyAlias = System.getenv("KEY_ALIAS")
+                keyAlias = System.getenv("KEY_ALIAS")?.takeIf { it.isNotBlank() }
                     ?: error("KEY_ALIAS environment variable is not set")
 
-                keyPassword = System.getenv("KEY_PASSWORD")
+                keyPassword = System.getenv("KEY_PASSWORD")?.takeIf { it.isNotBlank() }
                     ?: error("KEY_PASSWORD environment variable is not set")
             }
         }
@@ -76,7 +76,9 @@ android {
         }
 
         release {
-            signingConfig = signingConfigs.getByName("release")
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = false
 
             buildConfigField(
