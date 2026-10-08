@@ -6,7 +6,48 @@
   "latency": 0,
   "port": 8080,
   "hostname": "0.0.0.0",
-  "folders": [],
+  "folders": [
+    {
+      "uuid": "c1d03ce8-9581-4ac6-bd97-05b3a50f60ab",
+      "name": "Auth",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "74c0789e-994e-4dd6-af58-2f281f1cd6ef"
+        },
+        {
+          "type": "route",
+          "uuid": "8a36155c-debc-4a07-aa28-6f27e5f4f086"
+        },
+        {
+          "type": "route",
+          "uuid": "1e65487b-7545-4f73-acba-e03f07ce49cf"
+        },
+        {
+          "type": "route",
+          "uuid": "eb59a976-8793-4c29-b69d-6d43e90e2b80"
+        },
+        {
+          "type": "route",
+          "uuid": "898b4c3c-71e7-422b-aef6-5f5f1398f8ab"
+        },
+        {
+          "type": "route",
+          "uuid": "5e6130f8-bf76-4e5a-be5e-efdc5d1e0c43"
+        }
+      ]
+    },
+    {
+      "uuid": "39cd6416-1924-4db4-82a7-414c723ea1bd",
+      "name": "Profile",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "fb515b07-6ce3-4b82-a0b6-99168681ee9c"
+        }
+      ]
+    }
+  ],
   "routes": [
     {
       "uuid": "5e6130f8-bf76-4e5a-be5e-efdc5d1e0c43",
@@ -38,12 +79,202 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "74c0789e-994e-4dd6-af58-2f281f1cd6ef",
+      "type": "http",
+      "documentation": "",
+      "method": "put",
+      "endpoint": "auth/refresh/:email",
+      "responses": [
+        {
+          "uuid": "653259a6-0a2d-467b-89a2-bb56abbbf04b",
+          "body": "{\n  \"email\": \"{{urlParam 'email'}}\",\n  \"authenticated\": true,\n  \"created\": \"2026-09-04T10:00:00Z\",\n  \"expiration\": \"2026-10-04T10:00:00Z\",\n  \"accessToken\": \"mock-access-token-refreshed\",\n  \"refreshToken\": \"mock-refresh-token-refreshed\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "8a36155c-debc-4a07-aa28-6f27e5f4f086",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "auth/reset-password/send-code",
+      "responses": [
+        {
+          "uuid": "298b3cb9-ec5a-40e3-8990-52bdcf2c538a",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "898b4c3c-71e7-422b-aef6-5f5f1398f8ab",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "auth/reset-password/resend-code",
+      "responses": [
+        {
+          "uuid": "dd607589-1e31-4542-b6e3-54023e92054d",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "eb59a976-8793-4c29-b69d-6d43e90e2b80",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "auth/reset-password/validate-code",
+      "responses": [
+        {
+          "uuid": "4f2c53a4-73a9-4124-8ee1-2d436a72343c",
+          "body": "{\n  \"key\": \"mock-reset-password-key-123456\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "1e65487b-7545-4f73-acba-e03f07ce49cf",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "auth/reset-password/change-password",
+      "responses": [
+        {
+          "uuid": "fc152fbe-5061-4c7f-a18a-c1d48bf1daaa",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "fb515b07-6ce3-4b82-a0b6-99168681ee9c",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "profile",
+      "responses": [
+        {
+          "uuid": "4869549d-a7c5-471f-b506-cab41880b7f5",
+          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"phone\": \"11999999999\",\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"ADMIN\",\n      \"description\": \"Acesso administrativo completo\"\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
     {
-      "type": "route",
-      "uuid": "5e6130f8-bf76-4e5a-be5e-efdc5d1e0c43"
+      "type": "folder",
+      "uuid": "c1d03ce8-9581-4ac6-bd97-05b3a50f60ab"
+    },
+    {
+      "type": "folder",
+      "uuid": "39cd6416-1924-4db4-82a7-414c723ea1bd"
     }
   ],
   "proxyMode": false,
