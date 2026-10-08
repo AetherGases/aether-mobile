@@ -31,4 +31,7 @@ TestResults.xml
 .externalNativeBuild
 .cxx
 local.properties
-.kotlin
+release.keystore
+.kotlin*.keystore
+*.jks
+keystore.properties
