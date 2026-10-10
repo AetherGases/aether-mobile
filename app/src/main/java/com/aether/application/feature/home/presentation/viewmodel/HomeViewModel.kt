@@ -1,5 +1,6 @@
 package com.aether.application.feature.home.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ import com.aether.application.feature.home.presentation.model.toReportStatus
 import com.aether.core.ui.components.EmployeeHeroCard
 import com.aether.core.ui.components.HomeHeroCard
 import com.aether.core.ui.components.ManagerHeroCard
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +27,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+
+private const val TAG = "HomeViewModel"
 
 data class HomeUiState(
     val userName: String = "",
@@ -67,36 +71,41 @@ class HomeViewModel(
 
     // Populate uiState
     init {
-        viewModelScope.launch{
-            val session = sessionManager.getSession()
-                ?: throw Exception("nah man, u need to be authed")
+        viewModelScope.launch {
+            try {
+                val session = sessionManager.getSession()
+                    ?: throw Exception("nah man, u need to be authed")
 
-            val (userName, userLastName) = if (" " in session.name) {
-                session.name.split(" ", limit = 2)
-            } else {
-                listOf(session.name, "")
+                val (userName, userLastName) = if (" " in session.name) {
+                    session.name.split(" ", limit = 2)
+                } else {
+                    listOf(session.name, "")
+                }
+
+                val avatar = session.avatar
+                val unitInfo = homeRepository.getMonthlyUnitInfos()
+                val homeHeroCard = getHomeHeroCard()
+                val recentReports = getRecentReports(
+                    userName = "$userName $userLastName",
+                    avatarUrl = avatar
+                )
+                val quickActions = getQuickActions()
+
+                _uiState.update { it.copy(
+                    userName = userName,
+                    userLastName = userLastName,
+                    avatarUrl = avatar,
+                    heroCard = homeHeroCard,
+                    unitEmissionsValue = "${unitInfo.emissions}",
+                    unitEmissionsChangeLabel = "${unitInfo.reductionPercentage}% ↗ em relação ao período anterior",
+                    quickActions = quickActions,
+                    recentReports = recentReports
+                ) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load home", e)
             }
-
-            val avatar = session.avatar
-            val unitEmissionsValue = homeRepository.getMonthlyUnitEmission()
-            val unitEmissionsChangeLabel = homeRepository.getMonthlyUnitChange()
-            val homeHeroCard = getHomeHeroCard()
-            val recentReports = getRecentReports(
-                userName = "$userName $userLastName",
-                avatarUrl = avatar
-            )
-            val quickActions = getQuickActions()
-
-            _uiState.update { it.copy(
-                userName = userName,
-                userLastName = userLastName,
-                avatarUrl = avatar,
-                heroCard = homeHeroCard,
-                unitEmissionsValue = "$unitEmissionsValue",
-                unitEmissionsChangeLabel = "$unitEmissionsChangeLabel% ↗ em relação ao período anterior",
-                quickActions = quickActions,
-                recentReports = recentReports
-            ) }
         }
     }
 
@@ -110,14 +119,13 @@ class HomeViewModel(
         if (sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)) {
             val lastReviewedDate = homeRepository.getLastReviewedInventory().createdAt
                 .format(dateFormatter)
-            val totalEmissions = homeRepository.getTotalEmissions()
-            val reductionAchieved = homeRepository.getTotalReduction()
+            val enterpriseInfo = homeRepository.getEnterpriseInfos()
             val countReviewedInventories = homeRepository.countReviewedInventories()
 
             return ManagerHeroCard(
                     lastSubmittedLabel = lastReviewedDate,
-                    totalEmissions = "$totalEmissions",
-                    reductionAchieved = "$reductionAchieved%",
+                    totalEmissions = "${enterpriseInfo.totalEmissions}",
+                    reductionAchieved = "${enterpriseInfo.totalReductions}",
                     summaryCount = "$countReviewedInventories"
                 )
         } else {

@@ -23,14 +23,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import kotlinx.coroutines.launch
 import com.aether.application.R
 import com.aether.application.feature.home.presentation.components.QuickAction
 import com.aether.application.feature.home.presentation.components.RecentReport
@@ -123,10 +133,10 @@ fun HomeScreen(
                     )
                 ) {
                     when (page) {
-                        0 -> SealProgressCard(sealLevelPercent, sealCriteriaLabel)
+                        0 -> heroCard.Render()
                         1 -> ReportsSummaryCard(heroCard.summaryTitle, heroCard.lastSubmittedLabel, heroCard.summaryCount, onViewHistoryClick)
                         2 -> UnitEmissionsCard(unitEmissionsValue, "tCO₂e/mês", unitEmissionsChangeLabel)
-                        3 ->SealProgressCard(sealLevelPercent, sealCriteriaLabel)
+                        3 -> SealProgressCard(sealLevelPercent, sealCriteriaLabel)
                     }
                 }
             }
