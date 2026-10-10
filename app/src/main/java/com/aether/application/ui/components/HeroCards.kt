@@ -2,6 +2,7 @@ package com.aether.core.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -10,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
@@ -89,6 +91,8 @@ fun UnitEmissionsCard(
             .clip(RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surface)
             .padding(20.dp)
+            .focusable()
+            .semantics(mergeDescendants = true) {}
     ) {
         Column {
             Row(
@@ -140,6 +144,8 @@ fun SealProgressCard(
             .clip(RoundedCornerShape(18.dp))
             .background(MaterialTheme.colorScheme.surface)
             .padding(20.dp)
+            .focusable()
+            .semantics(mergeDescendants = true) {}
     ) {
         Column {
             Row(
