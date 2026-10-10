@@ -3,7 +3,9 @@ package com.aether.application.feature.home.data.repository
 import com.aether.application.feature.home.data.remote.InventoryApi
 import com.aether.application.feature.home.data.remote.dto.GetMyInventoriesRequest
 import com.aether.application.feature.home.data.remote.dto.GetPendingInventoriesRequest
+import com.aether.application.feature.home.domain.model.EnterpriseInfo
 import com.aether.application.feature.home.domain.model.Inventory
+import com.aether.application.feature.home.domain.model.UnitInfo
 import com.aether.application.feature.home.domain.repository.HomeRepository
 
 class HomeRepositoryImpl(
@@ -24,4 +26,22 @@ class HomeRepositoryImpl(
         return response.inventories
     }
 
+    // TODO: backed by guessed endpoints, see InventoryApi
+    override suspend fun getMonthlyUnitInfos(): UnitInfo =
+        inventoryApi.getUnitInfo().toDomain()
+
+    override suspend fun getEnterpriseInfos(): EnterpriseInfo =
+        inventoryApi.getEnterpriseInfo().toDomain()
+
+    override suspend fun getLastReviewedInventory(): Inventory =
+        inventoryApi.getLastReviewedInventory()
+
+    override suspend fun getLastSubmittedInventory(): Inventory =
+        inventoryApi.getLastSubmittedInventory()
+
+    override suspend fun countAllSubmittedInvetories(): Int =
+        inventoryApi.countSubmittedInventories().count
+
+    override suspend fun countReviewedInventories(): Int =
+        inventoryApi.countReviewedInventories().count
 }
