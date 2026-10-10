@@ -1,10 +1,15 @@
 package com.aether.application.feature.home.data.remote
 
+import com.aether.application.feature.home.data.remote.dto.GetEnterpriseInfoResponse
+import com.aether.application.feature.home.data.remote.dto.GetInventoryCountResponse
 import com.aether.application.feature.home.data.remote.dto.GetMyInventoriesRequest
 import com.aether.application.feature.home.data.remote.dto.GetMyInventoriesResponse
 import com.aether.application.feature.home.data.remote.dto.GetPendingInventoriesRequest
 import com.aether.application.feature.home.data.remote.dto.GetPendingInventoriesResponse
+import com.aether.application.feature.home.data.remote.dto.GetUnitInfoResponse
+import com.aether.application.feature.home.domain.model.Inventory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 private const val INVENTORY = "inventories"
@@ -20,5 +25,24 @@ interface InventoryApi {
     suspend fun getPendingInventories(
         @Body request: GetPendingInventoriesRequest
     ): GetPendingInventoriesResponse
+
+    // TODO: every endpoint below is a guess, confirm paths and payloads with the backend
+    @GET("$INVENTORY/unit-info")
+    suspend fun getUnitInfo(): GetUnitInfoResponse
+
+    @GET("$INVENTORY/enterprise-info")
+    suspend fun getEnterpriseInfo(): GetEnterpriseInfoResponse
+
+    @GET("$INVENTORY/last-reviewed")
+    suspend fun getLastReviewedInventory(): Inventory
+
+    @GET("$INVENTORY/last-submitted")
+    suspend fun getLastSubmittedInventory(): Inventory
+
+    @GET("$INVENTORY/submitted/count")
+    suspend fun countSubmittedInventories(): GetInventoryCountResponse
+
+    @GET("$INVENTORY/reviewed/count")
+    suspend fun countReviewedInventories(): GetInventoryCountResponse
 
 }
