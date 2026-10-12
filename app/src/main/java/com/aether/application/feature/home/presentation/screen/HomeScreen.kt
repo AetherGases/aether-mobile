@@ -43,8 +43,6 @@ import com.aether.core.ui.components.SealProgressCard
 import com.aether.core.ui.components.UnitEmissionsCard
 import com.aether.core.ui.theme.*
 
-
-
 data class QuickAction(
     val label: String,
     val iconRes: Int,
@@ -55,15 +53,10 @@ data class QuickAction(
     val onClick: () -> Unit
 )
 
-enum class ReportStatus(
-    val label: String,
-    val color: Color,
-    val backgroundColor: Color,
-    val iconRes: Int
-){
-    PENDENTE("Pendente", Color(0xFF7848C5), Color(0xFFECE7FE), R.drawable.ic_pendent),
-    APROVADO("Aprovado", Color(0xFF498371), Color(0xFFD6F6E8), R.drawable.ic_approved),
-    RECUSADO("Recusado", lightRed, Color(0xFFF9C5CC), R.drawable.ic_rejected)
+enum class ReportStatus(val label: String, val iconRes: Int) {
+    PENDENTE("Pendente", R.drawable.ic_pendent),
+    APROVADO("Aprovado", R.drawable.ic_approved),
+    RECUSADO("Recusado", R.drawable.ic_rejected)
 }
 
 data class RecentReport(
@@ -98,25 +91,29 @@ fun HomeScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundLightElevated)
+            .background(MaterialTheme.colorScheme.background)
     ) {
+        val primaryContainer = MaterialTheme.colorScheme.primaryContainer
+        val secondaryContainer = MaterialTheme.colorScheme.secondaryContainer
+        val backgroundColor = MaterialTheme.colorScheme.background
+
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .blur(90.dp)
         ) {
             drawCircle(
-                color = Color(0xFFECE2FD),
+                color = primaryContainer.copy(alpha = 0.6f),
                 radius = size.width * 0.55f,
-                center = Offset(x = size.width * 0.1f, y = size.height * 0.08f)
+                center = Offset(x = size.width * -0.1f, y = size.height * 0.08f)
             )
             drawCircle(
-                color = Color(0xFFE7FAF2),
+                color = secondaryContainer.copy(alpha = 0.6f),
                 radius = size.width * 0.5f,
                 center = Offset(x = size.width * 0.9f, y = size.height * 0.05f)
             )
             drawCircle(
-                color = backgroundLightElevated,
+                color = backgroundColor,
                 radius = size.width * 0.6f,
                 center = Offset(x = size.width * 0.4f, y = size.height * 0.45f)
             )
@@ -140,7 +137,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            Text("Visão Geral", style = titleLarge, color = textPrimaryLight)
+            Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(16.dp))
 
             val pagerState = rememberPagerState(pageCount = { 4 })
@@ -149,8 +146,8 @@ fun HomeScreen(
                     modifier = Modifier.shadow(
                         elevation = 10.dp,
                         shape = RoundedCornerShape(20.dp),
-                        ambientColor = purple300.copy(alpha = 0.4f),
-                        spotColor = purple300.copy(alpha = 0.4f)
+                        ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                        spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
                     )
                 ) {
                     when (page) {
@@ -172,14 +169,19 @@ fun HomeScreen(
                             .padding(horizontal = 3.dp)
                             .size(8.dp)
                             .clip(CircleShape)
-                            .background(if (index == pagerState.currentPage) green500 else Color(0xFFD6D9E8))
+                            .background(
+                                if (index == pagerState.currentPage)
+                                    MaterialTheme.colorScheme.secondary
+                                else
+                                    MaterialTheme.colorScheme.outlineVariant
+                            )
                     )
                 }
             }
 
             Spacer(Modifier.height(24.dp))
 
-            Text("Ações Rápidas", style = titleLarge, color = textPrimaryLight)
+            Text("Ações Rápidas", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(16.dp))
 
             LazyRow(
@@ -198,11 +200,11 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Últimos Relatórios", style = titleLarge, color = textPrimaryLight)
+                Text("Últimos Relatórios", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
                 Text(
                     "Ver tudo",
                     style = titleSmall,
-                    color = textTertiaryLight,
+                    color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier.clickable { onSeeAllReportsClick() }
                 )
             }
@@ -231,8 +233,8 @@ fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier) {
         Box(
             modifier = Modifier
                 .size(100.dp)
-                .background(action.backgroundColor, RoundedCornerShape(16.dp))
-,            contentAlignment = Alignment.Center
+                .background(action.backgroundColor, RoundedCornerShape(16.dp)),
+            contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = painterResource(id = if (action.iconRes != 0) action.iconRes else R.drawable.ic_home),
@@ -246,11 +248,12 @@ fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier) {
         Text(
             text = action.label,
             style = bodyMediumMd,
-            color = textPrimaryLight,
+            color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1
         )
     }
 }
+
 @Composable
 fun RecentReportItem(
     report: RecentReport,
@@ -263,14 +266,14 @@ fun RecentReportItem(
             .shadow(
                 elevation = 6.dp,
                 shape = RoundedCornerShape(20.dp),
-                ambientColor = textTertiaryLight.copy(alpha = 0.15f),
-                spotColor = textTertiaryLight.copy(alpha = 0.15f)
+                ambientColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f),
+                spotColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
             )
             .clip(RoundedCornerShape(20.dp))
-            .background(backgroundLightElevated)
+            .background(MaterialTheme.colorScheme.surface)
             .border(
                 width = 0.5.dp,
-                color = textDisabledDark.copy(alpha = 0.4f),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
                 shape = RoundedCornerShape(20.dp)
             )
             .padding(16.dp),
@@ -285,14 +288,13 @@ fun RecentReportItem(
             modifier = Modifier
                 .size(64.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .background(Color.LightGray)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
         )
 
         Spacer(Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
             Row(
-
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
@@ -300,7 +302,7 @@ fun RecentReportItem(
                 Text(
                     text = report.name,
                     style = titleSmall,
-                    color = textPrimaryLight,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     modifier = Modifier.weight(1f)
                 )
@@ -311,7 +313,7 @@ fun RecentReportItem(
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "Mais opções",
-                        tint = textTertiaryLight.copy(alpha = 0.7f)
+                        tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f)
                     )
                 }
             }
@@ -321,7 +323,7 @@ fun RecentReportItem(
             Text(
                 text = "Realizado por ${report.ownerName}",
                 style = bodySmall,
-                color = textSecondaryLight
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(Modifier.height(16.dp))
@@ -333,14 +335,14 @@ fun RecentReportItem(
                 Icon(
                     imageVector = Icons.Default.DateRange,
                     contentDescription = null,
-                    tint = green500,
+                    tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
                     text = "Feito em ${report.createdAt}",
                     style = bodySmall.copy(fontWeight = FontWeight.Medium),
-                    color = green500
+                    color = MaterialTheme.colorScheme.secondary
                 )
 
                 Spacer(Modifier.weight(1f))
@@ -365,24 +367,30 @@ fun AsyncImage(
 
 @Composable
 fun StatusBadge(status: ReportStatus) {
+    val (color, backgroundColor) = when (status) {
+        ReportStatus.PENDENTE -> MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.primaryContainer
+        ReportStatus.APROVADO -> MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.secondaryContainer
+        ReportStatus.RECUSADO -> MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.errorContainer
+    }
+
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(50))
-            .background(status.backgroundColor)
+            .background(backgroundColor)
             .padding(horizontal = 10.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(id = status.iconRes),
             contentDescription = null,
-            tint = status.color,
+            tint = color,
             modifier = Modifier.size(14.dp)
         )
         Spacer(Modifier.width(4.dp))
         Text(
             text = status.label,
             style = labelSmall.copy(fontWeight = FontWeight.SemiBold),
-            color = status.color
+            color = color
         )
     }
 }
@@ -407,11 +415,11 @@ fun HomeScreenEmployeePreview() {
             sealLevelPercent = "50%",
             sealCriteriaLabel = "2 de 4 critérios atendidos",
             quickActions = listOf(
-                QuickAction("Criar relatório", R.drawable.ic_create_report, 60.dp,0.dp, 0.dp,Color(0xFFE7FAF2)) {},
-                QuickAction("Calcular CO2", R.drawable.ic_calculator_purple, 50.dp,0.dp, 0.dp,Color(0xFFECE2FD)) {},
-                QuickAction("Histórico", R.drawable.ic_history_green, 60.dp,3.dp, 0.dp,Color(0xFFE7FAF2)) {},
-                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp,Color(0xFFECE2FD)) {}
-                ),
+                QuickAction("Criar relatório", R.drawable.ic_create_report, 60.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
+                QuickAction("Calcular CO2", R.drawable.ic_calculator_purple, 50.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.primaryContainer) {},
+                QuickAction("Histórico", R.drawable.ic_history_green, 60.dp, 3.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
+                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, MaterialTheme.colorScheme.primaryContainer) {}
+            ),
             recentReports = listOf(
                 RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
                 RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
@@ -446,9 +454,9 @@ fun HomeScreenManagerPreview() {
             sealLevelPercent = "50%",
             sealCriteriaLabel = "2 de 4 critérios atendidos",
             quickActions = listOf(
-                QuickAction("Histórico", R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, Color(0xFFECE2FD)) {},
-                QuickAction("Calcular CO2", R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, Color(0xFFE7FAF2)) {},
-                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, Color(0xFFECE2FD)) {}
+                QuickAction("Histórico", R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, MaterialTheme.colorScheme.primaryContainer) {},
+                QuickAction("Calcular CO2", R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
+                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, MaterialTheme.colorScheme.primaryContainer) {}
             ),
             recentReports = listOf(
                 RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
