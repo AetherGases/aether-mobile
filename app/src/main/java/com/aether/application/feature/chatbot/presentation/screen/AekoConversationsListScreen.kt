@@ -1,4 +1,4 @@
-package com.aether.application.feature.aeko.presentation.screen
+package com.aether.application.feature.chatbot.presentation.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -53,7 +54,7 @@ fun AekoConversationsListScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -61,18 +62,25 @@ fun AekoConversationsListScreen(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(14.dp))
-                    .background(Brush.linearGradient(listOf(purple300, purple500))),
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.inversePrimary,
+                                MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_aeko),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(22.dp)
                 )
             }
             Spacer(Modifier.width(12.dp))
-            Text("Aeko", style = titleLarge, fontWeight = FontWeight.Bold, color = textPrimaryLight)
+            Text("Aeko", style = titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         }
 
         Spacer(Modifier.height(24.dp))
@@ -87,11 +95,11 @@ fun AekoConversationsListScreen(
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null,
-                tint = purple500,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp)
             )
             Spacer(Modifier.width(10.dp))
-            Text("Nova conversa", style = bodyMedium, fontWeight = FontWeight.Bold, color = textPrimaryLight)
+            Text("Nova conversa", style = bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         }
 
         Spacer(Modifier.height(16.dp))
@@ -104,7 +112,7 @@ fun AekoConversationsListScreen(
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = null,
-                    tint = textTertiaryLight
+                    tint = MaterialTheme.colorScheme.outline
                 )
             },
             singleLine = true,
@@ -112,8 +120,8 @@ fun AekoConversationsListScreen(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                unfocusedContainerColor = textDisabledLight.copy(alpha = 0.08f),
-                focusedContainerColor = textDisabledLight.copy(alpha = 0.08f)
+                unfocusedContainerColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.08f),
+                focusedContainerColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.08f)
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -126,7 +134,7 @@ fun AekoConversationsListScreen(
             "Conversas salvas",
             style = bodySmall,
             fontWeight = FontWeight.Bold,
-            color = textTertiaryLight
+            color = MaterialTheme.colorScheme.outline
         )
 
         Spacer(Modifier.height(8.dp))
@@ -137,11 +145,11 @@ fun AekoConversationsListScreen(
                     conversation = conversation,
                     onClick = { onConversationClick(conversation.id) }
                 )
-                HorizontalDivider(color = textDisabledLight.copy(alpha = 0.3f))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
             }
         }
 
-        HorizontalDivider(color = textDisabledLight.copy(alpha = 0.3f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
         Spacer(Modifier.height(12.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -154,14 +162,14 @@ fun AekoConversationsListScreen(
             )
             Spacer(Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(userName, style = bodyMedium, fontWeight = FontWeight.Bold, color = textPrimaryLight)
-                Text(userRole, style = bodySmall, color = textTertiaryLight)
+                Text(userName, style = bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                Text(userRole, style = bodySmall, color = MaterialTheme.colorScheme.outline)
             }
             IconButton(onClick = onSettingsClick) {
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Configurações",
-                    tint = textTertiaryLight
+                    tint = MaterialTheme.colorScheme.outline
                 )
             }
         }
@@ -185,14 +193,14 @@ private fun ConversationRow(
                 .width(4.dp)
                 .height(20.dp)
                 .clip(RoundedCornerShape(50))
-                .background(if (conversation.isSelected) green500 else Color.Transparent)
+                .background(if (conversation.isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent)
         )
         Spacer(Modifier.width(12.dp))
         Text(
             conversation.title,
             style = bodyMedium,
             fontWeight = if (conversation.isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = textPrimaryLight
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
