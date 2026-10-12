@@ -28,37 +28,40 @@ fun ReportsSummaryCard(
             .width(335.dp)
             .height(205.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(backgroundLightElevated)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(20.dp)
-
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                Text(title, style = titleSmall, color = textPrimaryLight)
+                Text(title, style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
                 Text(
                     "Último enviado em $lastSubmittedLabel",
                     style = bodySmallMedium,
-                    color = textTertiaryLight
+                    color = MaterialTheme.colorScheme.outline
                 )
             }
 
             Row(verticalAlignment = Alignment.Bottom) {
-                Text(count, style = displayLargeBold, color = textPrimaryLight)
+                Text(count, style = displayLargeBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.width(6.dp))
-                Text("Este mês", style = bodyLargeMedium, color = textPrimaryLight,
-                    modifier = Modifier.offset(y = (-24).dp))
+                Text(
+                    "Este mês",
+                    style = bodyLargeMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.offset(y = (-24).dp)
+                )
             }
 
             Button(
                 onClick = onViewHistoryClick,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = green500)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
             ) {
-                Text("Ver histórico", style = titleSmall, color = textPrimaryDark)
+                Text("Ver histórico", style = titleSmall, color = MaterialTheme.colorScheme.onSecondary)
             }
         }
 
@@ -84,7 +87,7 @@ fun UnitEmissionsCard(
             .width(335.dp)
             .height(205.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(backgroundLightElevated)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(20.dp)
     ) {
         Column {
@@ -92,15 +95,15 @@ fun UnitEmissionsCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Emissões da unidade", style = titleSmall, color = textPrimaryLight)
+                Text("Emissões da unidade", style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
             }
 
             Spacer(Modifier.height(12.dp))
 
-            Column() {
-                Text(value, style = displayLargeBold, color = textPrimaryLight)
+            Column {
+                Text(value, style = displayLargeBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.width(6.dp))
-                Text(unitLabel, style = bodyLargeMedium, color = textPrimaryLight)
+                Text(unitLabel, style = bodyLargeMedium, color = MaterialTheme.colorScheme.onSurface)
             }
 
             Spacer(Modifier.height(16.dp))
@@ -108,11 +111,11 @@ fun UnitEmissionsCard(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(18.dp))
-                    .background(green100.copy(alpha = 0.4f))
+                    .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f))
                     .padding(horizontal = 10.dp, vertical = 6.dp)
 
             ) {
-                Text(changeLabel, style = labelSmall, color = green700.copy(alpha = 0.75f))
+                Text(changeLabel, style = labelSmall, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.75f))
             }
         }
         Image(
@@ -135,7 +138,7 @@ fun SealProgressCard(
             .width(335.dp)
             .height(205.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(backgroundLightElevated)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(20.dp)
     ) {
         Column {
@@ -143,13 +146,13 @@ fun SealProgressCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Selo Clima Paraná", style = titleSmall, color = textPrimaryLight)
+                Text("Selo Clima Paraná", style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
             }
 
             Spacer(Modifier.height(12.dp))
 
-            Text("Nível", style = bodyMediumMd, color = textTertiaryLight)
-            Text(levelPercent, style = displayLargeBold, color = textPrimaryLight)
+            Text("Nível", style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
+            Text(levelPercent, style = displayLargeBold, color = MaterialTheme.colorScheme.onSurface)
 
             Spacer(Modifier.height(12.dp))
 
@@ -157,11 +160,11 @@ fun SealProgressCard(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_warning),
                     contentDescription = null,
-                    tint = lightYellow,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(Modifier.width(6.dp))
-                Text(criteriaLabel, style = bodyMediumMd, color = textSecondaryLight)
+                Text(criteriaLabel, style = bodyMediumMd, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         Image(
@@ -173,6 +176,7 @@ fun SealProgressCard(
         )
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun ReportsSummaryCardPreview() {
@@ -208,5 +212,3 @@ fun SealProgressCardPreview() {
         )
     }
 }
-
-

@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,10 +40,15 @@ fun NotificationCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(elevation = 6.dp, shape = RoundedCornerShape(18.dp), ambientColor = textTertiaryLight.copy(alpha = 0.5f), spotColor = textTertiaryLight.copy(alpha = 0.5f))
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(18.dp),
+                ambientColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                spotColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+            )
             .clip(RoundedCornerShape(18.dp))
-            .background(backgroundLightElevated)
-            .border(1.dp, purple500.copy(alpha = 0.2f), RoundedCornerShape(18.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), RoundedCornerShape(18.dp))
             .padding(18.dp),
         verticalAlignment = Alignment.Top
     ) {
@@ -58,14 +64,14 @@ fun NotificationCard(
         Spacer(Modifier.width(14.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(title, style = titleSmall, color = textPrimaryLight)
+            Text(title, style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(2.dp))
-            Text(reviewer, style = bodySmallMedium, color = textTertiaryLight)
+            Text(reviewer, style = bodySmallMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(2.dp))
-            Text(timestamp, style = bodySmallMedium, color = textDisabledLight)
+            Text(timestamp, style = bodySmallMedium, color = MaterialTheme.colorScheme.outlineVariant)
         }
 
-        Text(relativeTime, style = bodySmallMedium, fontWeight = FontWeight.SemiBold, color = textTertiaryLight)
+        Text(relativeTime, style = bodySmallMedium, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.outline)
     }
 }
 

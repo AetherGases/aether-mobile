@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,15 +42,24 @@ fun AppHeader(
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text("Seja bem-vindo,", style = bodySmallMedium, color = textTertiaryLight)
-            Text(userName, style = labelLarge, color = textPrimaryLight) }
+            Text(
+                text = "Seja bem-vindo,",
+                style = bodySmallMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = userName,
+                style = labelLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
 
         Box {
-           IconButton(onClick = onNotificationsClick) {
+            IconButton(onClick = onNotificationsClick) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_bell),
                     contentDescription = "Notificações",
-                    tint = textTertiaryLight
+                    tint = MaterialTheme.colorScheme.outline
                 )
             }
             if (hasUnreadNotifications) {
@@ -59,7 +69,7 @@ fun AppHeader(
                         .align(Alignment.TopEnd)
                         .offset(y = 8.dp, x = (-12).dp)
                         .clip(CircleShape)
-                        .background(lightRed)
+                        .background(MaterialTheme.colorScheme.error)
                 )
             }
         }
@@ -68,7 +78,7 @@ fun AppHeader(
             Icon(
                 painter = painterResource(id = R.drawable.ic_settings),
                 contentDescription = "Configurações",
-                tint = textTertiaryLight
+                tint = MaterialTheme.colorScheme.outline
             )
         }
     }

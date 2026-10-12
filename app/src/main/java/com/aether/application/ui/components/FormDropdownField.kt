@@ -25,7 +25,7 @@ fun FormDropdownField(
 
     Column(modifier = modifier) {
         if (label.isNotEmpty()) {
-            Text(label, style = bodyMediumMd, color = textPrimaryLight)
+            Text(label, style = bodyMediumMd, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(6.dp))
         }
 
@@ -41,7 +41,8 @@ fun FormDropdownField(
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.arrow_dropdown),
-                        contentDescription = "retorno"
+                        contentDescription = "retorno",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
                 modifier = Modifier
@@ -49,8 +50,8 @@ fun FormDropdownField(
                     .menuAnchor(),
                 shape = RoundedCornerShape(28.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = purple300,
-                    unfocusedBorderColor = textDisabledLight
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                 )
             )
 
