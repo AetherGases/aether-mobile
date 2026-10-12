@@ -9,13 +9,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -49,19 +49,19 @@ fun GreenGasStep(
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(Modifier.height(16.dp))
-            Text("Gás Verde", style = titleLarge, color = textPrimaryLight)
+            Text("Gás Verde", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(32.dp))
 
             Text(
                 text = buildAnnotatedString {
                     append("Gás verde que deseja simular")
-                    withStyle(style = SpanStyle(color = lightRed)) {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                         append("*")
                     }
                 },
                 style = labelMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = textPrimaryLight
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(8.dp))
 
@@ -77,10 +77,10 @@ fun GreenGasStep(
 
             Text(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = textTertiaryLight)) {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.outline)) {
                         append("Não sabe qual escolher? ")
                     }
-                    withStyle(style = SpanStyle(color = purple500, fontWeight = FontWeight.SemiBold)) {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)) {
                         append("Consulte o Aeko")
                     }
                 },
@@ -107,13 +107,13 @@ fun GreenGasStep(
                     Box(
                         modifier = Modifier
                             .size(6.dp)
-                            .background(textDisabledLight, RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(50))
                     )
                     Box(
                         modifier = Modifier
                             .width(24.dp)
                             .height(6.dp)
-                            .background(green500, RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(50))
                     )
                 }
 
@@ -124,21 +124,24 @@ fun GreenGasStep(
                         .size(56.dp)
                         .background(
                             brush = Brush.linearGradient(
-                                colors = listOf(purple500, purple300)
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.inversePrimary
+                                )
                             ),
                             shape = RoundedCornerShape(50)
                         )
                         .shadow(
                             elevation = 10.dp,
                             shape = CircleShape,
-                            ambientColor = purple500,
-                            spotColor = purple500.copy(alpha = 0.65f)
+                            ambientColor = MaterialTheme.colorScheme.primary,
+                            spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.65f)
                         )
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = "Prosseguir",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(32.dp)
                     )
                 }

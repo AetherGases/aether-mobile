@@ -1,12 +1,12 @@
 package com.aether.application.ui.components
 
-import com.aether.application.R
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,19 +17,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aether.core.ui.theme.green500
-import com.aether.core.ui.theme.green700
-import com.aether.core.ui.theme.textDisabledLight
-import com.aether.core.ui.theme.textTertiaryLight
+import com.aether.application.R
 
 @Composable
 fun RequirementItem(text: String, isMet: Boolean) {
     val iconColor by animateColorAsState(
-        targetValue = if (isMet) green500 else textDisabledLight,
+        targetValue = if (isMet) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outlineVariant,
         label = "requirementIconColor",
     )
     val textColor by animateColorAsState(
-        targetValue = if (isMet) green700 else textTertiaryLight,
+        targetValue = if (isMet) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outline,
         label = "requirementTextColor",
     )
 

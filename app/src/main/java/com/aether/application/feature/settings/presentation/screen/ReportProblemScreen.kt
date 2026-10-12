@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -49,7 +50,7 @@ fun ReportProblemScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         AetherTopBar(title = "Relatar problema", onBackClick = onBackClicked)
 
@@ -85,8 +86,8 @@ fun ReportProblemScreen(
                     modifier = Modifier.fillMaxSize(),
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = purple300,
-                        unfocusedBorderColor = textDisabledLight,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                         unfocusedContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent
                     )
@@ -94,7 +95,7 @@ fun ReportProblemScreen(
                 Text(
                     text = "${description.length}/500",
                     style = bodySmall,
-                    color = textTertiaryLight,
+                    color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(bottom = 16.dp, end = 16.dp)
@@ -104,8 +105,8 @@ fun ReportProblemScreen(
             Spacer(Modifier.height(24.dp))
 
             Row {
-                Text("Anexar print ", style = bodyMediumMd, color = textPrimaryLight)
-                Text("(Opcional)", style = bodyMediumMd, color = textTertiaryLight)
+                Text("Anexar print ", style = bodyMediumMd, color = MaterialTheme.colorScheme.onBackground)
+                Text("(Opcional)", style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
             }
             Spacer(Modifier.height(8.dp))
 
@@ -123,11 +124,18 @@ fun ReportProblemScreen(
                     .padding(vertical = 24.dp)
                     .height(56.dp)
                     .clip(RoundedCornerShape(50))
-                    .background(Brush.linearGradient(listOf(Color(0xFF7C5CFC), purple500)))
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.inversePrimary,
+                                MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    )
                     .clickable(onClick = onSubmitClicked),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Enviar", style = titleMediumMD, color = Color.White)
+                Text("Enviar", style = titleMediumMD, color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
@@ -138,12 +146,12 @@ private fun RequiredFieldLabel(text: String) {
     Text(
         text = buildAnnotatedString {
             append(text)
-            withStyle(style = SpanStyle(color = Color(0xFFD32F2F))) {
+            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                 append("*")
             }
         },
         style = labelMedium,
-        color = textPrimaryLight
+        color = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -160,8 +168,8 @@ private fun FileDropzone(
             .fillMaxWidth()
             .height(160.dp)
             .clip(shape)
-            .background(green500.copy(alpha = 0.06f))
-            .dashedBorder(color = green500, cornerRadius = 20.dp)
+            .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.06f))
+            .dashedBorder(color = MaterialTheme.colorScheme.secondary, cornerRadius = 20.dp)
             .clickable(onClick = onSelectFileClicked)
             .padding(16.dp)
     ) {
@@ -177,9 +185,9 @@ private fun FileDropzone(
                     modifier = Modifier.size(44.dp)
                 )
                 Spacer(Modifier.height(10.dp))
-                Text("Selecione um arquivo", style = bodyMedium, fontWeight = FontWeight.Bold, color = green700)
+                Text("Selecione um arquivo", style = bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
                 Spacer(Modifier.height(2.dp))
-                Text("PNG, JPG, JPEG", style = bodySmallMedium, color = green500)
+                Text("PNG, JPG, JPEG", style = bodySmallMedium, color = MaterialTheme.colorScheme.secondary)
             }
         } else {
             Row(
@@ -193,13 +201,13 @@ private fun FileDropzone(
                     modifier = Modifier.size(22.dp)
                 )
                 Spacer(Modifier.width(8.dp))
-                Text(fileName, style = bodyMedium, fontWeight = FontWeight.Bold, color = textPrimaryLight)
+                Text(fileName, style = bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                 Spacer(Modifier.width(8.dp))
                 IconButton(onClick = onRemoveFileClicked, modifier = Modifier.size(22.dp)) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Remover arquivo",
-                        tint = textTertiaryLight
+                        tint = MaterialTheme.colorScheme.outline
                     )
                 }
             }
