@@ -1,7 +1,6 @@
 package com.aether.core.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -49,7 +48,7 @@ fun ChatMessageBubble(
                         .background(
                             Brush.linearGradient(
                                 listOf(
-                                    Color(0xFFA37CF6),
+                                    MaterialTheme.colorScheme.inversePrimary,
                                     MaterialTheme.colorScheme.primary
                                 )
                             )
@@ -73,10 +72,10 @@ fun ChatMessageBubble(
                         .shadow(
                             elevation = 8.dp,
                             shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomStart = 4.dp, bottomEnd = 20.dp),
-                            ambientColor = purple700.copy(alpha = 0.4f),
-                            spotColor = purple700.copy(alpha = 0.3f)
+                            ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                            spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                         )
-                        .background(MaterialTheme.colorScheme.background)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(horizontal = 16.dp, vertical = 18.dp)
                 ) {
                     Text(
@@ -98,7 +97,7 @@ fun ChatMessageBubble(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.background)
+                            .background(MaterialTheme.colorScheme.surface)
                             .clickable(onClick = onCopyClick),
                         contentAlignment = Alignment.Center
                     ) {

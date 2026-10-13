@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -28,7 +27,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.core.ui.theme.AetherTheme
-import com.aether.core.ui.theme.green500
 
 @Composable
 fun ChatInputBar(
@@ -44,8 +42,8 @@ fun ChatInputBar(
             .shadow(
                 elevation = 14.dp,
                 shape = RoundedCornerShape(100),
-                ambientColor = Color.Black.copy(alpha = 0.15f),
-                spotColor = Color.Black.copy(alpha = 0.15f)
+                ambientColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f),
+                spotColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
             )
             .background(MaterialTheme.colorScheme.background, RoundedCornerShape(100))
             .padding(start = 24.dp, end = 6.dp),
@@ -76,12 +74,12 @@ fun ChatInputBar(
             onClick = onSendClick,
             modifier = Modifier
                 .size(48.dp)
-                .background(green500, CircleShape)
+                .background(MaterialTheme.colorScheme.secondary, CircleShape)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_send),
                 contentDescription = "Enviar",
-                tint = Color.White,
+                tint = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier.size(22.dp)
             )
         }

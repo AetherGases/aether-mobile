@@ -4,12 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -20,9 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.core.ui.theme.*
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
 
 data class ManagerHeroCard(
     override val lastSubmittedLabel: String,
@@ -44,8 +39,7 @@ data class ManagerHeroCard(
                 painter = painterResource(id = R.drawable.bg_hero_card_purple),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             )
 
             Column(
@@ -55,11 +49,15 @@ data class ManagerHeroCard(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    Text("Total de emissões mapeadas", style = titleSmall, color = textPrimaryDark)
+                    Text(
+                        "Total de emissões mapeadas",
+                        style = titleSmall,
+                        color = Color.White
+                    )
                     Text(
                         "Último envio em $lastSubmittedLabel",
                         style = bodySmallMedium,
-                        color = textPrimaryDark
+                        color = Color.White
                     )
                 }
 
@@ -73,9 +71,9 @@ data class ManagerHeroCard(
                                 width = 1.dp,
                                 brush = Brush.linearGradient(
                                     colors = listOf(
-                                        backgroundLightElevated.copy(alpha = 0.8f),
-                                        backgroundLightElevated.copy(alpha = 0.3f),
-                                        backgroundLightElevated
+                                        MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                                        MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                                        MaterialTheme.colorScheme.surface
                                     )
                                 ),
                                 shape = RoundedCornerShape(16.dp)
@@ -86,10 +84,10 @@ data class ManagerHeroCard(
                             Text(
                                 "Total (em tCO₂e)",
                                 style = bodySmallMedium,
-                                color = textPrimaryDark,
+                                color = Color.White,
                                 maxLines = 1
                             )
-                            Text(totalEmissions, style = displayMedium, color = textPrimaryDark)
+                            Text(totalEmissions, style = displayMedium, color = Color.White)
                         }
                     }
 
@@ -102,9 +100,9 @@ data class ManagerHeroCard(
                                 width = 1.dp,
                                 brush = Brush.linearGradient(
                                     colors = listOf(
-                                        backgroundLightElevated.copy(alpha = 0.8f),
-                                        backgroundLightElevated.copy(alpha = 0.3f),
-                                        backgroundLightElevated
+                                        MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                                        MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                                        MaterialTheme.colorScheme.surface
                                     )
                                 ),
                                 shape = RoundedCornerShape(16.dp)
@@ -115,10 +113,10 @@ data class ManagerHeroCard(
                             Text(
                                 "Redução obtida",
                                 style = bodySmallMedium,
-                                color = textPrimaryDark,
+                                color = Color.White,
                                 maxLines = 1
                             )
-                            Text(reductionAchieved, style = displayMedium, color = textPrimaryDark)
+                            Text(reductionAchieved, style = displayMedium, color = Color.White)
                         }
                     }
                 }

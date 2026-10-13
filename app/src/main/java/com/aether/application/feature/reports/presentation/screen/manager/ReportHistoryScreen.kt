@@ -12,7 +12,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -42,7 +44,7 @@ import com.aether.core.ui.components.ReportCard
 import com.aether.core.ui.components.ReportStatus
 import com.aether.core.ui.theme.*
 
-enum class ReportViewerRole {GERENTE, FUNCIONARIO}
+enum class ReportViewerRole { GERENTE, FUNCIONARIO }
 
 enum class ReportTimeFilter(val label: String) {
     MAIS_RECENTES("Mais Recentes"),
@@ -94,12 +96,12 @@ fun ReportHistoryScreen(
     onBackClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var filterPanelVisible by remember {mutableStateOf(false)}
+    var filterPanelVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         AetherTopBar(title = "Gerenciamento de relatórios", onBackClick = onBackClicked)
 
@@ -111,7 +113,7 @@ fun ReportHistoryScreen(
         ) {
             Spacer(Modifier.height(12.dp))
 
-            Text("Histórico", style = titleLarge, color = textPrimaryLight)
+            Text("Histórico", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
 
             Spacer(Modifier.height(16.dp))
 
@@ -128,23 +130,22 @@ fun ReportHistoryScreen(
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = onSearchQueryChanged,
-                        placeholder = {Text("Procurar relatório")},
+                        placeholder = { Text("Procurar relatório") },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.ic_search),
                                 contentDescription = null,
-                                tint = textTertiaryLight
+                                tint = MaterialTheme.colorScheme.outline
                             )
                         },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions.Default,
                         shape = RoundedCornerShape(percent = 50),
-
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = purple300,
-                            unfocusedBorderColor = textDisabledLight.copy(alpha = 0.25f),
-                            unfocusedContainerColor = backgroundLight,
-                            focusedContainerColor = Color(0xFFD6DCEA)
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.25f),
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
                         ),
                         modifier = Modifier
                             .weight(1f)
@@ -159,16 +160,19 @@ fun ReportHistoryScreen(
                             .clip(CircleShape)
                             .background(
                                 Brush.linearGradient(
-                                    colors = listOf(green500.copy(alpha = 0.5f), green100)
+                                    colors = listOf(
+                                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                                        MaterialTheme.colorScheme.secondaryContainer
+                                    )
                                 )
                             )
-                            .clickable {filterPanelVisible = !filterPanelVisible },
+                            .clickable { filterPanelVisible = !filterPanelVisible },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_tune),
                             contentDescription = "Filtrar",
-                            tint = green700,
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -179,7 +183,7 @@ fun ReportHistoryScreen(
                     Popup(
                         alignment = Alignment.TopEnd,
                         offset = IntOffset(x = 0, y = offsetY),
-                        onDismissRequest = {filterPanelVisible = false }
+                        onDismissRequest = { filterPanelVisible = false }
                     ) {
                         ReportFilterPanel(
                             selectedTimeFilters = selectedTimeFilters,
@@ -193,7 +197,7 @@ fun ReportHistoryScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            reportItems.forEachIndexed {index, item ->
+            reportItems.forEachIndexed { index, item ->
                 val secondaryLabel = when (viewerRole) {
                     ReportViewerRole.GERENTE -> "Realizado por ${item.authorName}"
                     ReportViewerRole.FUNCIONARIO -> "Revisado por ${item.reviewerName}"
@@ -206,7 +210,7 @@ fun ReportHistoryScreen(
                     createdAt = item.createdAt,
                     status = item.status,
                     onReviewClick = if (item.canReview) {
-                        {onReviewClick(item.id)}
+                        { onReviewClick(item.id) }
                     } else {
                         null
                     }
@@ -228,7 +232,7 @@ private fun ReportCalendarCard(
     monthWeeks: List<List<CalendarDay?>>,
     onDaySelected: (CalendarDay) -> Unit
 ) {
-    var isExpanded by remember {mutableStateOf(false)}
+    var isExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -237,12 +241,12 @@ private fun ReportCalendarCard(
             .background(
                 Brush.linearGradient(
                     colors = listOf(
-                        purple300,
-                        purple100
+                        MaterialTheme.colorScheme.inversePrimary,
+                        MaterialTheme.colorScheme.primaryContainer
                     )
                 )
             )
-            .border(1.dp, purple500, RoundedCornerShape(24.dp))
+            .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(24.dp))
             .padding(16.dp)
     ) {
         Row(
@@ -252,24 +256,24 @@ private fun ReportCalendarCard(
             Text(
                 if (isExpanded) "Esse mês" else "Essa semana",
                 style = bodyLargeMedium,
-                color = textPrimaryLight
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 if (isExpanded) "Ver menos" else "Ver mais",
                 style = bodyMediumMd,
-                color = purple500,
-                modifier = Modifier.clickable {isExpanded = !isExpanded}
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable { isExpanded = !isExpanded }
             )
         }
 
         Spacer(Modifier.height(12.dp))
 
         Row(modifier = Modifier.fillMaxWidth()) {
-            weekDayLetters.forEach {letter ->
+            weekDayLetters.forEach { letter ->
                 Text(
                     letter,
                     style = bodyMediumMd,
-                    color = textSecondaryLight,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                     modifier = Modifier.weight(1f)
                 )
@@ -311,18 +315,24 @@ private fun CalendarWeekRow(
                         modifier = Modifier
                             .size(36.dp)
                             .clip(CircleShape)
-                            .background(if (day.isSelected) purple500 else Color.White)
-                            .then(
-                                if (day.isSelected) Modifier else Modifier.border(1.dp, purple500.copy(alpha = 0.8f), CircleShape)
+                            .background(
+                                if (day.isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
                             )
-                            .clickable {onDaySelected(day) },
+                            .then(
+                                if (day.isSelected) Modifier else Modifier.border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                                    CircleShape
+                                )
+                            )
+                            .clickable { onDaySelected(day) },
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             day.number,
                             style = bodySmallMedium,
                             fontWeight = FontWeight.SemiBold,
-                            color = if (day.isSelected) Color.White else textSecondaryLight
+                            color = if (day.isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -333,14 +343,14 @@ private fun CalendarWeekRow(
 
 @Composable
 private fun DisabledDayCircle() {
+    val stripeColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.4f)
     Canvas(
         modifier = Modifier
             .size(36.dp)
             .clip(CircleShape)
-            .background(Color.White)
+            .background(Color.Transparent)
     ) {
         if (size.width <= 0f || size.height <= 0f) return@Canvas
-        val stripeColor = green500.copy(alpha = 0.4f)
         val step = size.width / 4f
         if (step <= 0f) return@Canvas
         var x = -size.height
@@ -367,7 +377,7 @@ private fun ReportFilterPanel(
 ) {
     Surface(
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 8.dp,
         modifier = Modifier.width(220.dp)
     ) {
@@ -376,7 +386,7 @@ private fun ReportFilterPanel(
                 "Filtrar por tempo",
                 style = bodySmall,
                 fontWeight = FontWeight.Bold,
-                color = textTertiaryLight
+                color = MaterialTheme.colorScheme.outline
             )
             Spacer(Modifier.height(8.dp))
             ReportTimeFilter.values().forEach { filter ->
@@ -388,14 +398,14 @@ private fun ReportFilterPanel(
             }
 
             Spacer(Modifier.height(12.dp))
-            androidx.compose.material3.HorizontalDivider(color = green500.copy(alpha = 0.4f))
+            HorizontalDivider(color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.4f))
             Spacer(Modifier.height(12.dp))
 
             Text(
                 "Filtrar por categoria",
                 style = bodySmall,
                 fontWeight = FontWeight.Bold,
-                color = textTertiaryLight
+                color = MaterialTheme.colorScheme.outline
             )
             Spacer(Modifier.height(8.dp))
             ReportStatus.values().forEach { status ->
@@ -425,9 +435,9 @@ private fun FilterCheckboxRow(
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            colors = CheckboxDefaults.colors(checkedColor = purple300)
+            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
         )
-        Text(label, style = bodySmall, color = textPrimaryLight)
+        Text(label, style = bodySmall, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 

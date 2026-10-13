@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,12 +31,13 @@ enum class ReportStatus(val label: String) {
     SOLICITADO("Solicitado")
 }
 
+@Composable
 private fun statusColor(status: ReportStatus): Color = when (status) {
-    ReportStatus.EM_ANALISE -> purple500
-    ReportStatus.APROVADO -> green500
-    ReportStatus.REJEITADO -> lightRed
-    ReportStatus.EMITIDO -> lightYellow
-    ReportStatus.SOLICITADO -> textTertiaryLight
+    ReportStatus.EM_ANALISE -> MaterialTheme.colorScheme.primary
+    ReportStatus.APROVADO -> MaterialTheme.colorScheme.secondary
+    ReportStatus.REJEITADO -> MaterialTheme.colorScheme.error
+    ReportStatus.EMITIDO -> MaterialTheme.colorScheme.tertiary
+    ReportStatus.SOLICITADO -> MaterialTheme.colorScheme.outline
 }
 
 @Composable
@@ -52,8 +54,8 @@ fun ReportCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .background(Color.White)
-            .border(1.dp, textDisabledLight.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
             .padding(16.dp)
     ) {
         Row(verticalAlignment = Alignment.Top) {
@@ -63,6 +65,7 @@ fun ReportCard(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(RoundedCornerShape(14.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
             )
 
             Spacer(Modifier.width(12.dp))
@@ -76,14 +79,14 @@ fun ReportCard(
                     Text(
                         title,
                         style = labelLarge,
-                        color = textPrimaryLight,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(Modifier.width(8.dp))
                     StatusBadge(text = status.label, color = statusColor(status))
                 }
                 Spacer(Modifier.height(4.dp))
-                Text(secondaryLabel, style = bodySmall, color = textTertiaryLight)
+                Text(secondaryLabel, style = bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
@@ -98,14 +101,14 @@ fun ReportCard(
                 Icon(
                     painter = painterResource(R.drawable.calendarmonth),
                     contentDescription = null,
-                    tint = textTertiaryLight,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
                     "Data de criação: $createdAt",
                     style = bodySmallMedium,
-                    color = textTertiaryLight
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -113,17 +116,24 @@ fun ReportCard(
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(Brush.linearGradient(listOf(Color(0xFF8A47FD), purple500)))
+                        .background(
+                            Brush.linearGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.inversePrimary,
+                                    MaterialTheme.colorScheme.primary
+                                )
+                            )
+                        )
                         .clickable(onClick = onReviewClick)
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Revisar", style = bodyMediumMd, color = Color.White)
+                    Text("Revisar", style = bodyMediumMd, color = MaterialTheme.colorScheme.onPrimary)
                     Spacer(Modifier.width(4.dp))
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(14.dp)
                     )
                 }
