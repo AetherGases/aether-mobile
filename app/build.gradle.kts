@@ -84,7 +84,7 @@ android {
             buildConfigField(
                 "String",
                 "BASE_URL",
-                "\"https://api.aether.app/\""
+                "\"https://aethergases.org/\""
             )
 
             proguardFiles(
