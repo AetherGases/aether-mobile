@@ -129,7 +129,23 @@ fun HomeScreen(
                 Spacer(Modifier.height(16.dp))
 
                 val pagerState = rememberPagerState(pageCount = { cards.size })
-                HorizontalPager(state = pagerState) { page ->
+                HorizontalPager(
+                    state = pagerState,
+                    // Cards keep their size and the next ones peek in, so wide screens show more than one
+                    pageSize = PageSize.Fixed(CARD_WIDTH),
+                    pageSpacing = 16.dp,
+                    contentPadding = PaddingValues(horizontal = SCREEN_PADDING),
+                    // Let the cards scroll to the screen edges instead of being cut at the screen padding
+                    modifier = Modifier.layout { measurable, constraints ->
+                        val extra = SCREEN_PADDING.roundToPx()
+                        val placeable = measurable.measure(
+                            constraints.copy(maxWidth = constraints.maxWidth + extra * 2)
+                        )
+                        layout(constraints.maxWidth, placeable.height) {
+                            placeable.place(-extra, 0)
+                        }
+                    }
+                ) { page ->
                     Box(
                         modifier = Modifier
                             .semantics {
@@ -145,14 +161,17 @@ fun HomeScreen(
                         cards[page].Render()
                     }
                 }
+                // Only worth showing when there is something to scroll to
                 if (pagerState.canScrollForward || pagerState.canScrollBackward) {
                     Spacer(Modifier.height(18.dp))
+                    // Decorative: the position is already announced by each card
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clearAndSetSemantics {},
                         horizontalArrangement = Arrangement.Center
                     ) {
+                        // With fixed-size pages the last ones never become the current page
                         val selectedPage = if (pagerState.canScrollForward) {
                             pagerState.currentPage
                         } else {
