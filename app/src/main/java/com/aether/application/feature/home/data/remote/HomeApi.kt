@@ -33,16 +33,13 @@ interface InventoryApi {
     @GET("$INVENTORY/enterprise-info")
     suspend fun getEnterpriseInfo(): GetEnterpriseInfoResponse
 
-    @GET("$INVENTORY/last-reviewed")
+    @GET("$INVENTORY/reviewed/last")
     suspend fun getLastReviewedInventory(): Inventory
 
-    @GET("$INVENTORY/last-submitted")
+    @GET("$INVENTORY/mine/last")
     suspend fun getLastSubmittedInventory(): Inventory
 
-    @GET("$INVENTORY/submitted/count")
-    suspend fun countSubmittedInventories(): GetInventoryCountResponse
-
-    @GET("$INVENTORY/reviewed/count")
-    suspend fun countReviewedInventories(): GetInventoryCountResponse
+    @GET("$INVENTORY/count")
+    suspend fun countInventories(): GetInventoryCountResponse
 
 }

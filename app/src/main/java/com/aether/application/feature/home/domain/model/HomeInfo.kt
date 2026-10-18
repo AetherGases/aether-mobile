@@ -6,6 +6,11 @@ data class EnterpriseInfo(
     val totalEmissions: Int,
 )
 
+data class InventoryCount(
+    val submittedCount: Int,
+    val reviewedCount: Int,
+)
+
 data class UnitInfo(
     val emissions: Int,
     val reductionPercentage: Int,

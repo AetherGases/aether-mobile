@@ -78,10 +78,6 @@
         {
           "type": "route",
           "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d"
-        },
-        {
-          "type": "route",
-          "uuid": "4cd79614-11e9-4b72-808f-b3c384d1b1b8"
         }
       ]
     }
@@ -433,7 +429,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/last-reviewed",
+      "endpoint": "inventories/reviewed/last",
       "responses": [
         {
           "uuid": "b449699f-45b0-44fb-b025-4b027fe65019",
@@ -464,7 +460,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/last-submitted",
+      "endpoint": "inventories/mine/last",
       "responses": [
         {
           "uuid": "b959cb2c-085d-42b4-9f02-3ad320da22c3",
@@ -495,42 +491,11 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/submitted/count",
+      "endpoint": "inventories/count",
       "responses": [
         {
           "uuid": "b38a02cd-f9d3-4a7e-abee-5ae3ced04da6",
-          "body": "{\n  \"count\": 3\n}",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "",
-          "headers": [],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id",
-          "callbacks": []
-        }
-      ],
-      "responseMode": null,
-      "streamingMode": null,
-      "streamingInterval": 0
-    },
-    {
-      "uuid": "4cd79614-11e9-4b72-808f-b3c384d1b1b8",
-      "type": "http",
-      "documentation": "",
-      "method": "get",
-      "endpoint": "inventories/reviewed/count",
-      "responses": [
-        {
-          "uuid": "1fcf8437-e92a-470a-88ce-7e5cb4b9a7ac",
-          "body": "{\n  \"count\": 2\n}",
+          "body": "{\n  \"submittedCount\": 3,\n  \"reviewedCount\": 3\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",

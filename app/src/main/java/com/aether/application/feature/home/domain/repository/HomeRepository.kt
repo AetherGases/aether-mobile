@@ -2,6 +2,7 @@ package com.aether.application.feature.home.domain.repository
 
 import com.aether.application.feature.home.domain.model.EnterpriseInfo
 import com.aether.application.feature.home.domain.model.Inventory
+import com.aether.application.feature.home.domain.model.InventoryCount
 import com.aether.application.feature.home.domain.model.UnitInfo
 
 interface HomeRepository {
@@ -18,6 +19,5 @@ interface HomeRepository {
     suspend fun getLastSubmittedInventory(): Inventory
     suspend fun getMonthlyUnitInfos(): UnitInfo
     suspend fun getEnterpriseInfos(): EnterpriseInfo
-    suspend fun countAllSubmittedInvetories(): Int
-    suspend fun countReviewedInventories(): Int
+    suspend fun getInventoryCount(): InventoryCount
 }

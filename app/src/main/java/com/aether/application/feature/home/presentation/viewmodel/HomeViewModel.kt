@@ -120,7 +120,7 @@ class HomeViewModel(
             val lastReviewedDate = homeRepository.getLastReviewedInventory().createdAt
                 .format(dateFormatter)
             val enterpriseInfo = homeRepository.getEnterpriseInfos()
-            val countReviewedInventories = homeRepository.countReviewedInventories()
+            val countReviewedInventories = homeRepository.getInventoryCount().reviewedCount
 
             return ManagerHeroCard(
                     lastSubmittedLabel = lastReviewedDate,
@@ -130,7 +130,7 @@ class HomeViewModel(
                 )
         } else {
             val lastSubmittedInventory = homeRepository.getLastSubmittedInventory()
-            val countSubmittedInventories = homeRepository.countAllSubmittedInvetories()
+            val countSubmittedInventories = homeRepository.getInventoryCount().submittedCount
             val monthFormatter = DateTimeFormatter
                 .ofPattern(
                     "MMM",
