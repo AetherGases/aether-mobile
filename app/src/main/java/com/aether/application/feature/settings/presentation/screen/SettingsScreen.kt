@@ -46,8 +46,6 @@ private val HeaderShape = RoundedCornerShape(28.dp)
 @Composable
 fun SettingsScreen(
     userName: String,
-    userRole: String,
-    companyTag: String,
     avatarUrl: String?,
     reportsCount: Int,
     entryDate: String,
@@ -74,8 +72,6 @@ fun SettingsScreen(
     ) {
         ProfileHeader(
             userName = userName,
-            userRole = userRole,
-            companyTag = companyTag,
             avatarUrl = avatarUrl
         )
 
@@ -183,8 +179,6 @@ fun SettingsScreen(
 @Composable
 private fun ProfileHeader(
     userName: String,
-    userRole: String,
-    companyTag: String,
     avatarUrl: String?
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
@@ -229,7 +223,6 @@ private fun ProfileHeader(
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(userName, style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
-        Text(userRole, style = titleMediumMD, color = MaterialTheme.colorScheme.outline)
     }
 
     Spacer(Modifier.height(20.dp))
@@ -461,8 +454,6 @@ fun SettingsScreenPreview() {
     AetherTheme {
         SettingsScreen(
             userName = "Daniel Sagaz",
-            userRole = "Gerente de ESG",
-            companyTag = "JBS",
             avatarUrl = null,
             reportsCount = 4539,
             entryDate = "24/02/23",
