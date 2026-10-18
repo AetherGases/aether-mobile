@@ -16,6 +16,8 @@ import com.aether.application.feature.home.presentation.model.toReportStatus
 import com.aether.core.ui.components.EmployeeHeroCard
 import com.aether.core.ui.components.HomeHeroCard
 import com.aether.core.ui.components.ManagerHeroCard
+import com.aether.core.ui.components.ReportsSummaryHomeCard
+import com.aether.core.ui.components.UnitEmissionsHomeCard
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -35,16 +37,7 @@ data class HomeUiState(
     val userLastName: String = "",
     val avatarUrl: String = "",
     val hasUnreadNotifications: Boolean = false, //TODO()
-    val heroCard: HomeHeroCard = EmployeeHeroCard(
-        lastSubmittedLabel = "",
-        reportingPeriodLabel = "",
-        statusLabel = "",
-        summaryCount = "",
-    ),
-    val unitEmissionsValue: String = "",
-    val unitEmissionsChangeLabel: String = "",
-    val sealLevelPercent: String = "",
-    val sealCriteriaLabel: String = "",
+    val cards: List<HomeHeroCard> = emptyList(),
     val quickActions: List<QuickAction> = emptyList(),
     val recentReports: List<RecentReport> = emptyList(),
 )
@@ -83,8 +76,7 @@ class HomeViewModel(
                 }
 
                 val avatar = session.avatar
-                val unitInfo = homeRepository.getMonthlyUnitInfos()
-                val homeHeroCard = getHomeHeroCard()
+                val cards = getHomeCards()
                 val recentReports = getRecentReports(
                     userName = "$userName $userLastName",
                     avatarUrl = avatar
@@ -95,9 +87,7 @@ class HomeViewModel(
                     userName = userName,
                     userLastName = userLastName,
                     avatarUrl = avatar,
-                    heroCard = homeHeroCard,
-                    unitEmissionsValue = "${unitInfo.emissions}",
-                    unitEmissionsChangeLabel = "${unitInfo.reductionPercentage}% ↗ em relação ao período anterior",
+                    cards = cards,
                     quickActions = quickActions,
                     recentReports = recentReports
                 ) }
@@ -115,49 +105,96 @@ class HomeViewModel(
         }
     }
 
-    private suspend fun getHomeHeroCard(): HomeHeroCard {
-        if (sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)) {
-            val lastReviewedDate = homeRepository.getLastReviewedInventory().createdAt
-                .format(dateFormatter)
+    private suspend fun getHomeCards(): List<HomeHeroCard> {
+        val isManager = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
+        val lastInventory = if (isManager) {
+            homeRepository.getLastReviewedInventory()
+        } else {
+            homeRepository.getLastSubmittedInventory()
+        }
+        val inventoryCount = homeRepository.getInventoryCount().let {
+            if (isManager) it.reviewedCount else it.submittedCount
+        }
+
+        val cards = listOf(
+            getHeroCard(isManager, lastInventory, inventoryCount),
+            getReportsSummaryCard(isManager, lastInventory, inventoryCount),
+            getUnitEmissionsCard(),
+            getSealProgressCard()
+        )
+        return cards.filterNotNull()
+    }
+
+    private suspend fun getHeroCard(
+        isManager: Boolean,
+        lastInventory: Inventory,
+        inventoryCount: Int
+    ): HomeHeroCard? {
+        val lastDate = lastInventory.createdAt.format(dateFormatter)
+
+        if (isManager) {
             val enterpriseInfo = homeRepository.getEnterpriseInfos()
-            val countReviewedInventories = homeRepository.getInventoryCount().reviewedCount
 
             return ManagerHeroCard(
-                    lastSubmittedLabel = lastReviewedDate,
-                    totalEmissions = "${enterpriseInfo.totalEmissions}",
-                    reductionAchieved = "${enterpriseInfo.totalReductions}",
-                    summaryCount = "$countReviewedInventories"
-                )
-        } else {
-            val lastSubmittedInventory = homeRepository.getLastSubmittedInventory()
-            val countSubmittedInventories = homeRepository.getInventoryCount().submittedCount
-            val monthFormatter = DateTimeFormatter
-                .ofPattern(
-                    "MMM",
-                    Locale.forLanguageTag("pt-BR")
-                )
-            val reportingPeriodLabel = buildString {
-                append(lastSubmittedInventory.period.start.format(monthFormatter))
-                append("-")
-                append(lastSubmittedInventory.period.end.format(monthFormatter))
-                append(" ")
-                if (lastSubmittedInventory.period.start.year == lastSubmittedInventory.period.end.year) {
-                    append(lastSubmittedInventory.period.end.year)
-                } else {
-                    append(lastSubmittedInventory.period.start.year)
-                    append("-")
-                    append(lastSubmittedInventory.period.end.year)
-                }
-            }
-
-            return EmployeeHeroCard(
-                lastSubmittedLabel = lastSubmittedInventory.createdAt.format(dateFormatter),
-                reportingPeriodLabel = reportingPeriodLabel,
-                statusLabel = lastSubmittedInventory.status.toReportStatus().name,
-                summaryCount = "$countSubmittedInventories"
+                lastSubmittedLabel = lastDate,
+                totalEmissions = "${enterpriseInfo.totalEmissions}",
+                reductionAchieved = "${enterpriseInfo.totalReductions}",
+                summaryCount = "$inventoryCount"
             )
         }
+
+        val monthFormatter = DateTimeFormatter
+            .ofPattern(
+                "MMM",
+                Locale.forLanguageTag("pt-BR")
+            )
+        val reportingPeriodLabel = buildString {
+            append(lastInventory.period.start.format(monthFormatter))
+            append("-")
+            append(lastInventory.period.end.format(monthFormatter))
+            append(" ")
+            if (lastInventory.period.start.year == lastInventory.period.end.year) {
+                append(lastInventory.period.end.year)
+            } else {
+                append(lastInventory.period.start.year)
+                append("-")
+                append(lastInventory.period.end.year)
+            }
+        }
+
+        return EmployeeHeroCard(
+            lastSubmittedLabel = lastDate,
+            reportingPeriodLabel = reportingPeriodLabel,
+            statusLabel = lastInventory.status.toReportStatus().name,
+            summaryCount = "$inventoryCount"
+        )
     }
+
+    private fun getReportsSummaryCard(
+        isManager: Boolean,
+        lastInventory: Inventory,
+        inventoryCount: Int
+    ): HomeHeroCard? =
+        ReportsSummaryHomeCard(
+            title = if (isManager) "Relatórios analisados" else "Relatórios realizados",
+            lastSubmittedLabel = lastInventory.createdAt.format(dateFormatter),
+            count = "$inventoryCount",
+            onViewHistoryClick = {
+                viewModelScope.launch { _events.send(HomeEvent.NavigateToHistory) }
+            }
+        )
+
+    private suspend fun getUnitEmissionsCard(): HomeHeroCard? {
+        val unitInfo = homeRepository.getMonthlyUnitInfos()
+        return UnitEmissionsHomeCard(
+            value = "${unitInfo.emissions}",
+            unitLabel = "tCO₂e/mês",
+            changeLabel = "${unitInfo.reductionPercentage}% ↗ em relação ao período anterior"
+        )
+    }
+
+    // TODO: no data source for the seal yet
+    private fun getSealProgressCard(): HomeHeroCard? = null
 
     private suspend fun getRecentReports(userName: String, avatarUrl: String): List<RecentReport> {
         val recentInventories = mutableListOf<Inventory>()

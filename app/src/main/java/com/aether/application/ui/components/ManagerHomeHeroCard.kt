@@ -20,13 +20,11 @@ import com.aether.application.R
 import com.aether.core.ui.theme.*
 
 data class ManagerHeroCard(
-    override val lastSubmittedLabel: String,
+    val lastSubmittedLabel: String,
     val totalEmissions: String,
     val reductionAchieved: String,
-    override val summaryCount: String
+    val summaryCount: String
 ) : HomeHeroCard {
-    override val summaryTitle = "Relatórios analisados"
-
     @Composable
     override fun Render() {
         Box(

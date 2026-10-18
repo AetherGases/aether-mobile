@@ -48,10 +48,10 @@ import com.aether.application.ui.components.AppHeader
 import com.aether.core.ui.components.EmployeeHeroCard
 import com.aether.core.ui.components.HomeHeroCard
 import com.aether.core.ui.components.ManagerHeroCard
+import com.aether.core.ui.components.ReportsSummaryHomeCard
+import com.aether.core.ui.components.SealProgressHomeCard
+import com.aether.core.ui.components.UnitEmissionsHomeCard
 import com.aether.application.feature.home.presentation.model.ReportStatus
-import com.aether.core.ui.components.ReportsSummaryCard
-import com.aether.core.ui.components.SealProgressCard
-import com.aether.core.ui.components.UnitEmissionsCard
 import com.aether.core.ui.theme.*
 
 @Composable
@@ -60,16 +60,11 @@ fun HomeScreen(
     userLastName: String,
     avatarUrl: String?,
     hasUnreadNotifications: Boolean,
-    heroCard: HomeHeroCard,
-    unitEmissionsValue: String,
-    unitEmissionsChangeLabel: String,
-    sealLevelPercent: String,
-    sealCriteriaLabel: String,
+    cards: List<HomeHeroCard>,
     quickActions: List<QuickAction>,
     recentReports: List<RecentReport>,
     onNotificationsClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onViewHistoryClick: () -> Unit,
     onSeeAllReportsClick: () -> Unit,
     onReportClick: (RecentReport) -> Unit,
     modifier: Modifier = Modifier
@@ -123,49 +118,46 @@ fun HomeScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
-            Spacer(Modifier.height(16.dp))
+            if (cards.isNotEmpty()) {
+                Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                Spacer(Modifier.height(16.dp))
 
-            val pagerState = rememberPagerState(pageCount = { 4 })
-            HorizontalPager(state = pagerState) { page ->
-                Box(
-                    modifier = Modifier.shadow(
-                        elevation = 10.dp,
-                        shape = RoundedCornerShape(20.dp),
-                        ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                        spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-                    )
-                ) {
-                    when (page) {
-                        0 -> heroCard.Render()
-                        1 -> ReportsSummaryCard(heroCard.summaryTitle, heroCard.lastSubmittedLabel, heroCard.summaryCount, onViewHistoryClick)
-                        2 -> UnitEmissionsCard(unitEmissionsValue, "tCO₂e/mês", unitEmissionsChangeLabel)
-                        3 -> SealProgressCard(sealLevelPercent, sealCriteriaLabel)
+                val pagerState = rememberPagerState(pageCount = { cards.size })
+                HorizontalPager(state = pagerState) { page ->
+                    Box(
+                        modifier = Modifier.shadow(
+                            elevation = 10.dp,
+                            shape = RoundedCornerShape(20.dp),
+                            ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                            spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                        )
+                    ) {
+                        cards[page].Render()
                     }
                 }
-            }
-            Spacer(Modifier.height(18.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                repeat(pagerState.pageCount) { index ->
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 3.dp)
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(
-                                if (index == pagerState.currentPage)
-                                    MaterialTheme.colorScheme.secondary
-                                else
-                                    MaterialTheme.colorScheme.outlineVariant
-                            )
-                    )
+                Spacer(Modifier.height(18.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(pagerState.pageCount) { index ->
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 3.dp)
+                                .size(8.dp)
+                                .clip(CircleShape)
+                                .background(
+                                    if (index == pagerState.currentPage)
+                                        MaterialTheme.colorScheme.secondary
+                                    else
+                                        MaterialTheme.colorScheme.outlineVariant
+                                )
+                        )
+                    }
                 }
-            }
 
-            Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(24.dp))
+            }
 
             Text("Ações Rápidas", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(16.dp))
@@ -381,16 +373,17 @@ fun HomeScreenEmployeePreview() {
             userLastName = "Sagaz",
             avatarUrl = "https://i.pravatar.cc/150?img=12",
             hasUnreadNotifications = true,
-            heroCard = EmployeeHeroCard(
-                lastSubmittedLabel = "29/05/2026",
-                reportingPeriodLabel = "Jan–Mar 2026",
-                statusLabel = "Aguardando revisão há 2 dias",
-                summaryCount = "506"
+            cards = listOf(
+                EmployeeHeroCard(
+                    lastSubmittedLabel = "29/05/2026",
+                    reportingPeriodLabel = "Jan–Mar 2026",
+                    statusLabel = "Aguardando revisão há 2 dias",
+                    summaryCount = "506"
+                ),
+                ReportsSummaryHomeCard("Relatórios realizados", "29/05/2026", "506") {},
+                UnitEmissionsHomeCard("2.403", "tCO₂e/mês", "12% ↗ em relação ao período anterior"),
+                SealProgressHomeCard("50%", "2 de 4 critérios atendidos")
             ),
-            unitEmissionsValue = "2.403",
-            unitEmissionsChangeLabel = "12% ↗ em relação ao período anterior",
-            sealLevelPercent = "50%",
-            sealCriteriaLabel = "2 de 4 critérios atendidos",
             quickActions = listOf(
                 QuickAction("Criar relatório", R.drawable.ic_create_report, 60.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
                 QuickAction("Calcular CO2", R.drawable.ic_calculator_purple, 50.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.primaryContainer) {},
@@ -404,7 +397,6 @@ fun HomeScreenEmployeePreview() {
             ),
             onNotificationsClick = {},
             onSettingsClick = {},
-            onViewHistoryClick = {},
             onSeeAllReportsClick = {},
             onReportClick = {}
         )
@@ -420,16 +412,17 @@ fun HomeScreenManagerPreview() {
             userLastName = "Grandão",
             avatarUrl = "https://i.pravatar.cc/150?img=33",
             hasUnreadNotifications = true,
-            heroCard = ManagerHeroCard(
-                lastSubmittedLabel = "26/01/2026",
-                totalEmissions = "2.1M",
-                reductionAchieved = "8,3%",
-                summaryCount = "450"
+            cards = listOf(
+                ManagerHeroCard(
+                    lastSubmittedLabel = "26/01/2026",
+                    totalEmissions = "2.1M",
+                    reductionAchieved = "8,3%",
+                    summaryCount = "450"
+                ),
+                ReportsSummaryHomeCard("Relatórios analisados", "26/01/2026", "450") {},
+                UnitEmissionsHomeCard("2.403", "tCO₂e/mês", "12% ↗ em relação ao período anterior"),
+                SealProgressHomeCard("50%", "2 de 4 critérios atendidos")
             ),
-            unitEmissionsValue = "2.403",
-            unitEmissionsChangeLabel = "12% ↗ em relação ao período anterior",
-            sealLevelPercent = "50%",
-            sealCriteriaLabel = "2 de 4 critérios atendidos",
             quickActions = listOf(
                 QuickAction("Histórico", R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, MaterialTheme.colorScheme.primaryContainer) {},
                 QuickAction("Calcular CO2", R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
@@ -442,7 +435,6 @@ fun HomeScreenManagerPreview() {
             ),
             onNotificationsClick = {},
             onSettingsClick = {},
-            onViewHistoryClick = {},
             onSeeAllReportsClick = {},
             onReportClick = {}
         )

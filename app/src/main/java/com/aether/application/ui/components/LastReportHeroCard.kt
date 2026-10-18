@@ -29,13 +29,11 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 
 data class EmployeeHeroCard(
-    override val lastSubmittedLabel: String,
+    val lastSubmittedLabel: String,
     val reportingPeriodLabel: String,
     val statusLabel: String,
-    override val summaryCount: String
+    val summaryCount: String
 ) : HomeHeroCard {
-    override val summaryTitle = "Relatórios realizados"
-
     @Composable
     override fun Render() {
         val hazeState = remember { HazeState() }
