@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -62,6 +63,7 @@ fun SettingsScreen(
     onTermsOfUseClick: () -> Unit,
     onPrivacyPolicyClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -72,7 +74,8 @@ fun SettingsScreen(
     ) {
         ProfileHeader(
             userName = userName,
-            avatarUrl = avatarUrl
+            avatarUrl = avatarUrl,
+            onBackClick = onBackClick
         )
 
         Column(
@@ -179,7 +182,8 @@ fun SettingsScreen(
 @Composable
 private fun ProfileHeader(
     userName: String,
-    avatarUrl: String?
+    avatarUrl: String?,
+    onBackClick: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Image(
@@ -198,6 +202,21 @@ private fun ProfileHeader(
                 )
                 .clip(HeaderShape)
         )
+
+        // Sits on the purple header, so it is white regardless of the theme
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(start = HeaderMargin + 8.dp, top = HeaderMargin + 8.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_chevron_left),
+                contentDescription = "Voltar",
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
+        }
 
         Row(
             modifier = Modifier
@@ -469,7 +488,8 @@ fun SettingsScreenPreview() {
             onReportProblemClick = {},
             onTermsOfUseClick = {},
             onPrivacyPolicyClick = {},
-            onLogoutClick = {}
+            onLogoutClick = {},
+            onBackClick = {}
         )
     }
 }

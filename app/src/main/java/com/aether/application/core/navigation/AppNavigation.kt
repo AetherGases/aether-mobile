@@ -322,7 +322,8 @@ fun AppNavigation(
                     onReportProblemClick = { /* TODO: ReportProblem route */ },
                     onTermsOfUseClick = { navController.navigate(TermsOfUseRoute) },
                     onPrivacyPolicyClick = { navController.navigate(PrivacyPolicyRoute) },
-                    onLogoutClick = viewModel::onLogoutClick
+                    onLogoutClick = viewModel::onLogoutClick,
+                    onBackClick = { navController.popBackStack() }
                 )
 
                 if (showThemePicker) {
