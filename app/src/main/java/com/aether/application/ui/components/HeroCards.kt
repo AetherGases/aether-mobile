@@ -37,6 +37,8 @@ fun ReportsSummaryCard(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            Column(modifier = Modifier.semantics(mergeDescendants = true) {}) {
+                Text(title, style = titleSmall, color = textPrimaryLight)
             Column {
                 Text(title, style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
                 Text(
@@ -46,6 +48,11 @@ fun ReportsSummaryCard(
                 )
             }
 
+            Row(
+                modifier = Modifier.semantics(mergeDescendants = true) {},
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Text(count, style = displayLargeBold, color = textPrimaryLight)
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(count, style = displayLargeBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.width(6.dp))
@@ -181,6 +188,33 @@ fun SealProgressCard(
                 .offset(y = 20.dp)
         )
     }
+}
+
+data class ReportsSummaryHomeCard(
+    val title: String,
+    val lastSubmittedLabel: String,
+    val count: String,
+    val onViewHistoryClick: () -> Unit,
+) : HomeHeroCard {
+    @Composable
+    override fun Render() = ReportsSummaryCard(title, lastSubmittedLabel, count, onViewHistoryClick)
+}
+
+data class UnitEmissionsHomeCard(
+    val value: String,
+    val unitLabel: String,
+    val changeLabel: String,
+) : HomeHeroCard {
+    @Composable
+    override fun Render() = UnitEmissionsCard(value, unitLabel, changeLabel)
+}
+
+data class SealProgressHomeCard(
+    val levelPercent: String,
+    val criteriaLabel: String,
+) : HomeHeroCard {
+    @Composable
+    override fun Render() = SealProgressCard(levelPercent, criteriaLabel)
 }
 
 @Preview(showBackground = true)

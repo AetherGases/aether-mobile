@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -32,9 +33,11 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +56,9 @@ import com.aether.core.ui.components.SealProgressHomeCard
 import com.aether.core.ui.components.UnitEmissionsHomeCard
 import com.aether.application.feature.home.presentation.model.ReportStatus
 import com.aether.core.ui.theme.*
+
+private val SCREEN_PADDING = 24.dp
+private val CARD_WIDTH = 335.dp
 
 @Composable
 fun HomeScreen(
@@ -104,7 +110,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = SCREEN_PADDING)
         ) {
             Spacer(Modifier.height(24.dp))
 
@@ -125,34 +131,47 @@ fun HomeScreen(
                 val pagerState = rememberPagerState(pageCount = { cards.size })
                 HorizontalPager(state = pagerState) { page ->
                     Box(
-                        modifier = Modifier.shadow(
-                            elevation = 10.dp,
-                            shape = RoundedCornerShape(20.dp),
-                            ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                            spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-                        )
+                        modifier = Modifier
+                            .semantics {
+                                stateDescription = "Cartão ${page + 1} de ${cards.size}"
+                            }
+                            .shadow(
+                                elevation = 10.dp,
+                                shape = RoundedCornerShape(20.dp),
+                                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                            )
                     ) {
                         cards[page].Render()
                     }
                 }
-                Spacer(Modifier.height(18.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    repeat(pagerState.pageCount) { index ->
-                        Box(
-                            modifier = Modifier
-                                .padding(horizontal = 3.dp)
-                                .size(8.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (index == pagerState.currentPage)
-                                        MaterialTheme.colorScheme.secondary
-                                    else
-                                        MaterialTheme.colorScheme.outlineVariant
-                                )
-                        )
+                if (pagerState.canScrollForward || pagerState.canScrollBackward) {
+                    Spacer(Modifier.height(18.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clearAndSetSemantics {},
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        val selectedPage = if (pagerState.canScrollForward) {
+                            pagerState.currentPage
+                        } else {
+                            pagerState.pageCount - 1
+                        }
+                        repeat(pagerState.pageCount) { index ->
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 3.dp)
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (index == selectedPage)
+                                            MaterialTheme.colorScheme.secondary
+                                        else
+                                            MaterialTheme.colorScheme.outlineVariant
+                                    )
+                            )
+                        }
                     }
                 }
 
