@@ -39,6 +39,10 @@ import com.aether.application.feature.auth.presentation.viewmodel.VerificationEv
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeEvent
 import com.aether.application.feature.settings.presentation.screen.PrivacyPolicyScreen
+import com.aether.application.feature.settings.presentation.screen.SettingsScreen
+import com.aether.application.feature.settings.presentation.screen.ThemePickerDialog
+import com.aether.application.feature.settings.presentation.screen.label
+import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -297,7 +301,40 @@ fun AppNavigation(
             }
 
             composable<SettingsRoute> {
-                TODO()
+                val viewModel = koinViewModel<SettingsViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                var showThemePicker by remember { mutableStateOf(false) }
+
+                SettingsScreen(
+                    userName = uiState.userName,
+                    avatarUrl = uiState.avatarUrl,
+                    reportsCount = uiState.reportsCount,
+                    entryDate = uiState.entryDate,
+                    notificationsEnabled = uiState.notificationsEnabled,
+                    emailNotificationsEnabled = uiState.emailNotificationsEnabled,
+                    themeLabel = uiState.theme.label(),
+                    languageLabel = uiState.languageLabel,
+                    onNotificationsChanged = viewModel::onNotificationsChanged,
+                    onEmailNotificationsChanged = viewModel::onEmailNotificationsChanged,
+                    onThemeClick = { showThemePicker = true },
+                    onLanguageClick = { /* TODO: no translated resources yet */ },
+                    onTalkToAekoClick = { navController.navigate(ChatbotRoute) },
+                    onReportProblemClick = { /* TODO: ReportProblem route */ },
+                    onTermsOfUseClick = { navController.navigate(TermsOfUseRoute) },
+                    onPrivacyPolicyClick = { navController.navigate(PrivacyPolicyRoute) },
+                    onLogoutClick = viewModel::onLogoutClick
+                )
+
+                if (showThemePicker) {
+                    ThemePickerDialog(
+                        selected = uiState.theme,
+                        onSelect = {
+                            viewModel.onThemeSelected(it)
+                            showThemePicker = false
+                        },
+                        onDismiss = { showThemePicker = false }
+                    )
+                }
             }
 
             composable<TermsOfUseRoute> {
