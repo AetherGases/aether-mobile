@@ -38,6 +38,8 @@ import com.aether.application.feature.auth.presentation.viewmodel.SendCodeEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeEvent
+import com.aether.application.feature.settings.presentation.screen.PrivacyPolicyScreen
+import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -296,6 +298,14 @@ fun AppNavigation(
 
             composable<SettingsRoute> {
                 TODO()
+            }
+
+            composable<TermsOfUseRoute> {
+                TermsOfUseScreen(onBackClick = { navController.popBackStack() })
+            }
+
+            composable<PrivacyPolicyRoute> {
+                PrivacyPolicyScreen(onBackClick = { navController.popBackStack() })
             }
 
             composable<CalculatorRoute> {
