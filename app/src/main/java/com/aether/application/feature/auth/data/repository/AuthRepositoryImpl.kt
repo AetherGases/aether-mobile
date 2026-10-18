@@ -42,7 +42,8 @@ class AuthRepositoryImpl(
             val sessionWithPermissions = session.copy(
                 permissions = profile.permissions,
                 name = profile.name,
-                avatar = profile.avatarUrl ?: ""
+                avatar = profile.avatarUrl ?: "",
+                createdAt = profile.createdAt
             )
             if (sessionManager.save(sessionWithPermissions)) {
                 session = sessionWithPermissions
