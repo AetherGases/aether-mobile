@@ -38,8 +38,6 @@ fun ReportsSummaryCard(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.semantics(mergeDescendants = true) {}) {
-                Text(title, style = titleSmall, color = textPrimaryLight)
-            Column {
                 Text(title, style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
                 Text(
                     "Último enviado em $lastSubmittedLabel",
@@ -52,8 +50,6 @@ fun ReportsSummaryCard(
                 modifier = Modifier.semantics(mergeDescendants = true) {},
                 verticalAlignment = Alignment.Bottom
             ) {
-                Text(count, style = displayLargeBold, color = textPrimaryLight)
-            Row(verticalAlignment = Alignment.Bottom) {
                 Text(count, style = displayLargeBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.width(6.dp))
                 Text(
