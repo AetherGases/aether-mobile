@@ -2,6 +2,7 @@ package com.aether.core.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -10,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
@@ -35,7 +37,7 @@ fun ReportsSummaryCard(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(modifier = Modifier.semantics(mergeDescendants = true) {}) {
                 Text(title, style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
                 Text(
                     "Último enviado em $lastSubmittedLabel",
@@ -44,7 +46,10 @@ fun ReportsSummaryCard(
                 )
             }
 
-            Row(verticalAlignment = Alignment.Bottom) {
+            Row(
+                modifier = Modifier.semantics(mergeDescendants = true) {},
+                verticalAlignment = Alignment.Bottom
+            ) {
                 Text(count, style = displayLargeBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.width(6.dp))
                 Text(
@@ -89,6 +94,8 @@ fun UnitEmissionsCard(
             .clip(RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surface)
             .padding(20.dp)
+            .focusable()
+            .semantics(mergeDescendants = true) {}
     ) {
         Column {
             Row(
@@ -140,6 +147,8 @@ fun SealProgressCard(
             .clip(RoundedCornerShape(18.dp))
             .background(MaterialTheme.colorScheme.surface)
             .padding(20.dp)
+            .focusable()
+            .semantics(mergeDescendants = true) {}
     ) {
         Column {
             Row(
@@ -175,6 +184,33 @@ fun SealProgressCard(
                 .offset(y = 20.dp)
         )
     }
+}
+
+data class ReportsSummaryHomeCard(
+    val title: String,
+    val lastSubmittedLabel: String,
+    val count: String,
+    val onViewHistoryClick: () -> Unit,
+) : HomeHeroCard {
+    @Composable
+    override fun Render() = ReportsSummaryCard(title, lastSubmittedLabel, count, onViewHistoryClick)
+}
+
+data class UnitEmissionsHomeCard(
+    val value: String,
+    val unitLabel: String,
+    val changeLabel: String,
+) : HomeHeroCard {
+    @Composable
+    override fun Render() = UnitEmissionsCard(value, unitLabel, changeLabel)
+}
+
+data class SealProgressHomeCard(
+    val levelPercent: String,
+    val criteriaLabel: String,
+) : HomeHeroCard {
+    @Composable
+    override fun Render() = SealProgressCard(levelPercent, criteriaLabel)
 }
 
 @Preview(showBackground = true)

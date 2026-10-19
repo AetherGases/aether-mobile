@@ -46,6 +46,50 @@
           "uuid": "fb515b07-6ce3-4b82-a0b6-99168681ee9c"
         }
       ]
+    },
+    {
+      "uuid": "07a154aa-3785-4f3a-9fa4-ba83083f9ca1",
+      "name": "Inventories",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "839b6fb9-4e75-4264-8022-28f69f27d619"
+        },
+        {
+          "type": "route",
+          "uuid": "5728451a-a1dc-468b-8c84-44e806a53d09"
+        },
+        {
+          "type": "route",
+          "uuid": "6ba858d3-16dc-4147-926a-02dc0c449353"
+        },
+        {
+          "type": "route",
+          "uuid": "6b08148e-ccc8-4fde-ac86-9d7ec4693c53"
+        },
+        {
+          "type": "route",
+          "uuid": "2b688aee-8205-46d6-8b95-91268c37d48b"
+        },
+        {
+          "type": "route",
+          "uuid": "748b0011-6614-4992-a978-bf5d28f115fb"
+        },
+        {
+          "type": "route",
+          "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d"
+        }
+      ]
+    },
+    {
+      "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75",
+      "name": "Seal",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10"
+        }
+      ]
     }
   ],
   "routes": [
@@ -58,7 +102,7 @@
       "responses": [
         {
           "uuid": "db9a2bde-3a0c-4937-a423-f73ca34191c7",
-          "body": "{\n  \"email\": \"aether@example.com\",\n  \"authenticated\": true,\n  \"created\": \"2026-09-04T10:00:00Z\",\n  \"expiration\": \"2026-10-04T10:00:00Z\",\n  \"accessToken\": \"mock-access-token-123456\",\n  \"refreshToken\": \"mock-refresh-token-123456\"\n}",
+          "body": "{\n  \"email\": \"aether@example.com\",\n  \"authenticated\": true,\n  \"created\": \"2026-09-04T10:00:00Z\",\n  \"expiration\": \"2099-01-01T00:00:00Z\",\n  \"accessToken\": \"mock-access-token-123456\",\n  \"refreshToken\": \"mock-refresh-token-123456\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -89,7 +133,7 @@
       "responses": [
         {
           "uuid": "653259a6-0a2d-467b-89a2-bb56abbbf04b",
-          "body": "{\n  \"email\": \"{{urlParam 'email'}}\",\n  \"authenticated\": true,\n  \"created\": \"2026-09-04T10:00:00Z\",\n  \"expiration\": \"2026-10-04T10:00:00Z\",\n  \"accessToken\": \"mock-access-token-refreshed\",\n  \"refreshToken\": \"mock-refresh-token-refreshed\"\n}",
+          "body": "{\n  \"email\": \"{{urlParam 'email'}}\",\n  \"authenticated\": true,\n  \"created\": \"2026-09-04T10:00:00Z\",\n  \"expiration\": \"2099-01-01T00:00:00Z\",\n  \"accessToken\": \"mock-access-token-refreshed\",\n  \"refreshToken\": \"mock-refresh-token-refreshed\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -244,7 +288,255 @@
       "responses": [
         {
           "uuid": "4869549d-a7c5-471f-b506-cab41880b7f5",
-          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"phone\": \"11999999999\",\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"ADMIN\",\n      \"description\": \"Acesso administrativo completo\"\n    }\n  ]\n}",
+          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"inventory:view\",\n      \"description\": \"Visualizar inventários\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"inventory:analysis\",\n      \"description\": \"Analisar inventários\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"inventory:edit\",\n      \"description\": \"Criar e editar inventários\"\n    },\n    {\n      \"id\": 4,\n      \"name\": \"calculator\",\n      \"description\": \"Usar a calculadora de CO2\"\n    },\n    {\n      \"id\": 5,\n      \"name\": \"chatbot\",\n      \"description\": \"Usar o chatbot\"\n    }\n  ],\n  \"avatarUrl\": \"https://i.pravatar.cc/150?img=12\",\n  \"phone\": \"11999999999\",\n  \"createdAt\": \"2023-02-24T12:00:00Z\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "839b6fb9-4e75-4264-8022-28f69f27d619",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "inventories/mine",
+      "responses": [
+        {
+          "uuid": "ace919ab-a679-4e01-883e-8b1438ddb7a3",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"period\": {\n        \"start\": \"2026-01-01\",\n        \"end\": \"2026-06-30\"\n      },\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": null,\n      \"status\": \"UNDER_REVIEW\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Inventário Q2\",\n      \"createdAt\": \"2026-09-12T10:00:00\",\n      \"period\": {\n        \"start\": \"2026-01-01\",\n        \"end\": \"2026-06-30\"\n      },\n      \"author\": \"Maria Souza\",\n      \"authorImageUrl\": null,\n      \"status\": \"APPROVED\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Inventário Q1\",\n      \"createdAt\": \"2026-09-13T10:00:00\",\n      \"period\": {\n        \"start\": \"2026-01-01\",\n        \"end\": \"2026-06-30\"\n      },\n      \"author\": \"João Lima\",\n      \"authorImageUrl\": null,\n      \"status\": \"REJECTED\"\n    }\n  ],\n  \"totalCount\": 3\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "5728451a-a1dc-468b-8c84-44e806a53d09",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "inventories/pending",
+      "responses": [
+        {
+          "uuid": "310b2cf1-7a3f-4d96-85ba-569a2906a5b8",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"period\": {\n        \"start\": \"2026-01-01\",\n        \"end\": \"2026-06-30\"\n      },\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": null,\n      \"status\": \"UNDER_REVIEW\"\n    }\n  ],\n  \"totalCount\": 1\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "6ba858d3-16dc-4147-926a-02dc0c449353",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "inventories/unit-info",
+      "responses": [
+        {
+          "uuid": "64791859-f8f6-4685-9c99-894e251bb1b1",
+          "body": "{\n  \"emissions\": 2403,\n  \"reductionPercentage\": 12\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "6b08148e-ccc8-4fde-ac86-9d7ec4693c53",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "inventories/enterprise-info",
+      "responses": [
+        {
+          "uuid": "db10513f-a8ad-4e78-92fc-ce693183f301",
+          "body": "{\n  \"totalReductions\": 1250,\n  \"totalEmissions\": 8940\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "2b688aee-8205-46d6-8b95-91268c37d48b",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "inventories/reviewed/last",
+      "responses": [
+        {
+          "uuid": "b449699f-45b0-44fb-b025-4b027fe65019",
+          "body": "{\n  \"id\": 2,\n  \"name\": \"Inventário Q2\",\n  \"createdAt\": \"2026-09-12T10:00:00\",\n  \"period\": {\n    \"start\": \"2026-01-01\",\n    \"end\": \"2026-06-30\"\n  },\n  \"author\": \"Maria Souza\",\n  \"authorImageUrl\": null,\n  \"status\": \"APPROVED\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "748b0011-6614-4992-a978-bf5d28f115fb",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "inventories/mine/last",
+      "responses": [
+        {
+          "uuid": "b959cb2c-085d-42b4-9f02-3ad320da22c3",
+          "body": "{\n  \"id\": 1,\n  \"name\": \"Inventário 1º semestre\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"period\": {\n    \"start\": \"2026-01-01\",\n    \"end\": \"2026-06-30\"\n  },\n  \"author\": \"Aether Mock User\",\n  \"authorImageUrl\": null,\n  \"status\": \"UNDER_REVIEW\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "inventories/count",
+      "responses": [
+        {
+          "uuid": "b38a02cd-f9d3-4a7e-abee-5ae3ced04da6",
+          "body": "{\n  \"submittedCount\": 3,\n  \"reviewedCount\": 3\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "seal/progress",
+      "responses": [
+        {
+          "uuid": "a8d5e1b4-2c63-4f97-8e0a-5b9c4d3f2e61",
+          "body": "{\n  \"criteriaMet\": 2,\n  \"criteriaTotal\": 4\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -275,6 +567,14 @@
     {
       "type": "folder",
       "uuid": "39cd6416-1924-4db4-82a7-414c723ea1bd"
+    },
+    {
+      "type": "folder",
+      "uuid": "07a154aa-3785-4f3a-9fa4-ba83083f9ca1"
+    },
+    {
+      "type": "folder",
+      "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75"
     }
   ],
   "proxyMode": false,

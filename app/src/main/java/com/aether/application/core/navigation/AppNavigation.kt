@@ -26,8 +26,6 @@ import com.aether.application.feature.auth.presentation.viewmodel.ChangePassword
 import com.aether.application.feature.auth.presentation.viewmodel.LoginEvent
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.home.presentation.screen.HomeScreen
-import com.aether.core.ui.components.EmployeeHeroCard
-import com.aether.core.ui.components.ManagerHeroCard
 import com.aether.application.feature.auth.presentation.viewmodel.SplashEvent
 import com.aether.application.feature.auth.presentation.viewmodel.SplashViewModel
 import com.aether.application.feature.auth.presentation.screen.SplashScreen
@@ -39,6 +37,14 @@ import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecove
 import com.aether.application.feature.auth.presentation.viewmodel.SendCodeEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
+import com.aether.application.feature.home.presentation.viewmodel.HomeEvent
+import com.aether.application.feature.settings.presentation.screen.PrivacyPolicyScreen
+import com.aether.application.feature.settings.presentation.screen.SettingsScreen
+import com.aether.application.feature.settings.presentation.screen.ThemePickerDialog
+import com.aether.application.feature.settings.presentation.screen.label
+import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
+import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
+import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -78,7 +84,9 @@ fun AppNavigation(
                                     popUpTo<SplashRoute> { inclusive = true }
                                 }
                             is SplashEvent.NavigateToHome ->
-                                TODO()
+                                navController.navigate(AppGraph) {
+                                    popUpTo<AuthGraph> { inclusive = true }
+                                }
                         }
                     }
                 }
@@ -123,7 +131,7 @@ fun AppNavigation(
                     viewModel.events.collect { event ->
                         when (event) {
                             is LoginEvent.LoggedIn ->
-                                navController.navigate(EmployeeGraph) {
+                                navController.navigate(AppGraph) {
                                     popUpTo<AuthGraph> { inclusive = true }
                                 }
                         }
@@ -243,61 +251,111 @@ fun AppNavigation(
             }
         }
 
-        navigation<EmployeeGraph>(startDestination = EmployeeHomeRoute) {
-            composable<EmployeeHomeRoute> {
+        navigation<AppGraph>(startDestination = HomeRoute) {
+            composable<HomeRoute> {
+                val viewModel = koinViewModel<HomeViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            HomeEvent.NavigateToCalculator ->
+                                navController.navigate(CalculatorRoute)
+                            HomeEvent.NavigateToChatBot ->
+                                navController.navigate(ChatbotRoute)
+                            HomeEvent.NavigateToCreateReport ->
+                                navController.navigate(CreateReportRoute)
+                            HomeEvent.NavigateToHistory ->
+                                navController.navigate(ReportHistoryRoute)
+                            is HomeEvent.NavigateToReport ->
+                                navController.navigate(ReportAnalysisRoute(event.reportId))
+                        }
+                    }
+                }
+
                 HomeScreen(
-                    userName = TODO(),
-                    userLastName = TODO(),
-                    avatarUrl = TODO(),
-                    hasUnreadNotifications = TODO(),
-                    heroCard = EmployeeHeroCard(
-                        lastSubmittedLabel = TODO(),
-                        reportingPeriodLabel = TODO(),
-                        statusLabel = TODO(),
-                        summaryCount = TODO()
-                    ),
-                    unitEmissionsValue = TODO(),
-                    unitEmissionsChangeLabel = TODO(),
-                    sealLevelPercent = TODO(),
-                    sealCriteriaLabel = TODO(),
-                    quickActions = TODO(),
-                    recentReports = TODO(),
-                    onNotificationsClick = TODO(),
-                    onSettingsClick = TODO(),
-                    onViewHistoryClick = TODO(),
-                    onSeeAllReportsClick = TODO(),
-                    onReportMenuClick = TODO(),
-                    modifier = TODO()
+                    userName = uiState.userName,
+                    userLastName = uiState.userLastName,
+                    avatarUrl = uiState.avatarUrl,
+                    hasUnreadNotifications = uiState.hasUnreadNotifications,
+                    cards = uiState.cards,
+                    quickActions = uiState.quickActions,
+                    recentReports = uiState.recentReports,
+                    cardsFailed = uiState.cardsFailed,
+                    quickActionsFailed = uiState.quickActionsFailed,
+                    isRefreshing = uiState.isRefreshing,
+                    onRefresh = viewModel::refresh,
+                    onNotificationsClick = { navController.navigate(NotificationsRoute) },
+                    onSettingsClick = { navController.navigate(SettingsRoute) },
+                    onSeeAllReportsClick = { navController.navigate(ReportHistoryRoute) },
+                    onReportClick = viewModel::onReportClick,
                 )
             }
-        }
 
-        navigation<ManagerGraph>(startDestination = ManagerHomeRoute) {
-            composable<ManagerHomeRoute> {
-                HomeScreen(
-                    userName = TODO(),
-                    userLastName = TODO(),
-                    avatarUrl = TODO(),
-                    hasUnreadNotifications = TODO(),
-                    heroCard = ManagerHeroCard(
-                        lastSubmittedLabel = TODO(),
-                        totalEmissions = TODO(),
-                        reductionAchieved = TODO(),
-                        summaryCount = TODO()
-                    ),
-                    unitEmissionsValue = TODO(),
-                    unitEmissionsChangeLabel = TODO(),
-                    sealLevelPercent = TODO(),
-                    sealCriteriaLabel = TODO(),
-                    quickActions = TODO(),
-                    recentReports = TODO(),
-                    onNotificationsClick = TODO(),
-                    onSettingsClick = TODO(),
-                    onViewHistoryClick = TODO(),
-                    onSeeAllReportsClick = TODO(),
-                    onReportMenuClick = TODO(),
-                    modifier = TODO()
+            composable<ReportAnalysisRoute> {
+                TODO()
+            }
+
+            composable<ReportHistoryRoute> {
+                TODO()
+            }
+
+            composable<NotificationsRoute> {
+                TODO()
+            }
+
+            composable<SettingsRoute> {
+                val viewModel = koinViewModel<SettingsViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                var showThemePicker by remember { mutableStateOf(false) }
+
+                SettingsScreen(
+                    userName = uiState.userName,
+                    avatarUrl = uiState.avatarUrl,
+                    reportsCount = uiState.reportsCount,
+                    entryDate = uiState.entryDate,
+                    notificationsEnabled = uiState.notificationsEnabled,
+                    emailNotificationsEnabled = uiState.emailNotificationsEnabled,
+                    themeLabel = uiState.theme.label(),
+                    languageLabel = uiState.languageLabel,
+                    onNotificationsChanged = viewModel::onNotificationsChanged,
+                    onEmailNotificationsChanged = viewModel::onEmailNotificationsChanged,
+                    onThemeClick = { showThemePicker = true },
+                    onLanguageClick = { /* TODO: no translated resources yet */ },
+                    onTalkToAekoClick = { navController.navigate(ChatbotRoute) },
+                    onReportProblemClick = { /* TODO: ReportProblem route */ },
+                    onTermsOfUseClick = { navController.navigate(TermsOfUseRoute) },
+                    onPrivacyPolicyClick = { navController.navigate(PrivacyPolicyRoute) },
+                    onLogoutClick = viewModel::onLogoutClick,
+                    onBackClick = { navController.popBackStack() }
                 )
+
+                if (showThemePicker) {
+                    ThemePickerDialog(
+                        selected = uiState.theme,
+                        onSelect = {
+                            viewModel.onThemeSelected(it)
+                            showThemePicker = false
+                        },
+                        onDismiss = { showThemePicker = false }
+                    )
+                }
+            }
+
+            composable<TermsOfUseRoute> {
+                TermsOfUseScreen(onBackClick = { navController.popBackStack() })
+            }
+
+            composable<PrivacyPolicyRoute> {
+                PrivacyPolicyScreen(onBackClick = { navController.popBackStack() })
+            }
+
+            composable<CalculatorRoute> {
+                TODO()
+            }
+
+            composable<ChatbotRoute> {
+                TODO()
             }
         }
     }
