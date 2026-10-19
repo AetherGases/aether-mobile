@@ -6,6 +6,7 @@ import com.aether.application.feature.home.data.remote.dto.GetMyInventoriesReque
 import com.aether.application.feature.home.data.remote.dto.GetMyInventoriesResponse
 import com.aether.application.feature.home.data.remote.dto.GetPendingInventoriesRequest
 import com.aether.application.feature.home.data.remote.dto.GetPendingInventoriesResponse
+import com.aether.application.feature.home.data.remote.dto.GetSealProgressResponse
 import com.aether.application.feature.home.data.remote.dto.GetUnitInfoResponse
 import com.aether.application.feature.home.domain.model.Inventory
 import retrofit2.http.Body
@@ -41,5 +42,8 @@ interface InventoryApi {
 
     @GET("$INVENTORY/count")
     suspend fun countInventories(): GetInventoryCountResponse
+
+    @GET("seal/progress")
+    suspend fun getSealProgress(): GetSealProgressResponse
 
 }

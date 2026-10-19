@@ -80,6 +80,16 @@
           "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d"
         }
       ]
+    },
+    {
+      "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75",
+      "name": "Seal",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10"
+        }
+      ]
     }
   ],
   "routes": [
@@ -516,6 +526,37 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "seal/progress",
+      "responses": [
+        {
+          "uuid": "a8d5e1b4-2c63-4f97-8e0a-5b9c4d3f2e61",
+          "body": "{\n  \"criteriaMet\": 2,\n  \"criteriaTotal\": 4\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -530,6 +571,10 @@
     {
       "type": "folder",
       "uuid": "07a154aa-3785-4f3a-9fa4-ba83083f9ca1"
+    },
+    {
+      "type": "folder",
+      "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75"
     }
   ],
   "proxyMode": false,

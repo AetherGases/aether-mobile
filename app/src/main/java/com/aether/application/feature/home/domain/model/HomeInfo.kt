@@ -15,3 +15,13 @@ data class UnitInfo(
     val emissions: Int,
     val reductionPercentage: Int,
 )
+
+
+/** Progress towards the Selo Paraná. */
+data class SealProgress(
+    val criteriaMet: Int,
+    val criteriaTotal: Int,
+) {
+    val percent: Int
+        get() = if (criteriaTotal > 0) criteriaMet * 100 / criteriaTotal else 0
+}

@@ -6,6 +6,7 @@ import com.aether.application.feature.home.data.remote.dto.GetPendingInventories
 import com.aether.application.feature.home.domain.model.EnterpriseInfo
 import com.aether.application.feature.home.domain.model.Inventory
 import com.aether.application.feature.home.domain.model.InventoryCount
+import com.aether.application.feature.home.domain.model.SealProgress
 import com.aether.application.feature.home.domain.model.UnitInfo
 import com.aether.application.feature.home.domain.repository.HomeRepository
 
@@ -42,4 +43,7 @@ class HomeRepositoryImpl(
 
     override suspend fun getInventoryCount(): InventoryCount =
         inventoryApi.countInventories().toDomain()
+
+    override suspend fun getSealProgress(): SealProgress =
+        inventoryApi.getSealProgress().toDomain()
 }

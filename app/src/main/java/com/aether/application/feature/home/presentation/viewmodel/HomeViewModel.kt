@@ -17,6 +17,7 @@ import com.aether.core.ui.components.EmployeeHeroCard
 import com.aether.core.ui.components.HomeHeroCard
 import com.aether.core.ui.components.ManagerHeroCard
 import com.aether.core.ui.components.ReportsSummaryHomeCard
+import com.aether.core.ui.components.SealProgressHomeCard
 import com.aether.core.ui.components.UnitEmissionsHomeCard
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
@@ -222,8 +223,21 @@ class HomeViewModel(
         )
     }
 
-    // TODO: no data source for the seal yet
-    private fun getSealProgressCard(): HomeHeroCard? = null
+    // Optional card: if it fails to load the other cards still show
+    private suspend fun getSealProgressCard(): HomeHeroCard? {
+        val seal = try {
+            homeRepository.getSealProgress()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to load seal progress", e)
+            return null
+        }
+        return SealProgressHomeCard(
+            levelPercent = "${seal.percent}%",
+            criteriaLabel = "${seal.criteriaMet} de ${seal.criteriaTotal} critérios atendidos"
+        )
+    }
 
     private suspend fun getRecentReports(userName: String, avatarUrl: String): List<RecentReport> {
         val recentInventories = mutableListOf<Inventory>()
