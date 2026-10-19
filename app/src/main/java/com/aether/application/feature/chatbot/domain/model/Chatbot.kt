@@ -12,12 +12,9 @@ data class ChatTurn(
     val output: String,
 )
 
-/**
- * The assistant's answer to a message. [conversationId] is null when the backend didn't say
- * which session the message was stored in (new conversations, see ChatbotApi).
- */
+/** The assistant's answer to a message and the session it was stored in. */
 data class ChatReply(
-    val conversationId: String?,
+    val conversationId: String,
     val turn: ChatTurn,
 )
 

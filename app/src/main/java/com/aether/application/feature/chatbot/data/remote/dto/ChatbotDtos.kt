@@ -21,6 +21,5 @@ data class SendMessageRequest(
 data class SendMessageResponse(
     @SerialName("input_message") val inputMessage: String,
     @SerialName("output_message") val outputMessage: String,
-    // TODO: the hub doesn't say which session a message went to, so a new conversation can't continue
-    @SerialName("id_session") val idSession: String? = null,
+    @SerialName("id_session") val idSession: String,
 )
