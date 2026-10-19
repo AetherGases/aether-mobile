@@ -1,6 +1,7 @@
 package com.aether.application.feature.chatbot.data.remote
 
 import com.aether.application.feature.chatbot.data.remote.dto.ChatMessageDto
+import com.aether.application.feature.chatbot.data.remote.dto.ChatSessionDto
 import com.aether.application.feature.chatbot.data.remote.dto.SendMessageRequest
 import com.aether.application.feature.chatbot.data.remote.dto.SendMessageResponse
 import retrofit2.http.Body
@@ -12,6 +13,10 @@ import retrofit2.http.Path
 private const val HUB = "hub/ai"
 
 interface ChatbotApi {
+
+    // Answers 404 when the user has no sessions yet
+    @GET("$HUB/sessions/user/{userId}")
+    suspend fun getSessions(@Path("userId") userId: String): List<ChatSessionDto>
 
     @GET("$HUB/session/{sessionId}/messages")
     suspend fun getMessages(@Path("sessionId") sessionId: String): List<ChatMessageDto>

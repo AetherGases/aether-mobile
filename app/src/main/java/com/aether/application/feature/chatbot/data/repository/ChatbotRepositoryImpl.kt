@@ -15,6 +15,7 @@ import kotlinx.coroutines.sync.withLock
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.HttpURLConnection.HTTP_BAD_GATEWAY
+import java.net.HttpURLConnection.HTTP_NOT_FOUND
 
 class ChatbotRepositoryImpl(
     private val chatbotApi: ChatbotApi,
@@ -26,6 +27,16 @@ class ChatbotRepositoryImpl(
 
     private val identityLock = Mutex()
     private var identity: Identity? = null
+
+    override suspend fun getConversations(): List<Conversation> = call {
+        val identity = identity()
+        try {
+            chatbotApi.getSessions(identity.userId.toString()).map { Conversation(it.id, it.name) }
+        } catch (e: HttpException) {
+            // The hub answers 404 instead of an empty list for a user without sessions
+            if (e.code() == HTTP_NOT_FOUND) emptyList() else throw e
+        }
+    }
 
     override suspend fun getMessages(conversationId: String): List<ChatTurn> = call {
         chatbotApi.getMessages(conversationId).map {

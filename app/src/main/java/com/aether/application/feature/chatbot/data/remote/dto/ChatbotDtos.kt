@@ -4,6 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class ChatSessionDto(
+    val id: String,
+    val name: String,
+)
+
+@Serializable
 data class ChatMessageDto(
     @SerialName("input_message") val inputMessage: String,
     @SerialName("output_message") val outputMessage: String,

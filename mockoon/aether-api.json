@@ -633,6 +633,37 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "6576d3e9-1386-4274-a997-3c7fdb749dba",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "hub/ai/sessions/user/:userId",
+      "responses": [
+        {
+          "uuid": "db109117-8e8a-4370-afd3-0194e0565e8f",
+          "body": "[\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c001\",\n    \"name\": \"Funcionamento do Aether\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c002\",\n    \"name\": \"Como reduzir emissões\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c003\",\n    \"name\": \"Criação de relatório\"\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -655,6 +686,10 @@
     {
       "type": "folder",
       "uuid": "737848b5-6fb7-49df-b5e7-d0e30d20f3ea"
+    },
+    {
+      "type": "route",
+      "uuid": "6576d3e9-1386-4274-a997-3c7fdb749dba"
     }
   ],
   "proxyMode": false,
