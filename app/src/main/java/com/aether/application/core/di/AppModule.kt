@@ -21,6 +21,8 @@ import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.shared.ReportReviewViewModel
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
@@ -106,6 +108,22 @@ object AppModule {
         viewModel {
             HomeViewModel(
                 homeRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel { (reportId: Long) ->
+            ReportReviewViewModel(
+                reportId = reportId,
+                reportsRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel { (reportId: Long) ->
+            ReportAnalysisViewModel(
+                reportId = reportId,
+                reportsRepository = get(),
                 sessionManager = get()
             )
         }
