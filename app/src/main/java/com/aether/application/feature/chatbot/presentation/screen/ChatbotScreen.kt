@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +25,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -139,12 +142,19 @@ fun AekoScreen(
                 title = screenTitle,
                 onBackClick = onBackClicked,
                 trailingContent = {
-                    AetherTrailingIconButton(
-                        painter = painterResource(id = if (isConversationSaved) R.drawable.ic_bookmark else R.drawable.ic_bookmarkborder),
-                        tint = MaterialTheme.colorScheme.secondary,
-                        contentDescription = if (isConversationSaved) "Remover dos salvos" else "Salvar conversa",
-                        onClick = onBookmarkClicked
-                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        AetherTrailingIconButton(
+                            painter = rememberVectorPainter(Icons.Default.Menu),
+                            contentDescription = "Abrir conversas salvas",
+                            onClick = { coroutineScope.launch { drawerState.open() } }
+                        )
+                        AetherTrailingIconButton(
+                            painter = painterResource(id = if (isConversationSaved) R.drawable.ic_bookmark else R.drawable.ic_bookmarkborder),
+                            tint = MaterialTheme.colorScheme.secondary,
+                            contentDescription = if (isConversationSaved) "Remover dos salvos" else "Salvar conversa",
+                            onClick = onBookmarkClicked
+                        )
+                    }
                 }
             )
 
