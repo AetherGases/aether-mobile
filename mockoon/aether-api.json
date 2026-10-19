@@ -78,6 +78,22 @@
         {
           "type": "route",
           "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d"
+        },
+        {
+          "type": "route",
+          "uuid": "9f625fb4-0773-44f8-896d-f1876735b2cc"
+        },
+        {
+          "type": "route",
+          "uuid": "18174f78-56ca-40b9-8f64-000aca6dd89e"
+        },
+        {
+          "type": "route",
+          "uuid": "0cf12fcf-e4b1-40c1-a7ee-f30bb326471b"
+        },
+        {
+          "type": "route",
+          "uuid": "aa5cce69-38dd-4e7f-996b-ab7225c8a720"
         }
       ]
     },
@@ -88,6 +104,16 @@
         {
           "type": "route",
           "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10"
+        }
+      ]
+    },
+    {
+      "uuid": "125d73f5-27f8-42b7-a28b-f9cc251aba04",
+      "name": "Hub",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "4e20ceeb-73eb-40ce-9973-ce811146beb9"
         }
       ]
     }
@@ -557,6 +583,242 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "9f625fb4-0773-44f8-896d-f1876735b2cc",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "inventories/:id",
+      "responses": [
+        {
+          "uuid": "e1daf5aa-dedd-44f0-8c92-f71bcaf10810",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"sector\": \"Frigorífico\",\n  \"unitName\": \"Frigorífico São Paulo - Unidade 3\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre, consolidado pelo controle operacional.\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"status\": \"UNDER_REVIEW\",\n  \"emissions\": [\n    {\n      \"scope\": \"Escopo 1\",\n      \"gas\": {\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      },\n      \"quantityCo2e\": 1240\n    },\n    {\n      \"scope\": \"Escopo 1\",\n      \"gas\": {\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      },\n      \"quantityCo2e\": 312.5\n    },\n    {\n      \"scope\": \"Escopo 2\",\n      \"gas\": {\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      },\n      \"quantityCo2e\": 540\n    },\n    {\n      \"scope\": \"Escopo 3\",\n      \"gas\": {\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      },\n      \"quantityCo2e\": 48\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Pending",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "48e976d9-1192-496c-ad95-d55f6f8027cb",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"sector\": \"Frigorífico\",\n  \"unitName\": \"Frigorífico São Paulo - Unidade 3\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre, consolidado pelo controle operacional.\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"status\": \"APPROVED\",\n  \"emissions\": [\n    {\n      \"scope\": \"Escopo 1\",\n      \"gas\": {\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      },\n      \"quantityCo2e\": 1240\n    },\n    {\n      \"scope\": \"Escopo 1\",\n      \"gas\": {\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      },\n      \"quantityCo2e\": 312.5\n    },\n    {\n      \"scope\": \"Escopo 2\",\n      \"gas\": {\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      },\n      \"quantityCo2e\": 540\n    },\n    {\n      \"scope\": \"Escopo 3\",\n      \"gas\": {\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      },\n      \"quantityCo2e\": 48\n    }\n  ],\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório detalhado, vai ajudar muito na nossa análise.\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Approved",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "2",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "57fed346-15a4-4532-9f2f-62bbe235e858",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"sector\": \"Frigorífico\",\n  \"unitName\": \"Frigorífico São Paulo - Unidade 3\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre, consolidado pelo controle operacional.\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"status\": \"REJECTED\",\n  \"emissions\": [\n    {\n      \"scope\": \"Escopo 1\",\n      \"gas\": {\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      },\n      \"quantityCo2e\": 1240\n    },\n    {\n      \"scope\": \"Escopo 1\",\n      \"gas\": {\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      },\n      \"quantityCo2e\": 312.5\n    },\n    {\n      \"scope\": \"Escopo 2\",\n      \"gas\": {\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      },\n      \"quantityCo2e\": 540\n    },\n    {\n      \"scope\": \"Escopo 3\",\n      \"gas\": {\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      },\n      \"quantityCo2e\": 48\n    }\n  ],\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório com informações não coerentes.\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Rejected",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "3",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "18174f78-56ca-40b9-8f64-000aca6dd89e",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "inventories/:id/analysis",
+      "responses": [
+        {
+          "uuid": "468bb61d-d67c-4655-afdb-def181112d85",
+          "body": "{\n  \"totalEmissions\": 2403,\n  \"changePercent\": 12,\n  \"scopes\": [\n    {\n      \"name\": \"Escopo 1\",\n      \"percent\": 63\n    },\n    {\n      \"name\": \"Escopo 2\",\n      \"percent\": 27\n    },\n    {\n      \"name\": \"Escopo 3\",\n      \"percent\": 10\n    }\n  ],\n  \"priorityReplacement\": {\n    \"reduction\": 817,\n    \"percent\": 34,\n    \"technology\": \"Biometano\",\n    \"scope\": \"Escopo 1\"\n  },\n  \"secondaryReplacement\": {\n    \"reduction\": 264,\n    \"percent\": 11,\n    \"technology\": \"Energia solar fotovoltaica\",\n    \"scope\": \"Escopo 2\"\n  },\n  \"monthlySavings\": 87400,\n  \"initialInvestment\": 1220000\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "0cf12fcf-e4b1-40c1-a7ee-f30bb326471b",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "inventories/pending/:id/approve",
+      "responses": [
+        {
+          "uuid": "e49347bf-3e2d-4f28-a511-3de4746b527e",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"validationMessage\": \"{{body 'message'}}\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-10-19T10:00:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "aa5cce69-38dd-4e7f-996b-ab7225c8a720",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "inventories/pending/:id/reject",
+      "responses": [
+        {
+          "uuid": "d372014c-82b2-42b6-9cda-6fc73e7032ca",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"validationMessage\": \"{{body 'message'}}\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-10-19T10:00:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "4e20ceeb-73eb-40ce-9973-ce811146beb9",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "hub/ai/report/:id",
+      "responses": [
+        {
+          "uuid": "e02b7de9-4be2-4da1-8d02-750fb15aa0ab",
+          "body": "{\n  \"defined_problem\": \"Elevada emissão no processo produtivo\",\n  \"solving_method\": \"Substituir combustível fóssil por biometano.\",\n  \"reasoning\": \"A utilização de biometano pode reduzir as emissões associadas ao consumo de combustíveis fósseis, dependendo das características do processo produtivo e da origem do combustível.\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "0e49c824-e11c-4f87-9a5a-31134daee0b5",
+          "body": "{\n  \"detail\": \"Improvement plan with id_external_inventory {{urlParam 'id'}} not found.\"\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "No plan",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "404",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -575,6 +837,10 @@
     {
       "type": "folder",
       "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75"
+    },
+    {
+      "type": "folder",
+      "uuid": "125d73f5-27f8-42b7-a28b-f9cc251aba04"
     }
   ],
   "proxyMode": false,
