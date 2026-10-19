@@ -1,7 +1,6 @@
 package com.aether.application.feature.home.presentation.viewmodel
 
 import android.util.Log
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +10,7 @@ import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.model.Inventory
 import com.aether.application.feature.home.domain.repository.HomeRepository
 import com.aether.application.feature.home.presentation.components.QuickAction
+import com.aether.application.feature.home.presentation.components.QuickActionContainer
 import com.aether.application.feature.home.presentation.components.RecentReport
 import com.aether.application.feature.home.presentation.model.toReportStatus
 import com.aether.core.ui.components.EmployeeHeroCard
@@ -40,6 +40,7 @@ data class HomeUiState(
     val cards: List<HomeHeroCard> = emptyList(),
     val quickActions: List<QuickAction> = emptyList(),
     val recentReports: List<RecentReport> = emptyList(),
+    val isRefreshing: Boolean = false,
 )
 
 sealed interface HomeEvent {
@@ -62,40 +63,54 @@ class HomeViewModel(
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-    // Populate uiState
     init {
+        viewModelScope.launch { loadHome() }
+    }
+
+    fun refresh() {
+        if (_uiState.value.isRefreshing) return
         viewModelScope.launch {
+            _uiState.update { it.copy(isRefreshing = true) }
             try {
-                val session = sessionManager.getSession()
-                    ?: throw Exception("nah man, u need to be authed")
-
-                val (userName, userLastName) = if (" " in session.name) {
-                    session.name.split(" ", limit = 2)
-                } else {
-                    listOf(session.name, "")
-                }
-
-                val avatar = session.avatar
-                val cards = getHomeCards()
-                val recentReports = getRecentReports(
-                    userName = "$userName $userLastName",
-                    avatarUrl = avatar
-                )
-                val quickActions = getQuickActions()
-
-                _uiState.update { it.copy(
-                    userName = userName,
-                    userLastName = userLastName,
-                    avatarUrl = avatar,
-                    cards = cards,
-                    quickActions = quickActions,
-                    recentReports = recentReports
-                ) }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to load home", e)
+                loadHome()
+            } finally {
+                _uiState.update { it.copy(isRefreshing = false) }
             }
+        }
+    }
+
+    // On failure the previous state is kept, so a failed refresh doesn't blank the screen
+    private suspend fun loadHome() {
+        try {
+            val session = sessionManager.getSession()
+                ?: throw Exception("nah man, u need to be authed")
+
+            val (userName, userLastName) = if (" " in session.name) {
+                session.name.split(" ", limit = 2)
+            } else {
+                listOf(session.name, "")
+            }
+
+            val avatar = session.avatar
+            val cards = getHomeCards()
+            val recentReports = getRecentReports(
+                userName = "$userName $userLastName",
+                avatarUrl = avatar
+            )
+            val quickActions = getQuickActions()
+
+            _uiState.update { it.copy(
+                userName = userName,
+                userLastName = userLastName,
+                avatarUrl = avatar,
+                cards = cards,
+                quickActions = quickActions,
+                recentReports = recentReports
+            ) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to load home", e)
         }
     }
 
@@ -236,7 +251,7 @@ class HomeViewModel(
                     iconSize = 60.dp,
                     offsetX = 3.dp,
                     offsetY = 0.dp,
-                    backgroundColor = Color(0xFFECE2FD),
+                    container = QuickActionContainer.PRIMARY,
                     onClick = { viewModelScope.launch {
                         _events.send(HomeEvent.NavigateToHistory)
                     }}
@@ -251,7 +266,7 @@ class HomeViewModel(
                     iconSize = 60.dp,
                     offsetX = 0.dp,
                     offsetY = 0.dp,
-                    backgroundColor = Color(0xFFE7FAF2),
+                    container = QuickActionContainer.SECONDARY,
                     onClick = { viewModelScope.launch {
                         _events.send(HomeEvent.NavigateToCreateReport)
                     }}
@@ -266,7 +281,7 @@ class HomeViewModel(
                     iconSize = 50.dp,
                     offsetX = 0.dp,
                     offsetY = 0.dp,
-                    backgroundColor = Color(0xFFECE2FD),
+                    container = QuickActionContainer.PRIMARY,
                     onClick = { viewModelScope.launch {
                         _events.send(HomeEvent.NavigateToCalculator)
                     }}
@@ -281,7 +296,7 @@ class HomeViewModel(
                     iconSize = 90.dp,
                     offsetX = 3.dp,
                     offsetY = 10.dp,
-                    backgroundColor = Color(0xFFECE2FD),
+                    container = QuickActionContainer.PRIMARY,
                     onClick = { viewModelScope.launch {
                         _events.send(HomeEvent.NavigateToChatBot)
                     }}

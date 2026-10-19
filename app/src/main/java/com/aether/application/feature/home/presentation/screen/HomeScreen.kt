@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,7 @@ import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
 import com.aether.application.R
 import com.aether.application.feature.home.presentation.components.QuickAction
+import com.aether.application.feature.home.presentation.components.QuickActionContainer
 import com.aether.application.feature.home.presentation.components.RecentReport
 import com.aether.application.ui.components.AppHeader
 import com.aether.core.ui.components.EmployeeHeroCard
@@ -60,6 +62,7 @@ import com.aether.core.ui.theme.*
 private val SCREEN_PADDING = 24.dp
 private val CARD_WIDTH = 335.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     userName: String,
@@ -69,13 +72,17 @@ fun HomeScreen(
     cards: List<HomeHeroCard>,
     quickActions: List<QuickAction>,
     recentReports: List<RecentReport>,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     onNotificationsClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onSeeAllReportsClick: () -> Unit,
     onReportClick: (RecentReport) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
@@ -261,7 +268,13 @@ fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier) {
         Box(
             modifier = Modifier
                 .size(100.dp)
-                .background(action.backgroundColor, RoundedCornerShape(16.dp)),
+                .background(
+                    when (action.container) {
+                        QuickActionContainer.PRIMARY -> MaterialTheme.colorScheme.primaryContainer
+                        QuickActionContainer.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer
+                    },
+                    RoundedCornerShape(16.dp)
+                ),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -423,16 +436,18 @@ fun HomeScreenEmployeePreview() {
                 SealProgressHomeCard("50%", "2 de 4 critérios atendidos")
             ),
             quickActions = listOf(
-                QuickAction("Criar relatório", R.drawable.ic_create_report, 60.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
-                QuickAction("Calcular CO2", R.drawable.ic_calculator_purple, 50.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.primaryContainer) {},
-                QuickAction("Histórico", R.drawable.ic_history_green, 60.dp, 3.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
-                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, MaterialTheme.colorScheme.primaryContainer) {}
+                QuickAction("Criar relatório", R.drawable.ic_create_report, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction("Calcular CO2", R.drawable.ic_calculator_purple, 50.dp, 0.dp, 0.dp, QuickActionContainer.PRIMARY) {},
+                QuickAction("Histórico", R.drawable.ic_history_green, 60.dp, 3.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
             ),
             recentReports = listOf(
                 RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
                 RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
                 RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
             ),
+            isRefreshing = false,
+            onRefresh = {},
             onNotificationsClick = {},
             onSettingsClick = {},
             onSeeAllReportsClick = {},
@@ -462,15 +477,17 @@ fun HomeScreenManagerPreview() {
                 SealProgressHomeCard("50%", "2 de 4 critérios atendidos")
             ),
             quickActions = listOf(
-                QuickAction("Histórico", R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, MaterialTheme.colorScheme.primaryContainer) {},
-                QuickAction("Calcular CO2", R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
-                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, MaterialTheme.colorScheme.primaryContainer) {}
+                QuickAction("Histórico", R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, QuickActionContainer.PRIMARY) {},
+                QuickAction("Calcular CO2", R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
             ),
             recentReports = listOf(
                 RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
                 RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
                 RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
             ),
+            isRefreshing = false,
+            onRefresh = {},
             onNotificationsClick = {},
             onSettingsClick = {},
             onSeeAllReportsClick = {},
