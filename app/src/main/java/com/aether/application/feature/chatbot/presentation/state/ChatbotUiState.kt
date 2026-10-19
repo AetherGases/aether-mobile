@@ -1,7 +1,7 @@
 package com.aether.application.feature.chatbot.presentation.state
 
 import com.aether.application.feature.chatbot.domain.model.Conversation
-import com.aether.application.feature.chatbot.presentation.screen.SavedConversation
+import com.aether.application.feature.chatbot.presentation.screen.ConversationItem
 import com.aether.core.ui.components.ChatMessage
 import com.aether.core.ui.components.ChatSender
 
@@ -16,7 +16,8 @@ data class ChatbotUiState(
     val messages: List<ChatMessage> = emptyList(),
     val suggestions: List<String> = emptyList(),
     val inputText: String = "",
-    val savedConversations: List<Conversation> = emptyList(),
+    val conversations: List<Conversation> = emptyList(),
+    val pinnedConversationIds: Set<String> = emptySet(),
     val conversationSearchQuery: String = "",
     val activeConversationId: String? = null,
     val isSending: Boolean = false,
@@ -31,11 +32,20 @@ data class ChatbotUiState(
             messages
         }
 
-    val isConversationSaved: Boolean
-        get() = savedConversations.any { it.id == activeConversationId }
+    val isConversationPinned: Boolean
+        get() = activeConversationId in pinnedConversationIds
 
-    val visibleConversations: List<SavedConversation>
-        get() = savedConversations
+    /** Every conversation matching the search, pinned ones first, otherwise in the hub's order. */
+    val visibleConversations: List<ConversationItem>
+        get() = conversations
             .filter { it.name.contains(conversationSearchQuery.trim(), ignoreCase = true) }
-            .map { SavedConversation(it.id, it.name, isSelected = it.id == activeConversationId) }
+            .sortedByDescending { it.id in pinnedConversationIds }
+            .map {
+                ConversationItem(
+                    id = it.id,
+                    title = it.name,
+                    isPinned = it.id in pinnedConversationIds,
+                    isSelected = it.id == activeConversationId
+                )
+            }
 }

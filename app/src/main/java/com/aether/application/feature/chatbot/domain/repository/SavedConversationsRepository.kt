@@ -1,13 +1,11 @@
 package com.aether.application.feature.chatbot.domain.repository
 
-import com.aether.application.feature.chatbot.domain.model.Conversation
-
-/** Conversations the user bookmarked, kept on this device and separated by account. */
+/** Ids of the conversations the user pinned, kept on this device and separated by account. */
 interface SavedConversationsRepository {
 
-    suspend fun getSaved(): List<Conversation>
+    suspend fun getPinnedIds(): Set<String>
 
-    suspend fun save(conversation: Conversation)
+    suspend fun pin(conversationId: String)
 
-    suspend fun remove(conversationId: String)
+    suspend fun unpin(conversationId: String)
 }

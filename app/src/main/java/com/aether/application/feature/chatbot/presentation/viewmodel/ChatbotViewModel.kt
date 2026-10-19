@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.chatbot.domain.model.ChatbotException
-import com.aether.application.feature.chatbot.domain.model.Conversation
 import com.aether.application.feature.chatbot.domain.repository.ChatbotRepository
 import com.aether.application.feature.chatbot.domain.repository.SavedConversationsRepository
 import com.aether.application.feature.chatbot.presentation.state.ChatbotUiState
@@ -56,7 +55,8 @@ class ChatbotViewModel(
                     avatarUrl = session?.avatar
                 )
             }
-            loadSavedConversations()
+            loadPinnedConversations()
+            loadConversations()
         }
     }
 
@@ -89,7 +89,7 @@ class ChatbotViewModel(
         if (state.isSending || state.isLoadingConversation) return
         if (conversationId == state.activeConversationId) return
 
-        val conversation = state.savedConversations.firstOrNull { it.id == conversationId } ?: return
+        val conversation = state.conversations.firstOrNull { it.id == conversationId } ?: return
         _uiState.update { it.copy(isLoadingConversation = true) }
         viewModelScope.launch {
             try {
@@ -122,27 +122,22 @@ class ChatbotViewModel(
         val state = _uiState.value
         val conversationId = state.activeConversationId
         if (conversationId == null) {
-            val reason = if (state.messages.isEmpty()) {
-                "Envie uma mensagem para poder salvar a conversa."
-            } else {
-                "Não foi possível salvar esta conversa agora."
-            }
-            _uiState.update { it.copy(errorMessage = reason) }
+            _uiState.update { it.copy(errorMessage = "Envie uma mensagem para poder salvar a conversa.") }
             return
         }
 
         viewModelScope.launch {
             try {
-                if (state.isConversationSaved) {
-                    savedConversationsRepository.remove(conversationId)
+                if (state.isConversationPinned) {
+                    savedConversationsRepository.unpin(conversationId)
                 } else {
-                    savedConversationsRepository.save(Conversation(conversationId, state.title))
+                    savedConversationsRepository.pin(conversationId)
                 }
-                loadSavedConversations()
+                loadPinnedConversations()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to update saved conversation $conversationId", e)
+                Log.e(TAG, "Failed to update pinned conversation $conversationId", e)
                 _uiState.update { it.copy(errorMessage = "Não foi possível atualizar a conversa salva.") }
             }
         }
@@ -174,6 +169,8 @@ class ChatbotViewModel(
                         isSending = false
                     )
                 }
+                // The hub just created the session, list it in the drawer
+                if (conversationId == null) loadConversations()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -191,14 +188,29 @@ class ChatbotViewModel(
         }
     }
 
-    private suspend fun loadSavedConversations() {
+    private suspend fun loadConversations() {
         try {
-            val saved = savedConversationsRepository.getSaved()
-            _uiState.update { it.copy(savedConversations = saved) }
+            val conversations = chatbotRepository.getConversations()
+            _uiState.update { state ->
+                // Prefer the name the hub gave the session over the one made from the first message
+                val activeName = conversations.firstOrNull { it.id == state.activeConversationId }?.name
+                state.copy(conversations = conversations, title = activeName ?: state.title)
+            }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to load saved conversations", e)
+            Log.e(TAG, "Failed to load conversations", e)
+        }
+    }
+
+    private suspend fun loadPinnedConversations() {
+        try {
+            val pinned = savedConversationsRepository.getPinnedIds()
+            _uiState.update { it.copy(pinnedConversationIds = pinned) }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to load pinned conversations", e)
         }
     }
 

@@ -46,8 +46,8 @@ fun AekoScreen(
     messages: List<ChatMessage>,
     suggestions: List<String>,
     inputText: String,
-    isConversationSaved: Boolean,
-    savedConversations: List<SavedConversation>,
+    isConversationPinned: Boolean,
+    conversations: List<ConversationItem>,
     conversationSearchQuery: String,
     userName: String,
     userRole: String,
@@ -75,7 +75,7 @@ fun AekoScreen(
                     userName = userName,
                     userRole = userRole,
                     avatarUrl = avatarUrl,
-                    savedConversations = savedConversations,
+                    conversations = conversations,
                     searchQuery = conversationSearchQuery,
                     onSearchQueryChanged = onConversationSearchQueryChanged,
                     onNewConversationClick = {
@@ -149,9 +149,9 @@ fun AekoScreen(
                             onClick = { coroutineScope.launch { drawerState.open() } }
                         )
                         AetherTrailingIconButton(
-                            painter = painterResource(id = if (isConversationSaved) R.drawable.ic_bookmark else R.drawable.ic_bookmarkborder),
+                            painter = painterResource(id = if (isConversationPinned) R.drawable.ic_bookmark else R.drawable.ic_bookmarkborder),
                             tint = MaterialTheme.colorScheme.secondary,
-                            contentDescription = if (isConversationSaved) "Remover dos salvos" else "Salvar conversa",
+                            contentDescription = if (isConversationPinned) "Remover dos salvos" else "Salvar conversa",
                             onClick = onBookmarkClicked
                         )
                     }
@@ -275,10 +275,10 @@ fun AekoScreenWelcomePreview() {
             messages = emptyList(),
             suggestions = listOf("Como funciona?", "Como funciona?", "Bla bla bla", "Bla bla bla"),
             inputText = "",
-            isConversationSaved = false,
-            savedConversations = listOf(
-                SavedConversation("1", "Funcionamento do Aether", isSelected = true),
-                SavedConversation("2", "Funcionamento do Aether")
+            isConversationPinned = false,
+            conversations = listOf(
+                ConversationItem("1", "Funcionamento do Aether", isPinned = true, isSelected = true),
+                ConversationItem("2", "Funcionamento do Aether")
             ),
             conversationSearchQuery = "",
             userName = "Daniel Sagaz",
@@ -320,10 +320,10 @@ fun AekoScreenConversationPreview() {
             ),
             suggestions = emptyList(),
             inputText = "Asquerosa",
-            isConversationSaved = true,
-            savedConversations = listOf(
-                SavedConversation("1", "Funcionamento do Aether", isSelected = true),
-                SavedConversation("2", "Funcionamento do Aether")
+            isConversationPinned = true,
+            conversations = listOf(
+                ConversationItem("1", "Funcionamento do Aether", isPinned = true, isSelected = true),
+                ConversationItem("2", "Funcionamento do Aether")
             ),
             conversationSearchQuery = "",
             userName = "Daniel Sagaz",
