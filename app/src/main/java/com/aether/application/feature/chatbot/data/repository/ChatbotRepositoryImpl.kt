@@ -1,5 +1,6 @@
 package com.aether.application.feature.chatbot.data.repository
 
+import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.network.readErrorMessage
 import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.chatbot.data.remote.ChatbotApi
@@ -18,9 +19,10 @@ import java.net.HttpURLConnection.HTTP_BAD_GATEWAY
 class ChatbotRepositoryImpl(
     private val chatbotApi: ChatbotApi,
     private val profileApi: ProfileApi,
+    private val sessionManager: SessionManager,
 ) : ChatbotRepository {
 
-    private class Identity(val userId: Long, val companyId: Long)
+    private class Identity(val email: String?, val userId: Long, val companyId: Long)
 
     private val identityLock = Mutex()
     private var identity: Identity? = null
@@ -47,13 +49,15 @@ class ChatbotRepositoryImpl(
         )
     }
 
-    // The hub needs the ids from the user's profile and checks them against the access token
+    // The hub needs the ids from the user's profile and checks them against the access token.
+    // The cache is tied to the logged-in account so a new login doesn't reuse the previous ids.
     private suspend fun identity(): Identity = identityLock.withLock {
-        identity ?: run {
+        val email = sessionManager.getSession()?.email
+        identity?.takeIf { it.email == email } ?: run {
             val profile = profileApi.getUserProfile()
             val companyId = profile.enterprise?.id
                 ?: throw ChatbotException("Não foi possível identificar a empresa do usuário.")
-            Identity(userId = profile.id, companyId = companyId).also { identity = it }
+            Identity(email = email, userId = profile.id, companyId = companyId).also { identity = it }
         }
     }
 

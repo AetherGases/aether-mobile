@@ -97,7 +97,7 @@ object NetworkModule {
         }
 
         single<ChatbotRepository> {
-            ChatbotRepositoryImpl(chatbotApi = get(), profileApi = get())
+            ChatbotRepositoryImpl(chatbotApi = get(), profileApi = get(), sessionManager = get())
         }
 
         single<SavedConversationsRepository> {
