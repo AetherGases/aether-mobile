@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,7 +73,7 @@ fun CreateReportUploadScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         AetherTopBar(title = "Criar relatório", onBackClick = onBackClicked)
 
@@ -82,12 +84,12 @@ fun CreateReportUploadScreen(
         ) {
             Spacer(Modifier.height(16.dp))
 
-            Text("Anexe sua planilha", style = titleLarge, color = textPrimaryLight)
+            Text("Anexe sua planilha", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(8.dp))
             Text(
                 "Envie o arquivo Excel (.xlsx) com os dados do seu relatório.",
                 style = bodyMediumMd,
-                color = textTertiaryLight
+                color = MaterialTheme.colorScheme.outline
             )
 
             Spacer(Modifier.height(48.dp))
@@ -115,9 +117,11 @@ fun CreateReportUploadScreen(
                     .clip(RoundedCornerShape(50))
                     .background(
                         if (isFileReady) {
-                            Brush.linearGradient(listOf(Color(0xFF8A47FD), purple500))
+                            Brush.linearGradient(
+                                listOf(MaterialTheme.colorScheme.inversePrimary, MaterialTheme.colorScheme.primary)
+                            )
                         } else {
-                            Brush.linearGradient(listOf(textDisabledLight, textDisabledLight))
+                            SolidColor(MaterialTheme.colorScheme.outlineVariant)
                         }
                     )
                     .clickable(enabled = isFileReady) { showNameDialog = true },
@@ -126,7 +130,11 @@ fun CreateReportUploadScreen(
                 Text(
                     "Enviar",
                     style = titleMedium,
-                    color = if (isFileReady) Color.White else Color.White.copy(alpha = 0.7f)
+                    color = if (isFileReady) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
                 )
             }
         }
@@ -152,8 +160,8 @@ private fun SelectFileRow(onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
-            .background(green500.copy(alpha = 0.10f))
-            .border(1.dp, green500.copy(alpha = 0.3f), RoundedCornerShape(18.dp))
+            .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.10f))
+            .border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f), RoundedCornerShape(18.dp))
             .clickable(onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -175,14 +183,14 @@ private fun SelectFileRow(onClick: () -> Unit) {
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text("Selecionar arquivo", style = titleSmall, color = textSecondaryLight)
-            Text("Aceitamos arquivos .xlsx", style = bodyMediumMd, color = green500)
+            Text("Selecionar arquivo", style = titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Aceitamos arquivos .xlsx", style = bodyMediumMd, color = MaterialTheme.colorScheme.secondary)
         }
 
         Icon(
             imageVector = Icons.Default.KeyboardArrowRight,
             contentDescription = null,
-            tint = green500,
+            tint = MaterialTheme.colorScheme.secondary,
             modifier = Modifier.size(20.dp)
         )
     }
@@ -194,12 +202,14 @@ private fun FileUploadProgressRow(
     progress: Float,
     onCancelClick: () -> Unit
 ) {
+    val iconGradientStart = MaterialTheme.colorScheme.inversePrimary
+    val iconGradientEnd = MaterialTheme.colorScheme.primary
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
                 .size(40.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(textDisabledLight.copy(alpha = 0.2f)),
+                .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -210,7 +220,7 @@ private fun FileUploadProgressRow(
                     .size(28.dp)
                     .graphicsLayer(alpha = 0.99f)
                     .drawWithCache {
-                        val brush = Brush.linearGradient(listOf(purple300, purple500))
+                        val brush = Brush.linearGradient(listOf(iconGradientStart, iconGradientEnd))
                         onDrawWithContent {
                             drawContent()
                             drawRect(brush, blendMode = BlendMode.SrcAtop)
@@ -222,21 +232,21 @@ private fun FileUploadProgressRow(
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(fileName, style = bodyMedium, color = textPrimaryLight)
+            Text(fileName, style = bodyMedium, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(6.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(4.dp)
                     .clip(RoundedCornerShape(50))
-                    .background(textDisabledLight.copy(alpha = 0.3f))
+                    .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(fraction = progress.coerceIn(0f, 1f))
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(50))
-                        .background(green500)
+                        .background(MaterialTheme.colorScheme.secondary)
                 )
             }
         }
@@ -247,7 +257,7 @@ private fun FileUploadProgressRow(
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Remover arquivo",
-                tint = textTertiaryLight
+                tint = MaterialTheme.colorScheme.outline
             )
         }
     }
@@ -267,7 +277,7 @@ private fun ReportNameDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(24.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
@@ -281,13 +291,13 @@ private fun ReportNameDialog(
                     Text(
                         "Nome do relatório",
                         style = titleSmall,
-                        color = textPrimaryLight
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Fechar",
-                            tint = textTertiaryLight
+                            tint = MaterialTheme.colorScheme.outline
                         )
                     }
                 }
@@ -303,8 +313,8 @@ private fun ReportNameDialog(
                     singleLine = true,
                     shape = RoundedCornerShape(percent = 50),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = purple300,
-                        unfocusedBorderColor = textDisabledLight,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                         unfocusedContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent
                     ),
@@ -322,15 +332,25 @@ private fun ReportNameDialog(
                         .clip(RoundedCornerShape(50))
                         .background(
                             if (canConfirm) {
-                                Brush.linearGradient(listOf(purple300, purple500))
+                                Brush.linearGradient(
+                                    listOf(MaterialTheme.colorScheme.inversePrimary, MaterialTheme.colorScheme.primary)
+                                )
                             } else {
-                                Brush.linearGradient(listOf(textDisabledLight, textDisabledLight))
+                                SolidColor(MaterialTheme.colorScheme.outlineVariant)
                             }
                         )
                         .clickable(enabled = canConfirm, onClick = onConfirm),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Criar relatório", style = titleMediumMD, color = Color.White)
+                    Text(
+                        "Criar relatório",
+                        style = titleMediumMD,
+                        color = if (canConfirm) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
                 }
             }
         }
