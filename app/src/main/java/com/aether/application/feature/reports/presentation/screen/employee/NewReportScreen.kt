@@ -49,6 +49,7 @@ fun CreateReportUploadScreen(
     selectedFileName: String?,
     uploadProgress: Float?,
     reportName: String,
+    reportNameError: String?,
     onReportNameChanged: (String) -> Unit,
     onFileSelected: (Uri) -> Unit,
     onRemoveFileClicked: () -> Unit,
@@ -134,6 +135,7 @@ fun CreateReportUploadScreen(
     if (showNameDialog) {
         ReportNameDialog(
             reportName = reportName,
+            reportNameError = reportNameError,
             onReportNameChanged = onReportNameChanged,
             onConfirm = {
                 showNameDialog = false
@@ -254,6 +256,7 @@ private fun FileUploadProgressRow(
 @Composable
 private fun ReportNameDialog(
     reportName: String,
+    reportNameError: String?,
     onReportNameChanged: (String) -> Unit,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
@@ -294,7 +297,9 @@ private fun ReportNameDialog(
                 OutlinedTextField(
                     value = reportName,
                     onValueChange = onReportNameChanged,
-                    placeholder = { Text("Ex: Relatório de emissões - Julho") },
+                    placeholder = { Text("Ex: Relatório de emissões de julho") },
+                    isError = reportNameError != null,
+                    supportingText = reportNameError?.let { error -> { Text(error) } },
                     singleLine = true,
                     shape = RoundedCornerShape(percent = 50),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -308,7 +313,7 @@ private fun ReportNameDialog(
 
                 Spacer(Modifier.height(20.dp))
 
-                val canConfirm = reportName.isNotBlank()
+                val canConfirm = reportName.isNotBlank() && reportNameError == null
 
                 Box(
                     modifier = Modifier
@@ -340,6 +345,7 @@ fun CreateReportUploadScreenEmptyPreview() {
             selectedFileName = null,
             uploadProgress = null,
             reportName = "",
+            reportNameError = null,
             onReportNameChanged = {},
             onFileSelected = {},
             onRemoveFileClicked = {},
@@ -357,6 +363,7 @@ fun CreateReportUploadScreenUploadingPreview() {
             selectedFileName = "arquivoblablabla.xlsx",
             uploadProgress = 0.6f,
             reportName = "",
+            reportNameError = null,
             onReportNameChanged = {},
             onFileSelected = {},
             onRemoveFileClicked = {},
@@ -374,6 +381,7 @@ fun CreateReportUploadScreenReadyPreview() {
             selectedFileName = "arquivoblablabla.xlsx",
             uploadProgress = 1f,
             reportName = "",
+            reportNameError = null,
             onReportNameChanged = {},
             onFileSelected = {},
             onRemoveFileClicked = {},

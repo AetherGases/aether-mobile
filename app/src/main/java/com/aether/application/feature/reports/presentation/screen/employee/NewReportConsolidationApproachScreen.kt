@@ -29,6 +29,40 @@ fun ConsolidationApproachScreen(
     onFinancialControlClick: () -> Unit,
     onOperationalControlClick: () -> Unit,
     onConsultAekoClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isSubmitting: Boolean = false
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        ConsolidationApproachContent(
+            onBackClick = onBackClick,
+            onEquityShareClick = onEquityShareClick,
+            onFinancialControlClick = onFinancialControlClick,
+            onOperationalControlClick = onOperationalControlClick,
+            onConsultAekoClick = onConsultAekoClick
+        )
+
+        if (isSubmitting) {
+            // Swallows touches so an option can't be chosen twice while the report is created
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.6f))
+                    .clickable(enabled = false, onClick = {}),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+}
+
+@Composable
+private fun ConsolidationApproachContent(
+    onBackClick: () -> Unit,
+    onEquityShareClick: () -> Unit,
+    onFinancialControlClick: () -> Unit,
+    onOperationalControlClick: () -> Unit,
+    onConsultAekoClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(

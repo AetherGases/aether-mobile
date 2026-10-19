@@ -13,11 +13,16 @@ import com.aether.application.feature.auth.domain.repository.AuthRepository
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.home.data.remote.InventoryApi
+import com.aether.application.feature.reports.data.remote.CloudinaryUploader
+import com.aether.application.feature.reports.data.remote.ReportsApi
+import com.aether.application.feature.reports.data.repository.NewReportRepositoryImpl
+import com.aether.application.feature.reports.domain.repository.NewReportRepository
 import com.aether.application.feature.home.data.repository.HomeRepositoryImpl
 import com.aether.application.feature.home.domain.repository.HomeRepository
 import com.aether.application.feature.settings.data.repository.SettingsRepositoryImpl
 import com.aether.application.feature.settings.domain.repository.SettingsRepository
 import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -80,6 +85,19 @@ object NetworkModule {
 
         single<SettingsRepository> {
             SettingsRepositoryImpl(dataStore = get())
+        }
+
+        single<ReportsApi> {
+            val retrofit: Retrofit = get()
+            retrofit.create(ReportsApi::class.java)
+        }
+
+        single<NewReportRepository> {
+            NewReportRepositoryImpl(
+                reportsApi = get(),
+                // A plain client: the app's own one would send our access token to Cloudinary
+                uploader = CloudinaryUploader(androidContext().contentResolver, OkHttpClient())
+            )
         }
 
         single<HomeRepository> {

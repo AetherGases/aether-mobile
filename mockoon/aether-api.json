@@ -78,6 +78,10 @@
         {
           "type": "route",
           "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d"
+        },
+        {
+          "type": "route",
+          "uuid": "7b16615c-c3f5-46e8-a533-f74372a6eebe"
         }
       ]
     },
@@ -88,6 +92,16 @@
         {
           "type": "route",
           "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10"
+        }
+      ]
+    },
+    {
+      "uuid": "2fc9fd4a-6825-4d29-b565-b675e5ace465",
+      "name": "Cloudinary",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "dbd453e1-f5b9-4a02-885d-2ee4fff120ed"
         }
       ]
     }
@@ -557,6 +571,68 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "dbd453e1-f5b9-4a02-885d-2ee4fff120ed",
+      "type": "http",
+      "documentation": "The file itself goes straight to api.cloudinary.com, which Mockoon can't simulate.",
+      "method": "get",
+      "endpoint": "cloudinary/upload-signature",
+      "responses": [
+        {
+          "uuid": "c682a62d-d10f-45cb-9d86-1e6227dd3214",
+          "body": "{\n  \"signature\": \"mock-signature\",\n  \"timestamp\": 1790000000,\n  \"apiKey\": \"mock-api-key\",\n  \"cloudName\": \"mock-cloud\",\n  \"cloudinaryFolder\": \"spreadsheets\",\n  \"cloudinaryResourceType\": \"raw\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "7b16615c-c3f5-46e8-a533-f74372a6eebe",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "inventories",
+      "responses": [
+        {
+          "uuid": "9799aaf2-aad9-4cc9-bac9-a0dab06b878f",
+          "body": "{\n  \"id\": 100,\n  \"name\": \"Relatório de emissões\",\n  \"type\": \"INPUT\",\n  \"status\": \"PROCESSING\",\n  \"createdAt\": \"2026-10-19T10:00:00\",\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-10-19T10:00:00\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 201,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -575,6 +651,10 @@
     {
       "type": "folder",
       "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75"
+    },
+    {
+      "type": "folder",
+      "uuid": "2fc9fd4a-6825-4d29-b565-b675e5ace465"
     }
   ],
   "proxyMode": false,
