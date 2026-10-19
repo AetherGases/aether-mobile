@@ -1,9 +1,18 @@
 package com.aether.application.feature.reports.presentation.screen
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -11,12 +20,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +42,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -39,10 +56,14 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.aether.application.R
+import com.aether.application.feature.reports.presentation.model.buildMonthWeeks
+import com.aether.application.feature.reports.presentation.model.label
 import com.aether.core.ui.components.AetherTopBar
 import com.aether.core.ui.components.ReportCard
 import com.aether.core.ui.components.ReportStatus
 import com.aether.core.ui.theme.*
+import java.time.LocalDate
+import java.time.YearMonth
 
 enum class ReportViewerRole { GERENTE, FUNCIONARIO }
 
@@ -65,7 +86,7 @@ data class ReportItem(
     val avatarUrl: String?,
     val title: String,
     val authorName: String,
-    val reviewerName: String,
+    val reviewerName: String?,
     val createdAt: String,
     val status: ReportStatus,
     val canReview: Boolean = false
@@ -74,24 +95,34 @@ data class ReportItem(
 data class CalendarDay(
     val number: String,
     val isSelected: Boolean = false,
-    val isEnabled: Boolean = true
+    val isEnabled: Boolean = true,
+    val date: LocalDate? = null
 )
+
+private const val SWIPE_THRESHOLD = 80f
 
 private val weekDayLetters = listOf("D", "S", "T", "Q", "Q", "S", "S")
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportHistoryScreen(
     viewerRole: ReportViewerRole,
     currentWeek: List<CalendarDay?>,
-    monthWeeks: List<List<CalendarDay?>>,
+    month: YearMonth,
+    reportDates: Set<LocalDate>,
+    selectedDate: LocalDate?,
     reportItems: List<ReportItem>,
     searchQuery: String,
     selectedTimeFilters: Set<ReportTimeFilter>,
     selectedStatusFilters: Set<ReportStatus>,
+    isRefreshing: Boolean,
+    loadFailed: Boolean,
+    onRefresh: () -> Unit,
     onSearchQueryChanged: (String) -> Unit,
     onTimeFilterToggled: (ReportTimeFilter) -> Unit,
     onStatusFilterToggled: (ReportStatus) -> Unit,
     onDaySelected: (CalendarDay) -> Unit,
+    onMonthChanged: (Long) -> Unit,
     onReviewClick: (String) -> Unit,
     onBackClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -105,6 +136,11 @@ fun ReportHistoryScreen(
     ) {
         AetherTopBar(title = "Gerenciamento de relatórios", onBackClick = onBackClicked)
 
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            modifier = Modifier.fillMaxSize()
+        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -119,8 +155,11 @@ fun ReportHistoryScreen(
 
             ReportCalendarCard(
                 currentWeek = currentWeek,
-                monthWeeks = monthWeeks,
-                onDaySelected = onDaySelected
+                month = month,
+                reportDates = reportDates,
+                selectedDate = selectedDate,
+                onDaySelected = onDaySelected,
+                onMonthChanged = onMonthChanged
             )
 
             Spacer(Modifier.height(20.dp))
@@ -197,10 +236,34 @@ fun ReportHistoryScreen(
 
             Spacer(Modifier.height(20.dp))
 
+            if (reportItems.isEmpty() && !isRefreshing) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.empty_inventory),
+                        contentDescription = null
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = if (loadFailed) {
+                            "Não foi possível carregar os relatórios. Puxe para baixo para tentar de novo."
+                        } else {
+                            "Nenhum relatório encontrado."
+                        },
+                        style = bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                }
+            }
+
             reportItems.forEachIndexed { index, item ->
                 val secondaryLabel = when (viewerRole) {
                     ReportViewerRole.GERENTE -> "Realizado por ${item.authorName}"
-                    ReportViewerRole.FUNCIONARIO -> "Revisado por ${item.reviewerName}"
+                    ReportViewerRole.FUNCIONARIO ->
+                        item.reviewerName?.let { "Revisado por $it" } ?: "Revisor não informado"
                 }
 
                 ReportCard(
@@ -223,14 +286,18 @@ fun ReportHistoryScreen(
 
             Spacer(Modifier.height(24.dp))
         }
+        }
     }
 }
 
 @Composable
 private fun ReportCalendarCard(
     currentWeek: List<CalendarDay?>,
-    monthWeeks: List<List<CalendarDay?>>,
-    onDaySelected: (CalendarDay) -> Unit
+    month: YearMonth,
+    reportDates: Set<LocalDate>,
+    selectedDate: LocalDate?,
+    onDaySelected: (CalendarDay) -> Unit,
+    onMonthChanged: (Long) -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -266,6 +333,43 @@ private fun ReportCalendarCard(
             )
         }
 
+        if (isExpanded) {
+            Spacer(Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { onMonthChanged(-1) }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = "Mês anterior",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                AnimatedContent(
+                    targetState = month,
+                    transitionSpec = { fadeIn() togetherWith fadeOut() },
+                    label = "monthLabel",
+                    modifier = Modifier.weight(1f)
+                ) { shownMonth ->
+                    Text(
+                        shownMonth.label(),
+                        style = bodyMediumMd,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                IconButton(onClick = { onMonthChanged(1) }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "Próximo mês",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+
         Spacer(Modifier.height(12.dp))
 
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -283,10 +387,41 @@ private fun ReportCalendarCard(
         Spacer(Modifier.height(8.dp))
 
         if (isExpanded) {
-            monthWeeks.forEachIndexed { index, week ->
-                CalendarWeekRow(week = week, onDaySelected = onDaySelected)
-                if (index != monthWeeks.lastIndex) {
-                    Spacer(Modifier.height(8.dp))
+            var dragTotal by remember { mutableStateOf(0f) }
+            AnimatedContent(
+                targetState = month,
+                transitionSpec = {
+                    // Newer months enter from the right, older ones from the left
+                    val direction = if (targetState > initialState) 1 else -1
+                    (slideInHorizontally(tween(300)) { it * direction } + fadeIn(tween(300)))
+                        .togetherWith(
+                            slideOutHorizontally(tween(300)) { -it * direction } + fadeOut(tween(300))
+                        )
+                        .using(SizeTransform(clip = true))
+                },
+                label = "monthGrid",
+                modifier = Modifier.pointerInput(Unit) {
+                    detectHorizontalDragGestures(
+                        onDragStart = { dragTotal = 0f },
+                        onDragEnd = {
+                            if (dragTotal > SWIPE_THRESHOLD) onMonthChanged(-1)
+                            else if (dragTotal < -SWIPE_THRESHOLD) onMonthChanged(1)
+                        },
+                        onHorizontalDrag = { _, delta -> dragTotal += delta }
+                    )
+                }
+            ) { shownMonth ->
+                // Built per month so the outgoing month keeps its own days while sliding out
+                val weeks = remember(shownMonth, selectedDate, reportDates) {
+                    buildMonthWeeks(shownMonth, selectedDate, reportDates)
+                }
+                Column {
+                    weeks.forEachIndexed { index, week ->
+                        CalendarWeekRow(week = week, onDaySelected = onDaySelected)
+                        if (index != weeks.lastIndex) {
+                            Spacer(Modifier.height(8.dp))
+                        }
+                    }
                 }
             }
         } else {
@@ -448,7 +583,9 @@ fun ReportHistoryScreenManagerPreview() {
         ReportHistoryScreen(
             viewerRole = ReportViewerRole.GERENTE,
             currentWeek = sampleCurrentWeek,
-            monthWeeks = sampleMonthWeeks,
+            month = YearMonth.of(2026, 9),
+            reportDates = sampleReportDates,
+            selectedDate = LocalDate.of(2026, 9, 8),
             reportItems = listOf(
                 ReportItem(
                     id = "1",
@@ -473,10 +610,14 @@ fun ReportHistoryScreenManagerPreview() {
             searchQuery = "",
             selectedTimeFilters = setOf(ReportTimeFilter.MAIS_RECENTES),
             selectedStatusFilters = setOf(ReportStatus.EM_ANALISE),
+            isRefreshing = false,
+            loadFailed = false,
+            onRefresh = {},
             onSearchQueryChanged = {},
             onTimeFilterToggled = {},
             onStatusFilterToggled = {},
             onDaySelected = {},
+            onMonthChanged = {},
             onReviewClick = {},
             onBackClicked = {}
         )
@@ -490,7 +631,9 @@ fun ReportHistoryScreenEmployeePreview() {
         ReportHistoryScreen(
             viewerRole = ReportViewerRole.FUNCIONARIO,
             currentWeek = sampleCurrentWeek,
-            monthWeeks = sampleMonthWeeks,
+            month = YearMonth.of(2026, 9),
+            reportDates = sampleReportDates,
+            selectedDate = LocalDate.of(2026, 9, 8),
             reportItems = listOf(
                 ReportItem(
                     id = "1",
@@ -505,10 +648,14 @@ fun ReportHistoryScreenEmployeePreview() {
             searchQuery = "",
             selectedTimeFilters = setOf(ReportTimeFilter.MAIS_RECENTES),
             selectedStatusFilters = setOf(ReportStatus.EM_ANALISE),
+            isRefreshing = false,
+            loadFailed = false,
+            onRefresh = {},
             onSearchQueryChanged = {},
             onTimeFilterToggled = {},
             onStatusFilterToggled = {},
             onDaySelected = {},
+            onMonthChanged = {},
             onReviewClick = {},
             onBackClicked = {}
         )
@@ -525,22 +672,4 @@ private val sampleCurrentWeek = listOf(
     CalendarDay("11", isEnabled = false)
 )
 
-private val sampleMonthWeeks = listOf(
-    listOf(null, null, null, CalendarDay("01"), CalendarDay("02"), CalendarDay("03"), CalendarDay("04", isEnabled = false)),
-    listOf(
-        CalendarDay("05", isEnabled = false), CalendarDay("06"), CalendarDay("07"),
-        CalendarDay("08", isSelected = true), CalendarDay("09"), CalendarDay("10"), CalendarDay("11", isEnabled = false)
-    ),
-    listOf(
-        CalendarDay("12", isEnabled = false), CalendarDay("13"), CalendarDay("14"),
-        CalendarDay("15"), CalendarDay("16"), CalendarDay("17"), CalendarDay("18", isEnabled = false)
-    ),
-    listOf(
-        CalendarDay("19", isEnabled = false), CalendarDay("20"), CalendarDay("21"),
-        CalendarDay("22"), CalendarDay("23"), CalendarDay("24"), CalendarDay("25", isEnabled = false)
-    ),
-    listOf(
-        CalendarDay("26", isEnabled = false), CalendarDay("27"), CalendarDay("28"),
-        CalendarDay("29"), CalendarDay("30"), null, null
-    )
-)
+private val sampleReportDates = (1..30).map { LocalDate.of(2026, 9, it) }.toSet()

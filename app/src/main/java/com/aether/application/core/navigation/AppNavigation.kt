@@ -45,6 +45,8 @@ import com.aether.application.feature.settings.presentation.screen.label
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
+import com.aether.application.feature.reports.presentation.screen.ReportHistoryScreen
+import com.aether.application.feature.reports.presentation.viewmodel.ReportHistoryViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -297,7 +299,30 @@ fun AppNavigation(
             }
 
             composable<ReportHistoryRoute> {
-                TODO()
+                val viewModel = koinViewModel<ReportHistoryViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                ReportHistoryScreen(
+                    viewerRole = uiState.viewerRole,
+                    currentWeek = uiState.currentWeek,
+                    month = uiState.month,
+                    reportDates = uiState.reportDates,
+                    selectedDate = uiState.selectedDate,
+                    reportItems = uiState.reportItems,
+                    searchQuery = uiState.searchQuery,
+                    selectedTimeFilters = uiState.selectedTimeFilters,
+                    selectedStatusFilters = uiState.selectedStatusFilters,
+                    isRefreshing = uiState.isRefreshing,
+                    loadFailed = uiState.loadFailed,
+                    onRefresh = viewModel::refresh,
+                    onSearchQueryChanged = viewModel::onSearchQueryChanged,
+                    onTimeFilterToggled = viewModel::onTimeFilterToggled,
+                    onStatusFilterToggled = viewModel::onStatusFilterToggled,
+                    onDaySelected = viewModel::onDaySelected,
+                    onMonthChanged = viewModel::onMonthChanged,
+                    onReviewClick = { id -> navController.navigate(ReportAnalysisRoute(id.toLong())) },
+                    onBackClicked = { navController.popBackStack() }
+                )
             }
 
             composable<NotificationsRoute> {
