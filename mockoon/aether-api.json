@@ -90,6 +90,20 @@
           "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10"
         }
       ]
+    },
+    {
+      "uuid": "737848b5-6fb7-49df-b5e7-d0e30d20f3ea",
+      "name": "Chatbot",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "91221fd5-2a42-4233-9f1e-5ec833cc5313"
+        },
+        {
+          "type": "route",
+          "uuid": "c4d88dcb-42de-48a9-bf1f-ec825f17c061"
+        }
+      ]
     }
   ],
   "routes": [
@@ -288,7 +302,7 @@
       "responses": [
         {
           "uuid": "4869549d-a7c5-471f-b506-cab41880b7f5",
-          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"inventory:view\",\n      \"description\": \"Visualizar inventários\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"inventory:analysis\",\n      \"description\": \"Analisar inventários\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"inventory:edit\",\n      \"description\": \"Criar e editar inventários\"\n    },\n    {\n      \"id\": 4,\n      \"name\": \"calculator\",\n      \"description\": \"Usar a calculadora de CO2\"\n    },\n    {\n      \"id\": 5,\n      \"name\": \"chatbot\",\n      \"description\": \"Usar o chatbot\"\n    }\n  ],\n  \"avatarUrl\": \"https://i.pravatar.cc/150?img=12\",\n  \"phone\": \"11999999999\",\n  \"createdAt\": \"2023-02-24T12:00:00Z\"\n}",
+          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"inventory:view\",\n      \"description\": \"Visualizar inventários\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"inventory:analysis\",\n      \"description\": \"Analisar inventários\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"inventory:edit\",\n      \"description\": \"Criar e editar inventários\"\n    },\n    {\n      \"id\": 4,\n      \"name\": \"calculator\",\n      \"description\": \"Usar a calculadora de CO2\"\n    },\n    {\n      \"id\": 5,\n      \"name\": \"chatbot\",\n      \"description\": \"Usar o chatbot\"\n    }\n  ],\n  \"avatarUrl\": \"https://i.pravatar.cc/150?img=12\",\n  \"phone\": \"11999999999\",\n  \"createdAt\": \"2023-02-24T12:00:00Z\",\n  \"enterprise\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock Company\",\n    \"tradeName\": \"Aether Mock\",\n    \"cnpj\": \"12345678000199\"\n  }\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -557,6 +571,68 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "91221fd5-2a42-4233-9f1e-5ec833cc5313",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "hub/ai/session/:sessionId/messages",
+      "responses": [
+        {
+          "uuid": "ffe3f44c-f9e0-42f3-a625-7ff4d8db74b9",
+          "body": "[\n  {\n    \"input_message\": \"Como funciona o Aether?\",\n    \"output_message\": \"O Aether ajuda sua empresa a registrar o inventário de emissões e a acompanhar o Selo Paraná.\",\n    \"submitted_at\": \"2026-10-17T14:30:00\"\n  },\n  {\n    \"input_message\": \"E como crio um relatório?\",\n    \"output_message\": \"Na tela inicial, toque em Criar relatório e envie o arquivo do inventário.\",\n    \"submitted_at\": \"2026-10-17T14:31:10\"\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "c4d88dcb-42de-48a9-bf1f-ec825f17c061",
+      "type": "http",
+      "documentation": "The hub does not return `id_session` yet. Proposed: without it a new conversation cannot be continued.",
+      "method": "post",
+      "endpoint": "hub/ai/user/session/message",
+      "responses": [
+        {
+          "uuid": "8d77aced-a512-4431-90ef-9e5b43ebfa1c",
+          "body": "{\n  \"input_message\": \"{{body 'input'}}\",\n  \"output_message\": \"Esta é uma resposta simulada da Aeko.\",\n  \"submitted_at\": \"2026-10-17T14:32:00\",\n  \"id_session\": \"{{#if (body 'id_session')}}{{body 'id_session'}}{{else}}65a8b3d6c0f8e1d7f4b2c003{{/if}}\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -575,6 +651,10 @@
     {
       "type": "folder",
       "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75"
+    },
+    {
+      "type": "folder",
+      "uuid": "737848b5-6fb7-49df-b5e7-d0e30d20f3ea"
     }
   ],
   "proxyMode": false,

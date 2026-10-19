@@ -7,7 +7,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import android.widget.Toast
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -44,6 +48,8 @@ import com.aether.application.feature.settings.presentation.screen.ThemePickerDi
 import com.aether.application.feature.settings.presentation.screen.label
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
+import com.aether.application.feature.chatbot.presentation.screen.AekoScreen
+import com.aether.application.feature.chatbot.presentation.viewmodel.ChatbotViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -355,7 +361,44 @@ fun AppNavigation(
             }
 
             composable<ChatbotRoute> {
-                TODO()
+                val viewModel = koinViewModel<ChatbotViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                val clipboard = LocalClipboardManager.current
+                val context = LocalContext.current
+
+                LaunchedEffect(uiState.errorMessage) {
+                    uiState.errorMessage?.let {
+                        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                        viewModel.onErrorShown()
+                    }
+                }
+
+                AekoScreen(
+                    screenTitle = uiState.title,
+                    messages = uiState.displayMessages,
+                    suggestions = uiState.suggestions,
+                    inputText = uiState.inputText,
+                    isConversationSaved = uiState.isConversationSaved,
+                    savedConversations = uiState.visibleConversations,
+                    conversationSearchQuery = uiState.conversationSearchQuery,
+                    userName = uiState.userName,
+                    userRole = uiState.userRole,
+                    avatarUrl = uiState.avatarUrl,
+                    onInputTextChanged = viewModel::onInputTextChanged,
+                    onSuggestionClicked = viewModel::onSuggestionClicked,
+                    onSendClicked = viewModel::onSendClicked,
+                    onBookmarkClicked = viewModel::onBookmarkClicked,
+                    onCopyMessage = { id ->
+                        uiState.messages.firstOrNull { it.id == id }?.let {
+                            clipboard.setText(AnnotatedString(it.text))
+                        }
+                    },
+                    onConversationSearchQueryChanged = viewModel::onConversationSearchQueryChanged,
+                    onNewConversationClick = viewModel::onNewConversationClick,
+                    onConversationClick = viewModel::onConversationClick,
+                    onSettingsClick = { navController.navigate(SettingsRoute) },
+                    onBackClicked = { navController.popBackStack() }
+                )
             }
         }
     }

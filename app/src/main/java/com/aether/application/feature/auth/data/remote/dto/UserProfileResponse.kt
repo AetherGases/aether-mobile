@@ -15,5 +15,9 @@ data class UserProfileResponse(
     val phone: String,
     val permissions: List<Permission>,
     @Serializable(with = InstantSerializer::class)
-    val createdAt: Instant? = null // TODO(confirmar nome no back)
-)
+    val createdAt: Instant? = null, // TODO(confirmar nome no back)
+    val enterprise: EnterpriseDto? = null
+) {
+    @Serializable
+    data class EnterpriseDto(val id: Long)
+}

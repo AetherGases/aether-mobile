@@ -20,6 +20,7 @@ import com.aether.application.feature.auth.presentation.viewmodel.ChangePassword
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
+import com.aether.application.feature.chatbot.presentation.viewmodel.ChatbotViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import org.koin.core.module.Module
@@ -106,6 +107,14 @@ object AppModule {
         viewModel {
             HomeViewModel(
                 homeRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel {
+            ChatbotViewModel(
+                chatbotRepository = get(),
+                savedConversationsRepository = get(),
                 sessionManager = get()
             )
         }
