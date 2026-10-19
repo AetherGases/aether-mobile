@@ -1,9 +1,22 @@
 package com.aether.application.feature.reports.domain.model
 
-/** How the emissions of the company's operations are consolidated in a report (GHG Protocol). */
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+/**
+ * How the emissions of the company's operations are consolidated in a report (GHG Protocol).
+ * The backend stores free text, so these three values exist only in the app. The
+ * [SerialName] is what gets sent and stays fixed even if the on-screen [label] changes.
+ */
+@Serializable
 enum class ConsolidationApproach(val label: String) {
+    @SerialName("Participação societária")
     EQUITY_SHARE("Participação societária"),
+
+    @SerialName("Controle financeiro")
     FINANCIAL_CONTROL("Controle financeiro"),
+
+    @SerialName("Controle operacional")
     OPERATIONAL_CONTROL("Controle operacional"),
 }
 

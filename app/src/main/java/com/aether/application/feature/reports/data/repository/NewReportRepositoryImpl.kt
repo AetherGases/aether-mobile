@@ -45,7 +45,7 @@ class NewReportRepositoryImpl(
         val response = reportsApi.registerReport(
             RegisterReportRequest(
                 name = name,
-                consolidationApproach = approach.label,
+                consolidationApproach = approach,
                 fileName = fileName,
                 path = fileUrl
             )

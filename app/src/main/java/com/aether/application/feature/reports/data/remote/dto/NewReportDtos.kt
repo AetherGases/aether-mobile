@@ -1,5 +1,6 @@
 package com.aether.application.feature.reports.data.remote.dto
 
+import com.aether.application.feature.reports.domain.model.ConsolidationApproach
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,7 +16,7 @@ data class UploadSignatureResponse(
 @Serializable
 data class RegisterReportRequest(
     val name: String,
-    val consolidationApproach: String,
+    val consolidationApproach: ConsolidationApproach,
     val fileName: String,
     val path: String,
 )
