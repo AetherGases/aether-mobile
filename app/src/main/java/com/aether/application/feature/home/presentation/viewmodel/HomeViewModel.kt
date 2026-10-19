@@ -40,6 +40,8 @@ data class HomeUiState(
     val cards: List<HomeHeroCard> = emptyList(),
     val quickActions: List<QuickAction> = emptyList(),
     val recentReports: List<RecentReport> = emptyList(),
+    val cardsFailed: Boolean = false,
+    val quickActionsFailed: Boolean = false,
     val isRefreshing: Boolean = false,
 )
 
@@ -79,40 +81,52 @@ class HomeViewModel(
         }
     }
 
-    // On failure the previous state is kept, so a failed refresh doesn't blank the screen
+    // Sections load independently: one failing keeps its previous data and doesn't block the others
     private suspend fun loadHome() {
-        try {
-            val session = sessionManager.getSession()
+        val session = try {
+            sessionManager.getSession()
                 ?: throw Exception("nah man, u need to be authed")
-
-            val (userName, userLastName) = if (" " in session.name) {
-                session.name.split(" ", limit = 2)
-            } else {
-                listOf(session.name, "")
-            }
-
-            val avatar = session.avatar
-            val cards = getHomeCards()
-            val recentReports = getRecentReports(
-                userName = "$userName $userLastName",
-                avatarUrl = avatar
-            )
-            val quickActions = getQuickActions()
-
-            _uiState.update { it.copy(
-                userName = userName,
-                userLastName = userLastName,
-                avatarUrl = avatar,
-                cards = cards,
-                quickActions = quickActions,
-                recentReports = recentReports
-            ) }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.e(TAG, "Failed to load home", e)
+            return
         }
+
+        val (userName, userLastName) = if (" " in session.name) {
+            session.name.split(" ", limit = 2)
+        } else {
+            listOf(session.name, "")
+        }
+        val avatar = session.avatar
+
+        val cards = loadSection("cards") { getHomeCards() }
+        val recentReports = loadSection("recent reports") {
+            getRecentReports(userName = "$userName $userLastName", avatarUrl = avatar)
+        }
+        val quickActions = loadSection("quick actions") { getQuickActions() }
+
+        _uiState.update { it.copy(
+            userName = userName,
+            userLastName = userLastName,
+            avatarUrl = avatar,
+            cards = cards ?: it.cards,
+            cardsFailed = cards == null,
+            quickActions = quickActions ?: it.quickActions,
+            quickActionsFailed = quickActions == null,
+            recentReports = recentReports ?: it.recentReports
+        ) }
     }
+
+    private suspend fun <T> loadSection(name: String, block: suspend () -> T): T? =
+        try {
+            block()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to load home $name", e)
+            null
+        }
 
     fun onReportClick(recentReport: RecentReport) {
         viewModelScope.launch {

@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
@@ -28,6 +30,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -72,6 +75,8 @@ fun HomeScreen(
     cards: List<HomeHeroCard>,
     quickActions: List<QuickAction>,
     recentReports: List<RecentReport>,
+    cardsFailed: Boolean,
+    quickActionsFailed: Boolean,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onNotificationsClick: () -> Unit,
@@ -131,7 +136,15 @@ fun HomeScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            if (cards.isNotEmpty()) {
+            if (cards.isEmpty() && cardsFailed) {
+                Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                Spacer(Modifier.height(16.dp))
+                SectionLoadError(
+                    icon = Icons.Outlined.CloudOff,
+                    message = "Não foi possível carregar a visão geral. Puxe para baixo para tentar de novo."
+                )
+                Spacer(Modifier.height(24.dp))
+            } else if (cards.isNotEmpty()) {
                 Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
                 Spacer(Modifier.height(16.dp))
 
@@ -207,12 +220,19 @@ fun HomeScreen(
             Text("Ações Rápidas", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(16.dp))
 
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(quickActions) { action ->
-                    QuickActionItem(action = action)
+            if (quickActions.isEmpty() && quickActionsFailed) {
+                SectionLoadError(
+                    icon = Icons.Outlined.ErrorOutline,
+                    message = "Não foi possível carregar as ações rápidas. Puxe para baixo para tentar de novo."
+                )
+            } else {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(quickActions) { action ->
+                        QuickActionItem(action = action)
+                    }
                 }
             }
 
@@ -254,6 +274,35 @@ fun HomeScreen(
 
             Spacer(Modifier.height(100.dp))
         }
+    }
+}
+
+@Composable
+private fun SectionLoadError(
+    icon: ImageVector,
+    message: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(28.dp)
+        )
+        Spacer(Modifier.width(12.dp))
+        Text(
+            text = message,
+            style = bodySmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
@@ -446,6 +495,8 @@ fun HomeScreenEmployeePreview() {
                 RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
                 RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
             ),
+            cardsFailed = false,
+            quickActionsFailed = false,
             isRefreshing = false,
             onRefresh = {},
             onNotificationsClick = {},
@@ -486,6 +537,8 @@ fun HomeScreenManagerPreview() {
                 RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
                 RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
             ),
+            cardsFailed = false,
+            quickActionsFailed = false,
             isRefreshing = false,
             onRefresh = {},
             onNotificationsClick = {},

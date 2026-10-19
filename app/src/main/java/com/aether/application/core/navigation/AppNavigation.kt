@@ -281,6 +281,8 @@ fun AppNavigation(
                     cards = uiState.cards,
                     quickActions = uiState.quickActions,
                     recentReports = uiState.recentReports,
+                    cardsFailed = uiState.cardsFailed,
+                    quickActionsFailed = uiState.quickActionsFailed,
                     isRefreshing = uiState.isRefreshing,
                     onRefresh = viewModel::refresh,
                     onNotificationsClick = { navController.navigate(NotificationsRoute) },
