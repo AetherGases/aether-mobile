@@ -78,6 +78,10 @@
         {
           "type": "route",
           "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d"
+        },
+        {
+          "type": "route",
+          "uuid": "b7e24c10-3d58-4f6a-8c91-0a5d2e7f3b64"
         }
       ]
     },
@@ -314,12 +318,12 @@
       "uuid": "839b6fb9-4e75-4264-8022-28f69f27d619",
       "type": "http",
       "documentation": "",
-      "method": "post",
+      "method": "get",
       "endpoint": "inventories/mine",
       "responses": [
         {
           "uuid": "ace919ab-a679-4e01-883e-8b1438ddb7a3",
-          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"period\": {\n        \"start\": \"2026-01-01\",\n        \"end\": \"2026-06-30\"\n      },\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": null,\n      \"status\": \"UNDER_REVIEW\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Inventário Q2\",\n      \"createdAt\": \"2026-09-12T10:00:00\",\n      \"period\": {\n        \"start\": \"2026-01-01\",\n        \"end\": \"2026-06-30\"\n      },\n      \"author\": \"Maria Souza\",\n      \"authorImageUrl\": null,\n      \"status\": \"APPROVED\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Inventário Q1\",\n      \"createdAt\": \"2026-09-13T10:00:00\",\n      \"period\": {\n        \"start\": \"2026-01-01\",\n        \"end\": \"2026-06-30\"\n      },\n      \"author\": \"João Lima\",\n      \"authorImageUrl\": null,\n      \"status\": \"REJECTED\"\n    }\n  ],\n  \"totalCount\": 3\n}",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"status\": \"UNDER_REVIEW\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Inventário Q2\",\n      \"createdAt\": \"2026-09-12T10:00:00\",\n      \"status\": \"APPROVED\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Inventário Q1\",\n      \"createdAt\": \"2026-09-13T10:00:00\",\n      \"status\": \"REJECTED\",\n      \"type\": \"INPUT\"\n    }\n  ],\n  \"totalCount\": 3\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -345,12 +349,12 @@
       "uuid": "5728451a-a1dc-468b-8c84-44e806a53d09",
       "type": "http",
       "documentation": "",
-      "method": "post",
+      "method": "get",
       "endpoint": "inventories/pending",
       "responses": [
         {
           "uuid": "310b2cf1-7a3f-4d96-85ba-569a2906a5b8",
-          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"period\": {\n        \"start\": \"2026-01-01\",\n        \"end\": \"2026-06-30\"\n      },\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": null,\n      \"status\": \"UNDER_REVIEW\"\n    }\n  ],\n  \"totalCount\": 1\n}",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": null,\n      \"status\": \"UNDER_REVIEW\",\n      \"type\": \"INPUT\"\n    }\n  ],\n  \"totalCount\": 1\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -443,7 +447,7 @@
       "responses": [
         {
           "uuid": "b449699f-45b0-44fb-b025-4b027fe65019",
-          "body": "{\n  \"id\": 2,\n  \"name\": \"Inventário Q2\",\n  \"createdAt\": \"2026-09-12T10:00:00\",\n  \"period\": {\n    \"start\": \"2026-01-01\",\n    \"end\": \"2026-06-30\"\n  },\n  \"author\": \"Maria Souza\",\n  \"authorImageUrl\": null,\n  \"status\": \"APPROVED\"\n}",
+          "body": "{\n  \"id\": 2,\n  \"name\": \"Inventário Q2\",\n  \"author\": {\n    \"name\": \"Maria Souza\",\n    \"imageUrl\": null\n  },\n  \"period\": {\n    \"start\": \"2026-01-01\",\n    \"end\": \"2026-06-30\"\n  },\n  \"status\": \"APPROVED\",\n  \"type\": \"INPUT\",\n  \"createdAt\": \"2026-09-12T10:00:00\",\n  \"updatedAt\": \"2026-09-12T10:00:00\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -474,7 +478,7 @@
       "responses": [
         {
           "uuid": "b959cb2c-085d-42b4-9f02-3ad320da22c3",
-          "body": "{\n  \"id\": 1,\n  \"name\": \"Inventário 1º semestre\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"period\": {\n    \"start\": \"2026-01-01\",\n    \"end\": \"2026-06-30\"\n  },\n  \"author\": \"Aether Mock User\",\n  \"authorImageUrl\": null,\n  \"status\": \"UNDER_REVIEW\"\n}",
+          "body": "{\n  \"id\": 1,\n  \"name\": \"Inventário 1º semestre\",\n  \"author\": {\n    \"name\": \"Aether Mock User\",\n    \"imageUrl\": null\n  },\n  \"period\": {\n    \"start\": \"2026-01-01\",\n    \"end\": \"2026-06-30\"\n  },\n  \"status\": \"UNDER_REVIEW\",\n  \"type\": \"INPUT\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -537,6 +541,37 @@
         {
           "uuid": "a8d5e1b4-2c63-4f97-8e0a-5b9c4d3f2e61",
           "body": "{\n  \"criteriaMet\": 2,\n  \"criteriaTotal\": 4\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "b7e24c10-3d58-4f6a-8c91-0a5d2e7f3b64",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "inventories/reviewed",
+      "responses": [
+        {
+          "uuid": "e91c6a3f-5b07-4d28-a4f2-7c80d1b9e352",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 10,\n      \"name\": \"Inventário Frota 2025\",\n      \"createdAt\": \"2026-09-20T09:30:00\",\n      \"author\": \"Camila Bezerra\",\n      \"authorImageUrl\": null,\n      \"status\": \"APPROVED\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 11,\n      \"name\": \"Inventário Energia Q3\",\n      \"createdAt\": \"2026-09-18T14:10:00\",\n      \"author\": \"Bruno Maldades\",\n      \"authorImageUrl\": null,\n      \"status\": \"REJECTED\",\n      \"type\": \"INPUT\"\n    }\n  ],\n  \"totalCount\": 2\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",

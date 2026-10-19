@@ -1,10 +1,12 @@
 package com.aether.application.feature.reports.domain.repository
 
-import com.aether.application.feature.home.domain.model.Inventory
+import com.aether.application.feature.reports.domain.model.ReportsPage
 
 interface ReportsRepository {
 
-    suspend fun getMyReports(take: Int): List<Inventory>
+    suspend fun getMyReports(skip: Int, take: Int): ReportsPage
 
-    suspend fun getPendingReports(take: Int): List<Inventory>
+    suspend fun getPendingReports(skip: Int, take: Int): ReportsPage
+
+    suspend fun getReviewedReports(skip: Int, take: Int): ReportsPage
 }

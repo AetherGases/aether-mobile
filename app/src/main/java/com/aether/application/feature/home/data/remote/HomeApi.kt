@@ -2,46 +2,58 @@ package com.aether.application.feature.home.data.remote
 
 import com.aether.application.feature.home.data.remote.dto.GetEnterpriseInfoResponse
 import com.aether.application.feature.home.data.remote.dto.GetInventoryCountResponse
-import com.aether.application.feature.home.data.remote.dto.GetMyInventoriesRequest
 import com.aether.application.feature.home.data.remote.dto.GetMyInventoriesResponse
-import com.aether.application.feature.home.data.remote.dto.GetPendingInventoriesRequest
 import com.aether.application.feature.home.data.remote.dto.GetPendingInventoriesResponse
+import com.aether.application.feature.home.data.remote.dto.GetReviewedInventoriesResponse
 import com.aether.application.feature.home.data.remote.dto.GetSealProgressResponse
 import com.aether.application.feature.home.data.remote.dto.GetUnitInfoResponse
-import com.aether.application.feature.home.domain.model.Inventory
-import retrofit2.http.Body
+import com.aether.application.feature.home.data.remote.dto.LastInventoryDto
 import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.Query
 
 private const val INVENTORY = "inventories"
 
 interface InventoryApi {
 
-    @POST("$INVENTORY/mine")
+    // The backend caps `take` at 6 on the three list routes
+    @GET("$INVENTORY/mine")
     suspend fun getMyInventories(
-        @Body request: GetMyInventoriesRequest
+        @Query("name") name: String? = null,
+        @Query("status") status: String? = null,
+        @Query("skip") skip: Int? = null,
+        @Query("take") take: Int? = null,
     ): GetMyInventoriesResponse
 
-    @POST("$INVENTORY/pending")
+    @GET("$INVENTORY/pending")
     suspend fun getPendingInventories(
-        @Body request: GetPendingInventoriesRequest
+        @Query("name") name: String? = null,
+        @Query("skip") skip: Int? = null,
+        @Query("take") take: Int? = null,
     ): GetPendingInventoriesResponse
 
-    // TODO: every endpoint below is a guess, confirm paths and payloads with the backend
+    @GET("$INVENTORY/reviewed")
+    suspend fun getReviewedInventories(
+        @Query("name") name: String? = null,
+        @Query("status") status: String? = null,
+        @Query("skip") skip: Int? = null,
+        @Query("take") take: Int? = null,
+    ): GetReviewedInventoriesResponse
+
+    @GET("$INVENTORY/reviewed/last")
+    suspend fun getLastReviewedInventory(): LastInventoryDto
+
+    @GET("$INVENTORY/mine/last")
+    suspend fun getLastSubmittedInventory(): LastInventoryDto
+
+    @GET("$INVENTORY/count")
+    suspend fun countInventories(): GetInventoryCountResponse
+
+    // TODO: no backend route yet for the endpoints below, the paths and payloads are guesses
     @GET("$INVENTORY/unit-info")
     suspend fun getUnitInfo(): GetUnitInfoResponse
 
     @GET("$INVENTORY/enterprise-info")
     suspend fun getEnterpriseInfo(): GetEnterpriseInfoResponse
-
-    @GET("$INVENTORY/reviewed/last")
-    suspend fun getLastReviewedInventory(): Inventory
-
-    @GET("$INVENTORY/mine/last")
-    suspend fun getLastSubmittedInventory(): Inventory
-
-    @GET("$INVENTORY/count")
-    suspend fun countInventories(): GetInventoryCountResponse
 
     @GET("seal/progress")
     suspend fun getSealProgress(): GetSealProgressResponse

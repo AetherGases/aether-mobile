@@ -20,4 +20,7 @@ data class ReportHistoryUiState(
     val selectedStatusFilters: Set<ReportStatus> = emptySet(),
     val isRefreshing: Boolean = true,
     val loadFailed: Boolean = false,
+    val isLoadingMore: Boolean = false,
+    val loadMoreFailed: Boolean = false,
+    val hasMore: Boolean = false,
 )

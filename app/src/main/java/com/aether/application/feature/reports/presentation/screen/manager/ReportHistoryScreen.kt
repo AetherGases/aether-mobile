@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -35,6 +36,8 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -99,6 +102,7 @@ data class CalendarDay(
     val date: LocalDate? = null
 )
 
+private const val LOAD_MORE_DISTANCE = 600
 private const val SWIPE_THRESHOLD = 80f
 
 private val weekDayLetters = listOf("D", "S", "T", "Q", "Q", "S", "S")
@@ -117,7 +121,11 @@ fun ReportHistoryScreen(
     selectedStatusFilters: Set<ReportStatus>,
     isRefreshing: Boolean,
     loadFailed: Boolean,
+    isLoadingMore: Boolean,
+    loadMoreFailed: Boolean,
+    hasMore: Boolean,
     onRefresh: () -> Unit,
+    onLoadMore: () -> Unit,
     onSearchQueryChanged: (String) -> Unit,
     onTimeFilterToggled: (ReportTimeFilter) -> Unit,
     onStatusFilterToggled: (ReportStatus) -> Unit,
@@ -128,6 +136,13 @@ fun ReportHistoryScreen(
     modifier: Modifier = Modifier
 ) {
     var filterPanelVisible by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
+
+    // Also fires when the filtered list is too short to scroll, so filters can't hide unloaded pages
+    val nearEnd by remember { derivedStateOf { scrollState.maxValue - scrollState.value <= LOAD_MORE_DISTANCE } }
+    LaunchedEffect(nearEnd, hasMore, isLoadingMore, loadMoreFailed, isRefreshing, reportItems.size) {
+        if (nearEnd && hasMore && !isLoadingMore && !loadMoreFailed && !isRefreshing) onLoadMore()
+    }
 
     Column(
         modifier = modifier
@@ -144,7 +159,7 @@ fun ReportHistoryScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(horizontal = 20.dp)
         ) {
             Spacer(Modifier.height(12.dp))
@@ -282,6 +297,31 @@ fun ReportHistoryScreen(
                 if (index != reportItems.lastIndex) {
                     Spacer(Modifier.height(14.dp))
                 }
+            }
+
+            if (isLoadingMore) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp
+                    )
+                }
+            } else if (loadMoreFailed) {
+                Text(
+                    "Não foi possível carregar mais relatórios. Toque para tentar de novo.",
+                    style = bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .clickable { onLoadMore() }
+                )
             }
 
             Spacer(Modifier.height(24.dp))
@@ -612,7 +652,11 @@ fun ReportHistoryScreenManagerPreview() {
             selectedStatusFilters = setOf(ReportStatus.EM_ANALISE),
             isRefreshing = false,
             loadFailed = false,
+            isLoadingMore = false,
+            loadMoreFailed = false,
+            hasMore = false,
             onRefresh = {},
+            onLoadMore = {},
             onSearchQueryChanged = {},
             onTimeFilterToggled = {},
             onStatusFilterToggled = {},
@@ -650,7 +694,11 @@ fun ReportHistoryScreenEmployeePreview() {
             selectedStatusFilters = setOf(ReportStatus.EM_ANALISE),
             isRefreshing = false,
             loadFailed = false,
+            isLoadingMore = false,
+            loadMoreFailed = false,
+            hasMore = false,
             onRefresh = {},
+            onLoadMore = {},
             onSearchQueryChanged = {},
             onTimeFilterToggled = {},
             onStatusFilterToggled = {},

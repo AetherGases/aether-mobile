@@ -3,12 +3,15 @@ package com.aether.application.feature.reports.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.model.Inventory
 import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.reports.domain.usecase.GetPendingReportsUseCase
+import com.aether.application.feature.reports.domain.model.ReportsPage
 import com.aether.application.feature.reports.domain.usecase.GetReportsUseCase
+import com.aether.application.feature.reports.domain.usecase.GetReviewedReportsUseCase
 import com.aether.application.feature.reports.presentation.screen.CalendarDay
 import com.aether.application.feature.reports.presentation.screen.ReportItem
 import com.aether.application.feature.reports.presentation.screen.ReportTimeFilter
@@ -18,6 +21,9 @@ import com.aether.application.feature.reports.presentation.state.ReportHistoryUi
 import com.aether.core.ui.components.ReportStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,14 +40,35 @@ import java.time.temporal.TemporalAdjusters
 
 private const val TAG = "ReportHistoryViewModel"
 
-// TODO: no pagination yet, the history only shows the latest PAGE_SIZE reports
-private const val PAGE_SIZE = 100
+// The backend rejects a `take` above 6 (MAX_TAKE in aether-ms-inventory)
+private const val PAGE_SIZE = 6
 
 class ReportHistoryViewModel(
     private val getReports: GetReportsUseCase,
     private val getPendingReports: GetPendingReportsUseCase,
+    private val getReviewedReports: GetReviewedReportsUseCase,
     private val sessionManager: SessionManager
 ) : ViewModel() {
+
+    private enum class Kind { MINE, PENDING, REVIEWED }
+
+    /** One paged list on the server. The history is the merge of every source the user can see. */
+    private class Source(
+        val kind: Kind,
+        private val fetch: suspend (skip: Int, take: Int) -> ReportsPage
+    ) {
+        private var skip = 0
+        private var total = Long.MAX_VALUE
+        val hasMore get() = skip < total
+
+        suspend fun next(): List<Pair<Kind, Inventory>> {
+            val page = fetch(skip, PAGE_SIZE)
+            skip += page.reports.size
+            // An empty page ends the source even if the server count says otherwise
+            total = if (page.reports.isEmpty()) skip.toLong() else page.totalCount
+            return page.reports.map { kind to it }
+        }
+    }
 
     private data class Entry(
         val item: ReportItem,
@@ -57,7 +84,10 @@ class ReportHistoryViewModel(
 
     private data class LoadState(
         val isRefreshing: Boolean = true,
-        val failed: Boolean = false
+        val failed: Boolean = false,
+        val isLoadingMore: Boolean = false,
+        val loadMoreFailed: Boolean = false,
+        val hasMore: Boolean = false
     )
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -85,7 +115,7 @@ class ReportHistoryViewModel(
     }
 
     fun refresh() {
-        if (loadJob?.isActive == true) return
+        if (loadJob?.isActive == true || loadState.value.isLoadingMore) return
         loadJob = viewModelScope.launch { load() }
     }
 
@@ -112,9 +142,18 @@ class ReportHistoryViewModel(
         }
     }
 
+    private var sources: List<Source> = emptyList()
+
+    fun loadMore() {
+        val state = loadState.value
+        if (!state.hasMore || state.isRefreshing || state.isLoadingMore) return
+        loadState.update { it.copy(isLoadingMore = true, loadMoreFailed = false) }
+        loadJob = viewModelScope.launch { loadNext() }
+    }
+
     // On failure the previous entries are kept, so a failed refresh doesn't blank the screen
     private suspend fun load() {
-        loadState.value = LoadState(isRefreshing = true)
+        loadState.update { it.copy(isRefreshing = true, failed = false, loadMoreFailed = false) }
         try {
             val session = sessionManager.getSession()
                 ?: throw Exception("nah man, u need to be authed")
@@ -122,43 +161,96 @@ class ReportHistoryViewModel(
             val isAnalyst = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
             val canCreate = sessionManager.hasPermission(AppPermission.INVENTORY_CREATING)
 
-            val mine = if (canCreate || !isAnalyst) getReports(PAGE_SIZE) else emptyList()
-            val pending = if (isAnalyst) getPendingReports(PAGE_SIZE) else emptyList()
-            val pendingIds = pending.map { it.id }.toSet()
+            val newSources = buildList {
+                if (canCreate || !isAnalyst) add(Source(Kind.MINE) { skip, take -> getReports(skip, take) })
+                // Reviewing permission also brings the reports the user already reviewed
+                if (isAnalyst) {
+                    add(Source(Kind.PENDING) { skip, take -> getPendingReports(skip, take) })
+                    add(Source(Kind.REVIEWED) { skip, take -> getReviewedReports(skip, take) })
+                }
+            }
+            val firstPage = coroutineScope {
+                newSources.map { source -> async { source.next() } }.awaitAll()
+            }.flatten()
 
-            val loaded = (pending + mine)
-                .distinctBy { it.id }
-                .map { it.toEntry(session.name, session.avatar, it.id in pendingIds) }
-
+            sources = newSources
             viewerRole.value = if (isAnalyst) ReportViewerRole.GERENTE else ReportViewerRole.FUNCIONARIO
-            entries.value = loaded
-            loadState.value = LoadState(isRefreshing = false)
+            entries.value = merge(emptyList(), firstPage, session)
+            loadState.update { it.copy(isRefreshing = false, hasMore = newSources.any { s -> s.hasMore }) }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.e(TAG, "Failed to load report history", e)
-            loadState.value = LoadState(isRefreshing = false, failed = true)
+            loadState.update { it.copy(isRefreshing = false, failed = true) }
         }
     }
 
-    private fun Inventory.toEntry(
-        sessionName: String,
-        sessionAvatar: String?,
-        isPending: Boolean
-    ): Entry {
+    private suspend fun loadNext() {
+        val session = sessionManager.getSession()
+        if (session == null) {
+            loadState.update { it.copy(isLoadingMore = false) }
+            return
+        }
+        try {
+            // Sources are independent: one failing doesn't drop what the others returned,
+            // and it retries from the same offset next time
+            val results = coroutineScope {
+                sources.filter { it.hasMore }.map { source ->
+                    async {
+                        try {
+                            source.next()
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed to load more ${source.kind} reports", e)
+                            null
+                        }
+                    }
+                }.awaitAll()
+            }
+            entries.update { merge(it, results.filterNotNull().flatten(), session) }
+            loadState.update {
+                it.copy(
+                    isLoadingMore = false,
+                    loadMoreFailed = results.any { r -> r == null },
+                    hasMore = sources.any { s -> s.hasMore }
+                )
+            }
+        } catch (e: CancellationException) {
+            loadState.update { it.copy(isLoadingMore = false) }
+            throw e
+        }
+    }
+
+    /** Appends [fetched] to [existing]; a report that is also pending keeps its review action. */
+    private fun merge(
+        existing: List<Entry>,
+        fetched: List<Pair<Kind, Inventory>>,
+        session: Session
+    ): List<Entry> {
+        val byId = LinkedHashMap<String, Entry>()
+        existing.forEach { byId[it.item.id] = it }
+        fetched.forEach { (kind, inventory) ->
+            val entry = inventory.toEntry(session, kind)
+            if (entry.item.id !in byId || entry.item.canReview) byId[entry.item.id] = entry
+        }
+        return byId.values.toList()
+    }
+
+    private fun Inventory.toEntry(session: Session, kind: Kind): Entry {
         val status = status.toHistoryStatus()
         return Entry(
             createdAt = createdAt,
             item = ReportItem(
                 id = id.toString(),
-                avatarUrl = authorImageUrl ?: sessionAvatar,
+                avatarUrl = authorImageUrl ?: session.avatar,
                 title = name,
-                authorName = author ?: sessionName,
-                // TODO: the API doesn't send the reviewer yet
-                reviewerName = null,
+                authorName = author ?: session.name,
+                // The user reviewed everything on the reviewed list, even if the API omits the name
+                reviewerName = reviewer ?: session.name.takeIf { kind == Kind.REVIEWED },
                 createdAt = createdAt.format(dateFormatter),
                 status = status,
-                canReview = isPending && status == ReportStatus.EM_ANALISE
+                canReview = kind == Kind.PENDING && status == ReportStatus.EM_ANALISE
             )
         )
     }
@@ -205,7 +297,10 @@ class ReportHistoryViewModel(
             selectedTimeFilters = filters.timeFilters,
             selectedStatusFilters = filters.statusFilters,
             isRefreshing = load.isRefreshing,
-            loadFailed = load.failed
+            loadFailed = load.failed,
+            isLoadingMore = load.isLoadingMore,
+            loadMoreFailed = load.loadMoreFailed,
+            hasMore = load.hasMore
         )
     }
 
