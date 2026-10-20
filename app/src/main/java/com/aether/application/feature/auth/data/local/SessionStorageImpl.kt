@@ -1,4 +1,3 @@
-package com.aether.application.feature.auth.data.local
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -6,15 +5,21 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.model.Session
+import com.aether.application.core.database.ProfileLocalDataSource
 import com.aether.application.core.security.Encryptor
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 
+/**
+ * Keeps the tokens in the encrypted DataStore. Profile data (name, avatar, permissions)
+ * lives in SQLite through [ProfileLocalDataSource] and is merged back on [get].
+ */
 class SessionStorageImpl(
     private val dataStore: DataStore<Preferences>,
-    private val encryptor: Encryptor
+    private val encryptor: Encryptor,
+    private val profileLocalDataSource: ProfileLocalDataSource
 ) : SessionStorage {
 
     private object Keys {
@@ -22,7 +27,13 @@ class SessionStorageImpl(
     }
 
     override suspend fun save(session: Session) {
-        val json = Json.encodeToString(session)
+        val tokensOnly = Session(
+            email = session.email,
+            accessToken = session.accessToken,
+            refreshToken = session.refreshToken,
+            expiration = session.expiration
+        )
+        val json = Json.encodeToString(tokensOnly)
         val encrypted = encryptor.encrypt(json)
         dataStore.edit { prefs ->
             prefs[Keys.SESSION] = encrypted
@@ -36,7 +47,14 @@ class SessionStorageImpl(
 
         return try {
             val json = encryptor.decrypt(encrypted)
-            Json.decodeFromString<Session>(json)
+            val session = Json.decodeFromString<Session>(json)
+            val profile = profileLocalDataSource.getProfile() ?: return session
+            session.copy(
+                name = profile.name,
+                avatar = profile.avatarUrl.orEmpty(),
+                permissions = profile.permissions,
+                createdAt = profile.createdAt
+            )
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -49,5 +67,6 @@ class SessionStorageImpl(
         dataStore.edit { prefs ->
             prefs.remove(Keys.SESSION)
         }
+        profileLocalDataSource.clear()
     }
 }

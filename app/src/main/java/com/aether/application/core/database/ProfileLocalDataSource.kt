@@ -13,7 +13,6 @@ interface ProfileLocalDataSource {
 
     suspend fun updateAvatar(avatarUrl: String)
 
-    /** Replaces every stored address. */
     suspend fun saveAddresses(addresses: List<WorkplaceAddress>)
 
     suspend fun getAddress(kind: AddressKind): WorkplaceAddress?
