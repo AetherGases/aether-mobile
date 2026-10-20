@@ -1,11 +1,13 @@
 package com.aether.application.feature.settings.presentation.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.repository.HomeRepository
+import com.aether.application.feature.profile.domain.repository.ProfileRepository
 import com.aether.application.feature.settings.domain.model.ThemePreference
 import com.aether.application.feature.settings.domain.repository.SettingsRepository
 import com.aether.application.feature.settings.presentation.state.SettingsUiState
@@ -24,6 +26,7 @@ private const val NO_ENTRY_DATE = "—"
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val homeRepository: HomeRepository,
+    private val profileRepository: ProfileRepository,
     private val sessionManager: SessionManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -79,6 +82,29 @@ class SettingsViewModel(
 
     fun onThemeSelected(theme: ThemePreference) {
         viewModelScope.launch { settingsRepository.setTheme(theme) }
+    }
+
+    fun onAvatarPicked(uri: Uri) {
+        if (_uiState.value.isUploadingAvatar) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isUploadingAvatar = true) }
+            try {
+                val avatarUrl = profileRepository.updateAvatar(uri)
+                _uiState.update { it.copy(avatarUrl = avatarUrl, isUploadingAvatar = false) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to update avatar", e)
+                _uiState.update { it.copy(
+                    isUploadingAvatar = false,
+                    avatarErrorMessage = "Não foi possível atualizar a foto de perfil."
+                ) }
+            }
+        }
+    }
+
+    fun onAvatarErrorShown() {
+        _uiState.update { it.copy(avatarErrorMessage = null) }
     }
 
     // AppNavigation reacts to the auth state and goes back to the auth graph

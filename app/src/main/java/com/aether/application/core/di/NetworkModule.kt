@@ -15,7 +15,13 @@ import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.home.data.remote.InventoryApi
 import com.aether.application.feature.home.data.repository.HomeRepositoryImpl
 import com.aether.application.feature.home.domain.repository.HomeRepository
+import com.aether.application.feature.profile.data.local.AvatarImageProcessor
+import com.aether.application.feature.profile.data.remote.CloudinaryApi
+import com.aether.application.feature.profile.data.remote.CloudinaryUploader
+import com.aether.application.feature.profile.data.repository.ProfileRepositoryImpl
+import com.aether.application.feature.profile.domain.repository.ProfileRepository
 import com.aether.application.feature.settings.data.repository.SettingsRepositoryImpl
+import org.koin.android.ext.koin.androidContext
 import com.aether.application.feature.settings.domain.repository.SettingsRepository
 import okhttp3.OkHttpClient
 import org.koin.core.module.Module
@@ -69,7 +75,8 @@ object NetworkModule {
             AuthRepositoryImpl(
                 api = get(),
                 profileApi = get(),
-                sessionManager = get()
+                sessionManager = get(),
+                profileLocalDataSource = get()
             )
         }
 
@@ -84,6 +91,31 @@ object NetworkModule {
 
         single<HomeRepository> {
             HomeRepositoryImpl(inventoryApi = get())
+        }
+
+        single<CloudinaryApi> {
+            val retrofit: Retrofit = get()
+            retrofit.create(CloudinaryApi::class.java)
+        }
+
+        // Not the shared OkHttpClient: its interceptors must not touch Cloudinary requests
+        single {
+            CloudinaryUploader()
+        }
+
+        single {
+            AvatarImageProcessor(context = androidContext())
+        }
+
+        single<ProfileRepository> {
+            ProfileRepositoryImpl(
+                profileApi = get(),
+                cloudinaryApi = get(),
+                cloudinaryUploader = get(),
+                avatarImageProcessor = get(),
+                profileLocalDataSource = get(),
+                sessionManager = get()
+            )
         }
     }
 }

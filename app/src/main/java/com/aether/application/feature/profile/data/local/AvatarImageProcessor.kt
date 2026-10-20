@@ -11,7 +11,6 @@ import java.io.ByteArrayOutputStream
 private const val MAX_AVATAR_SIZE_PX = 512
 private const val JPEG_QUALITY = 85
 
-/** Decodes a picked or captured photo into a small JPEG, keeping uploads light. */
 class AvatarImageProcessor(
     private val context: Context
 ) {
