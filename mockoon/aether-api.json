@@ -44,6 +44,10 @@
         {
           "type": "route",
           "uuid": "fb515b07-6ce3-4b82-a0b6-99168681ee9c"
+        },
+        {
+          "type": "route",
+          "uuid": "8dd78489-5878-447a-bda0-a1e1899d65cf"
         }
       ]
     },
@@ -90,6 +94,16 @@
           "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10"
         }
       ]
+    },
+    {
+      "uuid": "87a096d6-9c85-4e56-bf9e-47de3bacd95d",
+      "name": "Cloudinary",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "2cf9e796-48a9-4706-90c8-a7eaed7bf4d9"
+        }
+      ]
     }
   ],
   "routes": [
@@ -98,7 +112,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/login",
+      "endpoint": "api/auth/login",
       "responses": [
         {
           "uuid": "db9a2bde-3a0c-4937-a423-f73ca34191c7",
@@ -129,7 +143,7 @@
       "type": "http",
       "documentation": "",
       "method": "put",
-      "endpoint": "auth/refresh/:email",
+      "endpoint": "api/auth/refresh/:email",
       "responses": [
         {
           "uuid": "653259a6-0a2d-467b-89a2-bb56abbbf04b",
@@ -160,7 +174,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/send-code",
+      "endpoint": "api/auth/reset-password/send-code",
       "responses": [
         {
           "uuid": "298b3cb9-ec5a-40e3-8990-52bdcf2c538a",
@@ -191,7 +205,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/resend-code",
+      "endpoint": "api/auth/reset-password/resend-code",
       "responses": [
         {
           "uuid": "dd607589-1e31-4542-b6e3-54023e92054d",
@@ -222,7 +236,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/validate-code",
+      "endpoint": "api/auth/reset-password/validate-code",
       "responses": [
         {
           "uuid": "4f2c53a4-73a9-4124-8ee1-2d436a72343c",
@@ -253,7 +267,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/change-password",
+      "endpoint": "api/auth/reset-password/change-password",
       "responses": [
         {
           "uuid": "fc152fbe-5061-4c7f-a18a-c1d48bf1daaa",
@@ -284,11 +298,11 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "profile",
+      "endpoint": "api/profile",
       "responses": [
         {
           "uuid": "4869549d-a7c5-471f-b506-cab41880b7f5",
-          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"inventory:view\",\n      \"description\": \"Visualizar inventários\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"inventory:analysis\",\n      \"description\": \"Analisar inventários\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"inventory:edit\",\n      \"description\": \"Criar e editar inventários\"\n    },\n    {\n      \"id\": 4,\n      \"name\": \"calculator\",\n      \"description\": \"Usar a calculadora de CO2\"\n    },\n    {\n      \"id\": 5,\n      \"name\": \"chatbot\",\n      \"description\": \"Usar o chatbot\"\n    }\n  ],\n  \"avatarUrl\": \"https://i.pravatar.cc/150?img=12\",\n  \"phone\": \"11999999999\",\n  \"createdAt\": \"2023-02-24T12:00:00Z\"\n}",
+          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"phone\": \"11999999999\",\n  \"image\": {\n    \"id\": 1,\n    \"name\": \"avatar.png\",\n    \"path\": \"https://i.pravatar.cc/150?img=12\"\n  },\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"inventory:view\",\n      \"description\": \"Visualizar inventários\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"inventory:analysis\",\n      \"description\": \"Analisar inventários\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"inventory:edit\",\n      \"description\": \"Criar e editar inventários\"\n    },\n    {\n      \"id\": 4,\n      \"name\": \"calculator\",\n      \"description\": \"Usar a calculadora de CO2\"\n    },\n    {\n      \"id\": 5,\n      \"name\": \"chatbot\",\n      \"description\": \"Usar o chatbot\"\n    }\n  ],\n  \"enterprise\": {\n    \"id\": 1,\n    \"name\": \"Aether Alimentos LTDA\",\n    \"tradeName\": \"Aether Alimentos\",\n    \"cnpj\": \"12345678000190\",\n    \"address\": {\n      \"id\": 1,\n      \"zipCode\": \"80215901\",\n      \"state\": \"PR\",\n      \"city\": \"Curitiba\",\n      \"neighborhood\": \"Prado Velho\",\n      \"street\": \"Rua Imaculada Conceição\",\n      \"number\": 1155,\n      \"complement\": null\n    }\n  },\n  \"unit\": {\n    \"id\": 1,\n    \"cnae\": \"1011201\",\n    \"cnpj\": \"12345678000271\",\n    \"isActive\": true,\n    \"address\": {\n      \"id\": 2,\n      \"zipCode\": \"80215901\",\n      \"state\": \"PR\",\n      \"city\": \"Curitiba\",\n      \"neighborhood\": \"Prado Velho\",\n      \"street\": \"Rua Imaculada Conceição\",\n      \"number\": 1155,\n      \"complement\": null\n    }\n  },\n  \"createdAt\": \"2023-02-24T12:00:00Z\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -315,7 +329,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "inventories/mine",
+      "endpoint": "api/inventories/mine",
       "responses": [
         {
           "uuid": "ace919ab-a679-4e01-883e-8b1438ddb7a3",
@@ -346,7 +360,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "inventories/pending",
+      "endpoint": "api/inventories/pending",
       "responses": [
         {
           "uuid": "310b2cf1-7a3f-4d96-85ba-569a2906a5b8",
@@ -377,7 +391,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/unit-info",
+      "endpoint": "api/inventories/unit-info",
       "responses": [
         {
           "uuid": "64791859-f8f6-4685-9c99-894e251bb1b1",
@@ -408,7 +422,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/enterprise-info",
+      "endpoint": "api/inventories/enterprise-info",
       "responses": [
         {
           "uuid": "db10513f-a8ad-4e78-92fc-ce693183f301",
@@ -439,7 +453,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/reviewed/last",
+      "endpoint": "api/inventories/reviewed/last",
       "responses": [
         {
           "uuid": "b449699f-45b0-44fb-b025-4b027fe65019",
@@ -470,7 +484,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/mine/last",
+      "endpoint": "api/inventories/mine/last",
       "responses": [
         {
           "uuid": "b959cb2c-085d-42b4-9f02-3ad320da22c3",
@@ -501,7 +515,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/count",
+      "endpoint": "api/inventories/count",
       "responses": [
         {
           "uuid": "b38a02cd-f9d3-4a7e-abee-5ae3ced04da6",
@@ -557,6 +571,68 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "8dd78489-5878-447a-bda0-a1e1899d65cf",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "api/profile",
+      "responses": [
+        {
+          "uuid": "3656c451-38ed-436e-adc6-66ceabf2cdde",
+          "body": "{\n  \"id\": 1,\n  \"name\": \"Aether Mock User\",\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"phone\": \"11999999999\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "2cf9e796-48a9-4706-90c8-a7eaed7bf4d9",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/cloudinary/upload-signature",
+      "responses": [
+        {
+          "uuid": "4564d8bd-1dd0-4f9c-96f7-5b2d432334ee",
+          "body": "{\n  \"signature\": \"mock-signature\",\n  \"timestamp\": 1760000000,\n  \"apiKey\": \"mock-api-key\",\n  \"cloudName\": \"mock-cloud\",\n  \"cloudinaryFolder\": \"images\",\n  \"cloudinaryResourceType\": \"image\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -575,6 +651,10 @@
     {
       "type": "folder",
       "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75"
+    },
+    {
+      "type": "folder",
+      "uuid": "87a096d6-9c85-4e56-bf9e-47de3bacd95d"
     }
   ],
   "proxyMode": false,

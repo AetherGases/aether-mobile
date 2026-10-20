@@ -3,6 +3,7 @@ package com.aether.application.feature.auth.data.repository
 import android.util.Log
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.database.ProfileLocalDataSource
 import com.aether.application.core.network.readErrorMessage
 import com.aether.application.feature.auth.data.remote.AuthApi
 import com.aether.application.feature.auth.data.remote.ProfileApi
@@ -20,7 +21,8 @@ import java.net.HttpURLConnection.HTTP_FORBIDDEN
 class AuthRepositoryImpl(
     private val api: AuthApi,
     private val profileApi: ProfileApi,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val profileLocalDataSource: ProfileLocalDataSource
 ): AuthRepository {
 
     override suspend fun login(
@@ -39,6 +41,10 @@ class AuthRepositoryImpl(
         // Get profiles info
         runCatchingAuth {
             val profile = profileApi.getUserProfile()
+            // Must be stored before the session: SessionStorage reads the profile back from SQLite
+            profileLocalDataSource.saveProfile(profile.toLocalProfile())
+            profileLocalDataSource.saveAddresses(profile.toWorkplaceAddresses())
+
             val sessionWithPermissions = session.copy(
                 permissions = profile.permissions,
                 name = profile.name,

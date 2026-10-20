@@ -9,6 +9,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import android.net.Uri
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,6 +22,10 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +56,8 @@ private val HeaderShape = RoundedCornerShape(28.dp)
 fun SettingsScreen(
     userName: String,
     avatarUrl: String?,
+    isUploadingAvatar: Boolean,
+    onAvatarPicked: (Uri) -> Unit,
     reportsCount: Int,
     entryDate: String,
     notificationsEnabled: Boolean,
@@ -66,6 +76,15 @@ fun SettingsScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showAvatarSource by remember { mutableStateOf(false) }
+
+    if (showAvatarSource) {
+        AvatarSourceDialog(
+            onDismiss = { showAvatarSource = false },
+            onPicked = onAvatarPicked
+        )
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -75,6 +94,8 @@ fun SettingsScreen(
         ProfileHeader(
             userName = userName,
             avatarUrl = avatarUrl,
+            isUploadingAvatar = isUploadingAvatar,
+            onAvatarClick = { showAvatarSource = true },
             onBackClick = onBackClick
         )
 
@@ -183,6 +204,8 @@ fun SettingsScreen(
 private fun ProfileHeader(
     userName: String,
     avatarUrl: String?,
+    isUploadingAvatar: Boolean,
+    onAvatarClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
@@ -227,14 +250,56 @@ private fun ProfileHeader(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            AsyncImage(
-                model = avatarUrl,
-                contentDescription = "Foto de perfil",
+            Box(
                 modifier = Modifier
                     .size(AvatarSize)
-                    .clip(CircleShape)
-                    .border(width = 4.dp, color = MaterialTheme.colorScheme.surface, shape = CircleShape)
-            )
+                    .clickable(
+                        enabled = !isUploadingAvatar,
+                        onClickLabel = "Alterar foto de perfil",
+                        onClick = onAvatarClick
+                    )
+            ) {
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = "Foto de perfil",
+                    placeholder = painterResource(id = R.drawable.ic_avatar_placeholder),
+                    error = painterResource(id = R.drawable.ic_avatar_placeholder),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clip(CircleShape)
+                        .border(width = 4.dp, color = MaterialTheme.colorScheme.surface, shape = CircleShape)
+                )
+
+                if (isUploadingAvatar) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.4f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = Color.White)
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                        .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.PhotoCamera,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
         }
     }
 
@@ -474,6 +539,8 @@ fun SettingsScreenPreview() {
         SettingsScreen(
             userName = "Daniel Sagaz",
             avatarUrl = null,
+            isUploadingAvatar = false,
+            onAvatarPicked = {},
             reportsCount = 4539,
             entryDate = "24/02/23",
             notificationsEnabled = true,
