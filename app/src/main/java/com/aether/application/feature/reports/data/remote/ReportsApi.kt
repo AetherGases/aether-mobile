@@ -11,9 +11,9 @@ import retrofit2.http.Query
 interface ReportsApi {
 
     /** Asks ms-cloudinary to sign an upload, so the file can go straight to Cloudinary. */
-    @GET("cloudinary/upload-signature")
+    @GET("api/cloudinary/upload-signature")
     suspend fun getUploadSignature(@Query("fileType") fileType: String): UploadSignatureResponse
 
-    @POST("inventories")
+    @POST("api/inventories")
     suspend fun registerReport(@Body request: RegisterReportRequest): RegisterReportResponse
 }
