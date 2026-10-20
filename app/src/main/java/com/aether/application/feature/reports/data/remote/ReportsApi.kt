@@ -2,6 +2,7 @@ package com.aether.application.feature.reports.data.remote
 
 import com.aether.application.feature.reports.data.remote.dto.GetImprovementPlanResponse
 import com.aether.application.feature.reports.data.remote.dto.GetReportAnalysisResponse
+import com.aether.application.feature.reports.data.remote.dto.GetReportExtrasResponse
 import com.aether.application.feature.reports.data.remote.dto.GetReportResponse
 import com.aether.application.feature.reports.data.remote.dto.ReviewReportRequest
 import retrofit2.http.Body
@@ -14,9 +15,17 @@ private const val INVENTORY = "api/inventories"
 
 interface ReportsApi {
 
-    // TODO: guessed endpoints, ms-inventory has no route yet that returns the emissions and the analysis
-    @GET("$INVENTORY/{id}")
-    suspend fun getReport(@Path("id") id: Long): GetReportResponse
+    /** A report the logged user owns. */
+    @GET("$INVENTORY/mine/{id}")
+    suspend fun getMyReport(@Path("id") id: Long): GetReportResponse
+
+    /** Any report of the reviewer's department, whatever its status (pending ones included). */
+    @GET("$INVENTORY/reviewed/{id}")
+    suspend fun getDepartmentReport(@Path("id") id: Long): GetReportResponse
+
+    // TODO: guessed endpoints, ms-inventory has no route yet that returns the emissions or the analysis
+    @GET("$INVENTORY/{id}/emissions")
+    suspend fun getReportExtras(@Path("id") id: Long): GetReportExtrasResponse
 
     @GET("$INVENTORY/{id}/analysis")
     suspend fun getReportAnalysis(@Path("id") id: Long): GetReportAnalysisResponse

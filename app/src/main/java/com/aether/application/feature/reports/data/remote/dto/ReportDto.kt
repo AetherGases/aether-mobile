@@ -1,5 +1,6 @@
 package com.aether.application.feature.reports.data.remote.dto
 
+import com.aether.application.core.serialization.LocalDateSerializer
 import com.aether.application.core.serialization.LocalDateTimeSerializer
 import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.home.domain.model.InventoryStatusSerializer
@@ -13,34 +14,44 @@ import com.aether.application.feature.reports.domain.model.ScopeEmissions
 import com.aether.application.feature.reports.domain.model.ScopeShare
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.time.LocalDate
 import java.time.LocalDateTime
 
+/** Response of ms-inventory `GET /api/inventories/mine/{id}` and `/reviewed/{id}`; null fields are omitted. */
 @Serializable
 data class GetReportResponse(
     val id: Long,
     val name: String,
-    val sector: String? = null,
-    val unitName: String,
     val description: String? = null,
-    @Serializable(with = LocalDateTimeSerializer::class)
-    val createdAt: LocalDateTime,
+    val consolidationApproach: String? = null,
+    @Serializable(with = LocalDateSerializer::class)
+    val inventoryPeriodStart: LocalDate? = null,
+    @Serializable(with = LocalDateSerializer::class)
+    val inventoryPeriodEnd: LocalDate? = null,
+    val type: String,
     @Serializable(with = InventoryStatusSerializer::class)
     val status: InventoryStatus,
-    val validator: EmployeeDto? = null,
     val validationMessage: String? = null,
-    val emissions: List<EmissionDto> = emptyList(),
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val createdAt: LocalDateTime,
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val updatedAt: LocalDateTime? = null,
+    val owner: EmployeeDto? = null,
+    val validator: EmployeeDto? = null,
+    val storageFile: StorageFileDto? = null,
 ) {
-    fun toDomain() = ReportDetails(
+    /** [extras] fills what ms-inventory doesn't send yet; null leaves those parts empty. */
+    fun toDomain(extras: GetReportExtrasResponse?) = ReportDetails(
         id = id,
         name = name,
-        sector = sector,
-        unitName = unitName,
+        sector = extras?.sector,
+        unitName = extras?.unitName,
         description = description,
         createdAt = createdAt,
         status = status,
         reviewer = validator?.let { ReportReviewer(name = it.name, avatarUrl = it.imageUrl) },
         validationMessage = validationMessage,
-        emissionsByScope = emissions
+        emissionsByScope = extras?.emissions.orEmpty()
             .groupBy { it.scope }
             .map { (scope, rows) ->
                 ScopeEmissions(
@@ -62,6 +73,23 @@ data class EmployeeDto(
     val id: Long,
     val name: String,
     val imageUrl: String? = null,
+)
+
+@Serializable
+data class StorageFileDto(
+    val id: Long,
+    val fileName: String,
+    val path: String,
+    @Serializable(with = LocalDateTimeSerializer::class)
+    val createdAt: LocalDateTime? = null,
+)
+
+/** TODO: guessed contract, ms-inventory sends neither the emissions nor the sector and unit name. */
+@Serializable
+data class GetReportExtrasResponse(
+    val sector: String? = null,
+    val unitName: String? = null,
+    val emissions: List<EmissionDto> = emptyList(),
 )
 
 @Serializable

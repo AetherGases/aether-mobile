@@ -6,7 +6,8 @@ import com.aether.application.feature.reports.domain.model.ReportDetails
 
 interface ReportsRepository {
 
-    suspend fun getReport(id: Long): ReportDetails
+    /** [asReviewer] picks the route to try first: the reviewer's department or the user's own reports. */
+    suspend fun getReport(id: Long, asReviewer: Boolean): ReportDetails
 
     suspend fun getReportAnalysis(id: Long): ReportAnalysis
 

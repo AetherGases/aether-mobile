@@ -51,8 +51,8 @@ class ReportReviewViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             try {
-                val report = reportsRepository.getReport(reportId)
                 val canReview = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
+                val report = reportsRepository.getReport(reportId, asReviewer = canReview)
                 _uiState.update { it.copy(report = report.toUi(canReview), isLoading = false) }
             } catch (e: CancellationException) {
                 throw e
@@ -69,7 +69,7 @@ class ReportReviewViewModel(
     private fun ReportDetails.toUi(canReview: Boolean) = ReportReviewUi(
         name = name,
         sector = sector,
-        unitName = unitName,
+        unitName = unitName ?: "—",
         // pt-BR month abbreviations come with a trailing dot ("jul.")
         submittedAt = createdAt.format(dateFormatter).replace(".", ""),
         description = description,

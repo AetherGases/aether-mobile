@@ -7,7 +7,7 @@ data class ReportDetails(
     val id: Long,
     val name: String,
     val sector: String?,
-    val unitName: String,
+    val unitName: String?,
     val description: String?,
     val createdAt: LocalDateTime,
     val status: InventoryStatus,
