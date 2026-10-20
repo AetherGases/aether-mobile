@@ -13,7 +13,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-private const val INVENTORY = "inventories"
+// Kong forwards /api/inventories to ms-inventory without stripping the prefix
+private const val INVENTORY = "api/inventories"
 
 interface InventoryApi {
 

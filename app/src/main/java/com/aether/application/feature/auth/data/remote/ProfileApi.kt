@@ -6,7 +6,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 
-private const val PROFILE = "profile"
+// TODO: Kong has no /api/profile route yet, only /api/auth reaches ms-auth
+private const val PROFILE = "api/profile"
 
 interface ProfileApi {
 
