@@ -124,7 +124,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/login",
+      "endpoint": "api/auth/login",
       "responses": [
         {
           "uuid": "db9a2bde-3a0c-4937-a423-f73ca34191c7",
@@ -155,7 +155,7 @@
       "type": "http",
       "documentation": "",
       "method": "put",
-      "endpoint": "auth/refresh/:email",
+      "endpoint": "api/auth/refresh/:email",
       "responses": [
         {
           "uuid": "653259a6-0a2d-467b-89a2-bb56abbbf04b",
@@ -186,7 +186,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/send-code",
+      "endpoint": "api/auth/reset-password/send-code",
       "responses": [
         {
           "uuid": "298b3cb9-ec5a-40e3-8990-52bdcf2c538a",
@@ -217,7 +217,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/resend-code",
+      "endpoint": "api/auth/reset-password/resend-code",
       "responses": [
         {
           "uuid": "dd607589-1e31-4542-b6e3-54023e92054d",
@@ -248,7 +248,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/validate-code",
+      "endpoint": "api/auth/reset-password/validate-code",
       "responses": [
         {
           "uuid": "4f2c53a4-73a9-4124-8ee1-2d436a72343c",
@@ -279,7 +279,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/change-password",
+      "endpoint": "api/auth/reset-password/change-password",
       "responses": [
         {
           "uuid": "fc152fbe-5061-4c7f-a18a-c1d48bf1daaa",
@@ -310,7 +310,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "profile",
+      "endpoint": "api/profile",
       "responses": [
         {
           "uuid": "4869549d-a7c5-471f-b506-cab41880b7f5",
@@ -341,7 +341,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "inventories/mine",
+      "endpoint": "api/inventories/mine",
       "responses": [
         {
           "uuid": "ace919ab-a679-4e01-883e-8b1438ddb7a3",
@@ -372,7 +372,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "inventories/pending",
+      "endpoint": "api/inventories/pending",
       "responses": [
         {
           "uuid": "310b2cf1-7a3f-4d96-85ba-569a2906a5b8",
@@ -403,7 +403,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/unit-info",
+      "endpoint": "api/inventories/unit-info",
       "responses": [
         {
           "uuid": "64791859-f8f6-4685-9c99-894e251bb1b1",
@@ -434,7 +434,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/enterprise-info",
+      "endpoint": "api/inventories/enterprise-info",
       "responses": [
         {
           "uuid": "db10513f-a8ad-4e78-92fc-ce693183f301",
@@ -465,7 +465,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/reviewed/last",
+      "endpoint": "api/inventories/reviewed/last",
       "responses": [
         {
           "uuid": "b449699f-45b0-44fb-b025-4b027fe65019",
@@ -496,7 +496,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/mine/last",
+      "endpoint": "api/inventories/mine/last",
       "responses": [
         {
           "uuid": "b959cb2c-085d-42b4-9f02-3ad320da22c3",
@@ -527,7 +527,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/count",
+      "endpoint": "api/inventories/count",
       "responses": [
         {
           "uuid": "b38a02cd-f9d3-4a7e-abee-5ae3ced04da6",
@@ -589,7 +589,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/:id",
+      "endpoint": "api/inventories/:id",
       "responses": [
         {
           "uuid": "e1daf5aa-dedd-44f0-8c92-f71bcaf10810",
@@ -674,7 +674,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/:id/analysis",
+      "endpoint": "api/inventories/:id/analysis",
       "responses": [
         {
           "uuid": "468bb61d-d67c-4655-afdb-def181112d85",
@@ -705,7 +705,7 @@
       "type": "http",
       "documentation": "",
       "method": "patch",
-      "endpoint": "inventories/pending/:id/approve",
+      "endpoint": "api/inventories/pending/:id/approve",
       "responses": [
         {
           "uuid": "e49347bf-3e2d-4f28-a511-3de4746b527e",
@@ -736,7 +736,7 @@
       "type": "http",
       "documentation": "",
       "method": "patch",
-      "endpoint": "inventories/pending/:id/reject",
+      "endpoint": "api/inventories/pending/:id/reject",
       "responses": [
         {
           "uuid": "d372014c-82b2-42b6-9cda-6fc73e7032ca",
