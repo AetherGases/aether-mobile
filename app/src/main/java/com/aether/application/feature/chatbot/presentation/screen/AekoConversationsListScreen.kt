@@ -26,15 +26,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.aether.core.ui.theme.*
 import com.aether.application.R
 
-data class SavedConversation(
+data class ConversationItem(
     val id: String,
     val title: String,
+    val isPinned: Boolean = false,
     val isSelected: Boolean = false
 )
 
@@ -43,7 +45,7 @@ fun AekoConversationsListScreen(
     userName: String,
     userRole: String,
     avatarUrl: String?,
-    savedConversations: List<SavedConversation>,
+    conversations: List<ConversationItem>,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     onNewConversationClick: () -> Unit,
@@ -131,7 +133,7 @@ fun AekoConversationsListScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            "Conversas salvas",
+            "Conversas",
             style = bodySmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.outline
@@ -140,7 +142,7 @@ fun AekoConversationsListScreen(
         Spacer(Modifier.height(8.dp))
 
         LazyColumn(modifier = Modifier.weight(1f)) {
-            items(savedConversations, key = { it.id }) { conversation ->
+            items(conversations, key = { it.id }) { conversation ->
                 ConversationRow(
                     conversation = conversation,
                     onClick = { onConversationClick(conversation.id) }
@@ -178,7 +180,7 @@ fun AekoConversationsListScreen(
 
 @Composable
 private fun ConversationRow(
-    conversation: SavedConversation,
+    conversation: ConversationItem,
     onClick: () -> Unit
 ) {
     Row(
@@ -200,8 +202,20 @@ private fun ConversationRow(
             conversation.title,
             style = bodyMedium,
             fontWeight = if (conversation.isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
         )
+        if (conversation.isPinned) {
+            Spacer(Modifier.width(8.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_bookmark),
+                contentDescription = "Conversa salva",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(16.dp)
+            )
+        }
     }
 }
 
@@ -213,12 +227,12 @@ fun AekoConversationsListScreenPreview() {
             userName = "Daniel Sagaz",
             userRole = "Funcionário",
             avatarUrl = null,
-            savedConversations = listOf(
-                SavedConversation("1", "Funcionamento do Aether", isSelected = true),
-                SavedConversation("2", "Funcionamento do Aether"),
-                SavedConversation("3", "Funcionamento do Aether"),
-                SavedConversation("4", "Funcionamento do Aether"),
-                SavedConversation("5", "Funcionamento do Aether")
+            conversations = listOf(
+                ConversationItem("1", "Funcionamento do Aether", isPinned = true, isSelected = true),
+                ConversationItem("2", "Funcionamento do Aether", isPinned = true),
+                ConversationItem("3", "Funcionamento do Aether"),
+                ConversationItem("4", "Funcionamento do Aether"),
+                ConversationItem("5", "Funcionamento do Aether")
             ),
             searchQuery = "",
             onSearchQueryChanged = {},

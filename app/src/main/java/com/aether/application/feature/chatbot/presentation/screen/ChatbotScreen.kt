@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +25,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,8 +46,8 @@ fun AekoScreen(
     messages: List<ChatMessage>,
     suggestions: List<String>,
     inputText: String,
-    isConversationSaved: Boolean,
-    savedConversations: List<SavedConversation>,
+    isConversationPinned: Boolean,
+    conversations: List<ConversationItem>,
     conversationSearchQuery: String,
     userName: String,
     userRole: String,
@@ -72,7 +75,7 @@ fun AekoScreen(
                     userName = userName,
                     userRole = userRole,
                     avatarUrl = avatarUrl,
-                    savedConversations = savedConversations,
+                    conversations = conversations,
                     searchQuery = conversationSearchQuery,
                     onSearchQueryChanged = onConversationSearchQueryChanged,
                     onNewConversationClick = {
@@ -139,12 +142,19 @@ fun AekoScreen(
                 title = screenTitle,
                 onBackClick = onBackClicked,
                 trailingContent = {
-                    AetherTrailingIconButton(
-                        painter = painterResource(id = if (isConversationSaved) R.drawable.ic_bookmark else R.drawable.ic_bookmarkborder),
-                        tint = MaterialTheme.colorScheme.secondary,
-                        contentDescription = if (isConversationSaved) "Remover dos salvos" else "Salvar conversa",
-                        onClick = onBookmarkClicked
-                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        AetherTrailingIconButton(
+                            painter = rememberVectorPainter(Icons.Default.Menu),
+                            contentDescription = "Abrir conversas salvas",
+                            onClick = { coroutineScope.launch { drawerState.open() } }
+                        )
+                        AetherTrailingIconButton(
+                            painter = painterResource(id = if (isConversationPinned) R.drawable.ic_bookmark else R.drawable.ic_bookmarkborder),
+                            tint = MaterialTheme.colorScheme.secondary,
+                            contentDescription = if (isConversationPinned) "Remover dos salvos" else "Salvar conversa",
+                            onClick = onBookmarkClicked
+                        )
+                    }
                 }
             )
 
@@ -265,10 +275,10 @@ fun AekoScreenWelcomePreview() {
             messages = emptyList(),
             suggestions = listOf("Como funciona?", "Como funciona?", "Bla bla bla", "Bla bla bla"),
             inputText = "",
-            isConversationSaved = false,
-            savedConversations = listOf(
-                SavedConversation("1", "Funcionamento do Aether", isSelected = true),
-                SavedConversation("2", "Funcionamento do Aether")
+            isConversationPinned = false,
+            conversations = listOf(
+                ConversationItem("1", "Funcionamento do Aether", isPinned = true, isSelected = true),
+                ConversationItem("2", "Funcionamento do Aether")
             ),
             conversationSearchQuery = "",
             userName = "Daniel Sagaz",
@@ -310,10 +320,10 @@ fun AekoScreenConversationPreview() {
             ),
             suggestions = emptyList(),
             inputText = "Asquerosa",
-            isConversationSaved = true,
-            savedConversations = listOf(
-                SavedConversation("1", "Funcionamento do Aether", isSelected = true),
-                SavedConversation("2", "Funcionamento do Aether")
+            isConversationPinned = true,
+            conversations = listOf(
+                ConversationItem("1", "Funcionamento do Aether", isPinned = true, isSelected = true),
+                ConversationItem("2", "Funcionamento do Aether")
             ),
             conversationSearchQuery = "",
             userName = "Daniel Sagaz",

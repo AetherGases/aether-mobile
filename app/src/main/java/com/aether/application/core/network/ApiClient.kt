@@ -29,7 +29,8 @@ object ApiClient {
             .baseUrl(ApiConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(
-                Json.asConverterFactory("application/json".toMediaType())
+                Json { ignoreUnknownKeys = true }
+                    .asConverterFactory("application/json".toMediaType())
             )
             .build()
     }
