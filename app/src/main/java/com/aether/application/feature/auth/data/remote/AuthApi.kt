@@ -13,7 +13,8 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-private const val AUTH = "auth"
+// Kong forwards /api/auth to ms-auth without stripping the prefix
+private const val AUTH = "api/auth"
 
 interface AuthApi {
 
