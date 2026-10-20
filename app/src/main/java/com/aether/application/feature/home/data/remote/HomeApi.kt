@@ -11,7 +11,8 @@ import com.aether.application.feature.home.data.remote.dto.LastInventoryDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val INVENTORY = "inventories"
+// Kong forwards /api/inventories to ms-inventory without stripping the prefix
+private const val INVENTORY = "api/inventories"
 
 interface InventoryApi {
 
