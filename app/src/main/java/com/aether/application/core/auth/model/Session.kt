@@ -8,9 +8,13 @@ import java.time.Instant
 @Serializable
 data class Session(
     val email: String,
+    val name: String = "Desconhecido",
+    val avatar: String = "",
     val accessToken: String,
     val refreshToken: String,
     @Serializable(with = InstantSerializer::class)
     val expiration: Instant,
-    val permissions: List<Permission> = emptyList()
+    val permissions: List<Permission> = emptyList(),
+    @Serializable(with = InstantSerializer::class)
+    val createdAt: Instant? = null
 )

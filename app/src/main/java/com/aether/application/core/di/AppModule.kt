@@ -20,6 +20,8 @@ import com.aether.application.feature.auth.presentation.viewmodel.ChangePassword
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
+import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
+import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -98,6 +100,21 @@ object AppModule {
                 email = email,
                 key = key,
                 changePasswordUseCase = get()
+            )
+        }
+
+        viewModel {
+            HomeViewModel(
+                homeRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel {
+            SettingsViewModel(
+                settingsRepository = get(),
+                homeRepository = get(),
+                sessionManager = get()
             )
         }
     }

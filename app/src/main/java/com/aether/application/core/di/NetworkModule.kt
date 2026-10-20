@@ -12,6 +12,11 @@ import com.aether.application.feature.auth.data.repository.AuthRepositoryImpl
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
+import com.aether.application.feature.home.data.remote.InventoryApi
+import com.aether.application.feature.home.data.repository.HomeRepositoryImpl
+import com.aether.application.feature.home.domain.repository.HomeRepository
+import com.aether.application.feature.settings.data.repository.SettingsRepositoryImpl
+import com.aether.application.feature.settings.domain.repository.SettingsRepository
 import okhttp3.OkHttpClient
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
@@ -66,6 +71,19 @@ object NetworkModule {
                 profileApi = get(),
                 sessionManager = get()
             )
+        }
+
+        single<InventoryApi> {
+            val retrofit: Retrofit = get()
+            retrofit.create(InventoryApi::class.java)
+        }
+
+        single<SettingsRepository> {
+            SettingsRepositoryImpl(dataStore = get())
+        }
+
+        single<HomeRepository> {
+            HomeRepositoryImpl(inventoryApi = get())
         }
     }
 }

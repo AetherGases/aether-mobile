@@ -36,9 +36,15 @@ class AuthRepositoryImpl(
             return Result.failure(AuthException.Unexpected(IllegalStateException("Failed to persist session")))
         }
 
+        // Get profiles info
         runCatchingAuth {
             val profile = profileApi.getUserProfile()
-            val sessionWithPermissions = session.copy(permissions = profile.permissions)
+            val sessionWithPermissions = session.copy(
+                permissions = profile.permissions,
+                name = profile.name,
+                avatar = profile.avatarUrl ?: "",
+                createdAt = profile.createdAt
+            )
             if (sessionManager.save(sessionWithPermissions)) {
                 session = sessionWithPermissions
             } else {

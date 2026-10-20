@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -46,8 +47,6 @@ private val HeaderShape = RoundedCornerShape(28.dp)
 @Composable
 fun SettingsScreen(
     userName: String,
-    userRole: String,
-    companyTag: String,
     avatarUrl: String?,
     reportsCount: Int,
     entryDate: String,
@@ -64,6 +63,7 @@ fun SettingsScreen(
     onTermsOfUseClick: () -> Unit,
     onPrivacyPolicyClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -74,9 +74,8 @@ fun SettingsScreen(
     ) {
         ProfileHeader(
             userName = userName,
-            userRole = userRole,
-            companyTag = companyTag,
-            avatarUrl = avatarUrl
+            avatarUrl = avatarUrl,
+            onBackClick = onBackClick
         )
 
         Column(
@@ -183,9 +182,8 @@ fun SettingsScreen(
 @Composable
 private fun ProfileHeader(
     userName: String,
-    userRole: String,
-    companyTag: String,
-    avatarUrl: String?
+    avatarUrl: String?,
+    onBackClick: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Image(
@@ -204,6 +202,21 @@ private fun ProfileHeader(
                 )
                 .clip(HeaderShape)
         )
+
+        // Sits on the purple header, so it is white regardless of the theme
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(start = HeaderMargin + 8.dp, top = HeaderMargin + 8.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_chevron_left),
+                contentDescription = "Voltar",
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
+        }
 
         Row(
             modifier = Modifier
@@ -229,7 +242,6 @@ private fun ProfileHeader(
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(userName, style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
-        Text(userRole, style = titleMediumMD, color = MaterialTheme.colorScheme.outline)
     }
 
     Spacer(Modifier.height(20.dp))
@@ -461,8 +473,6 @@ fun SettingsScreenPreview() {
     AetherTheme {
         SettingsScreen(
             userName = "Daniel Sagaz",
-            userRole = "Gerente de ESG",
-            companyTag = "JBS",
             avatarUrl = null,
             reportsCount = 4539,
             entryDate = "24/02/23",
@@ -478,7 +488,8 @@ fun SettingsScreenPreview() {
             onReportProblemClick = {},
             onTermsOfUseClick = {},
             onPrivacyPolicyClick = {},
-            onLogoutClick = {}
+            onLogoutClick = {},
+            onBackClick = {}
         )
     }
 }

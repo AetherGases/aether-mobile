@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -16,79 +17,77 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import kotlinx.coroutines.launch
 import com.aether.application.R
-import com.aether.core.ui.components.AppHeader
+import com.aether.application.feature.home.presentation.components.QuickAction
+import com.aether.application.feature.home.presentation.components.QuickActionContainer
+import com.aether.application.feature.home.presentation.components.RecentReport
+import com.aether.application.ui.components.AppHeader
 import com.aether.core.ui.components.EmployeeHeroCard
 import com.aether.core.ui.components.HomeHeroCard
 import com.aether.core.ui.components.ManagerHeroCard
-import com.aether.core.ui.components.ReportsSummaryCard
-import com.aether.core.ui.components.SealProgressCard
-import com.aether.core.ui.components.UnitEmissionsCard
+import com.aether.core.ui.components.ReportsSummaryHomeCard
+import com.aether.core.ui.components.SealProgressHomeCard
+import com.aether.core.ui.components.UnitEmissionsHomeCard
+import com.aether.application.feature.home.presentation.model.ReportStatus
 import com.aether.core.ui.theme.*
 
-data class QuickAction(
-    val label: String,
-    val iconRes: Int,
-    val iconSize: Dp = 28.dp,
-    val offsetX: Dp = 0.dp,
-    val offsetY: Dp = 0.dp,
-    val backgroundColor: Color,
-    val onClick: () -> Unit
-)
+private val SCREEN_PADDING = 24.dp
+private val CARD_WIDTH = 335.dp
 
-enum class ReportStatus(val label: String, val iconRes: Int) {
-    PENDENTE("Pendente", R.drawable.ic_pendent),
-    APROVADO("Aprovado", R.drawable.ic_approved),
-    RECUSADO("Recusado", R.drawable.ic_rejected)
-}
-
-data class RecentReport(
-    val id: Int,
-    val name: String,
-    val ownerName: String,
-    val ownerAvatarUrl: String?,
-    val createdAt: String,
-    val status: ReportStatus
-)
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     userName: String,
     userLastName: String,
     avatarUrl: String?,
     hasUnreadNotifications: Boolean,
-    heroCard: HomeHeroCard,
-    unitEmissionsValue: String,
-    unitEmissionsChangeLabel: String,
-    sealLevelPercent: String,
-    sealCriteriaLabel: String,
+    cards: List<HomeHeroCard>,
     quickActions: List<QuickAction>,
     recentReports: List<RecentReport>,
+    cardsFailed: Boolean,
+    quickActionsFailed: Boolean,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     onNotificationsClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onViewHistoryClick: () -> Unit,
     onSeeAllReportsClick: () -> Unit,
-    onReportMenuClick: (RecentReport) -> Unit,
+    onReportClick: (RecentReport) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
@@ -123,7 +122,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = SCREEN_PADDING)
         ) {
             Spacer(Modifier.height(24.dp))
 
@@ -137,59 +136,103 @@ fun HomeScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
-            Spacer(Modifier.height(16.dp))
+            if (cards.isEmpty() && cardsFailed) {
+                Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                Spacer(Modifier.height(16.dp))
+                SectionLoadError(
+                    icon = Icons.Outlined.CloudOff,
+                    message = "Não foi possível carregar a visão geral. Puxe para baixo para tentar de novo."
+                )
+                Spacer(Modifier.height(24.dp))
+            } else if (cards.isNotEmpty()) {
+                Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                Spacer(Modifier.height(16.dp))
 
-            val pagerState = rememberPagerState(pageCount = { 4 })
-            HorizontalPager(state = pagerState) { page ->
-                Box(
-                    modifier = Modifier.shadow(
-                        elevation = 10.dp,
-                        shape = RoundedCornerShape(20.dp),
-                        ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                        spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-                    )
-                ) {
-                    when (page) {
-                        0 -> heroCard.Render()
-                        1 -> ReportsSummaryCard(heroCard.summaryTitle, heroCard.lastSubmittedLabel, heroCard.summaryCount, onViewHistoryClick)
-                        2 -> UnitEmissionsCard(unitEmissionsValue, "tCO₂e/mês", unitEmissionsChangeLabel)
-                        3 -> SealProgressCard(sealLevelPercent, sealCriteriaLabel)
+                val pagerState = rememberPagerState(pageCount = { cards.size })
+                HorizontalPager(
+                    state = pagerState,
+                    // Cards keep their size and the next ones peek in, so wide screens show more than one
+                    pageSize = PageSize.Fixed(CARD_WIDTH),
+                    pageSpacing = 16.dp,
+                    contentPadding = PaddingValues(horizontal = SCREEN_PADDING),
+                    // Let the cards scroll to the screen edges instead of being cut at the screen padding
+                    modifier = Modifier.layout { measurable, constraints ->
+                        val extra = SCREEN_PADDING.roundToPx()
+                        val placeable = measurable.measure(
+                            constraints.copy(maxWidth = constraints.maxWidth + extra * 2)
+                        )
+                        layout(constraints.maxWidth, placeable.height) {
+                            placeable.place(-extra, 0)
+                        }
                     }
-                }
-            }
-            Spacer(Modifier.height(18.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                repeat(pagerState.pageCount) { index ->
+                ) { page ->
                     Box(
                         modifier = Modifier
-                            .padding(horizontal = 3.dp)
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(
-                                if (index == pagerState.currentPage)
-                                    MaterialTheme.colorScheme.secondary
-                                else
-                                    MaterialTheme.colorScheme.outlineVariant
+                            .semantics {
+                                stateDescription = "Cartão ${page + 1} de ${cards.size}"
+                            }
+                            .shadow(
+                                elevation = 10.dp,
+                                shape = RoundedCornerShape(20.dp),
+                                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
                             )
-                    )
+                    ) {
+                        cards[page].Render()
+                    }
                 }
-            }
+                // Only worth showing when there is something to scroll to
+                if (pagerState.canScrollForward || pagerState.canScrollBackward) {
+                    Spacer(Modifier.height(18.dp))
+                    // Decorative: the position is already announced by each card
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clearAndSetSemantics {},
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        // With fixed-size pages the last ones never become the current page
+                        val selectedPage = if (pagerState.canScrollForward) {
+                            pagerState.currentPage
+                        } else {
+                            pagerState.pageCount - 1
+                        }
+                        repeat(pagerState.pageCount) { index ->
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 3.dp)
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (index == selectedPage)
+                                            MaterialTheme.colorScheme.secondary
+                                        else
+                                            MaterialTheme.colorScheme.outlineVariant
+                                    )
+                            )
+                        }
+                    }
+                }
 
-            Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(24.dp))
+            }
 
             Text("Ações Rápidas", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(16.dp))
 
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(quickActions) { action ->
-                    QuickActionItem(action = action)
+            if (quickActions.isEmpty() && quickActionsFailed) {
+                SectionLoadError(
+                    icon = Icons.Outlined.ErrorOutline,
+                    message = "Não foi possível carregar as ações rápidas. Puxe para baixo para tentar de novo."
+                )
+            } else {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(quickActions) { action ->
+                        QuickActionItem(action = action)
+                    }
                 }
             }
 
@@ -201,24 +244,65 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("Últimos Relatórios", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
-                Text(
-                    "Ver tudo",
-                    style = titleSmall,
-                    color = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier.clickable { onSeeAllReportsClick() }
-                )
+                if (!recentReports.isEmpty()) {
+                    Text(
+                        "Ver tudo",
+                        style = titleSmall,
+                        color = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.clickable { onSeeAllReportsClick() }
+                    )
+                }
             }
 
             Spacer(Modifier.height(16.dp))
 
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                recentReports.forEach { report ->
-                    RecentReportItem(report = report, onMenuClick = { onReportMenuClick(report) })
+                if (recentReports.isEmpty()) {
+                    Image(
+                        painter = painterResource(id = R.drawable.empty_inventory),
+                        contentDescription = "Sem relatórios recentes",
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                } else {
+                    recentReports.forEach { report ->
+                        RecentReportItem(
+                            report = report,
+                            onClick = { onReportClick(report) })
+                    }
                 }
             }
 
             Spacer(Modifier.height(100.dp))
         }
+    }
+}
+
+@Composable
+private fun SectionLoadError(
+    icon: ImageVector,
+    message: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(28.dp)
+        )
+        Spacer(Modifier.width(12.dp))
+        Text(
+            text = message,
+            style = bodySmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
@@ -233,7 +317,13 @@ fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier) {
         Box(
             modifier = Modifier
                 .size(100.dp)
-                .background(action.backgroundColor, RoundedCornerShape(16.dp)),
+                .background(
+                    when (action.container) {
+                        QuickActionContainer.PRIMARY -> MaterialTheme.colorScheme.primaryContainer
+                        QuickActionContainer.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer
+                    },
+                    RoundedCornerShape(16.dp)
+                ),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -257,7 +347,7 @@ fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier) {
 @Composable
 fun RecentReportItem(
     report: RecentReport,
-    onMenuClick: () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -276,7 +366,8 @@ fun RecentReportItem(
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
                 shape = RoundedCornerShape(20.dp)
             )
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable { onClick() },
         verticalAlignment = Alignment.Top
     ) {
         AsyncImage(
@@ -306,16 +397,6 @@ fun RecentReportItem(
                     maxLines = 2,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(
-                    onClick = onMenuClick,
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Mais opções",
-                        tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f)
-                    )
-                }
             }
 
             Spacer(Modifier.height(6.dp))
@@ -340,7 +421,7 @@ fun RecentReportItem(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    text = "Feito em ${report.createdAt}",
+                    text = report.createdAt,
                     style = bodySmall.copy(fontWeight = FontWeight.Medium),
                     color = MaterialTheme.colorScheme.secondary
                 )
@@ -351,18 +432,6 @@ fun RecentReportItem(
             }
         }
     }
-}
-
-@Composable
-fun AsyncImage(
-    model: String?,
-    contentDescription: String,
-    placeholder: Painter,
-    error: Painter,
-    contentScale: ContentScale,
-    modifier: Modifier
-) {
-    TODO("Not yet implemented")
 }
 
 @Composable
@@ -404,32 +473,36 @@ fun HomeScreenEmployeePreview() {
             userLastName = "Sagaz",
             avatarUrl = "https://i.pravatar.cc/150?img=12",
             hasUnreadNotifications = true,
-            heroCard = EmployeeHeroCard(
-                lastSubmittedLabel = "29/05/2026",
-                reportingPeriodLabel = "Jan–Mar 2026",
-                statusLabel = "Aguardando revisão há 2 dias",
-                summaryCount = "506"
+            cards = listOf(
+                EmployeeHeroCard(
+                    lastSubmittedLabel = "29/05/2026",
+                    reportingPeriodLabel = "Jan–Mar 2026",
+                    statusLabel = "Aguardando revisão há 2 dias",
+                    summaryCount = "506"
+                ),
+                ReportsSummaryHomeCard("Relatórios realizados", "29/05/2026", "506") {},
+                UnitEmissionsHomeCard("2.403", "tCO₂e/mês", "12% ↗ em relação ao período anterior"),
+                SealProgressHomeCard("50%", "2 de 4 critérios atendidos")
             ),
-            unitEmissionsValue = "2.403",
-            unitEmissionsChangeLabel = "12% ↗ em relação ao período anterior",
-            sealLevelPercent = "50%",
-            sealCriteriaLabel = "2 de 4 critérios atendidos",
             quickActions = listOf(
-                QuickAction("Criar relatório", R.drawable.ic_create_report, 60.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
-                QuickAction("Calcular CO2", R.drawable.ic_calculator_purple, 50.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.primaryContainer) {},
-                QuickAction("Histórico", R.drawable.ic_history_green, 60.dp, 3.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
-                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, MaterialTheme.colorScheme.primaryContainer) {}
+                QuickAction("Criar relatório", R.drawable.ic_create_report, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction("Calcular CO2", R.drawable.ic_calculator_purple, 50.dp, 0.dp, 0.dp, QuickActionContainer.PRIMARY) {},
+                QuickAction("Histórico", R.drawable.ic_history_green, 60.dp, 3.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
             ),
             recentReports = listOf(
                 RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
                 RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
                 RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
             ),
+            cardsFailed = false,
+            quickActionsFailed = false,
+            isRefreshing = false,
+            onRefresh = {},
             onNotificationsClick = {},
             onSettingsClick = {},
-            onViewHistoryClick = {},
             onSeeAllReportsClick = {},
-            onReportMenuClick = {}
+            onReportClick = {}
         )
     }
 }
@@ -443,31 +516,35 @@ fun HomeScreenManagerPreview() {
             userLastName = "Grandão",
             avatarUrl = "https://i.pravatar.cc/150?img=33",
             hasUnreadNotifications = true,
-            heroCard = ManagerHeroCard(
-                lastSubmittedLabel = "26/01/2026",
-                totalEmissions = "2.1M",
-                reductionAchieved = "8,3%",
-                summaryCount = "450"
+            cards = listOf(
+                ManagerHeroCard(
+                    lastSubmittedLabel = "26/01/2026",
+                    totalEmissions = "2.1M",
+                    reductionAchieved = "8,3%",
+                    summaryCount = "450"
+                ),
+                ReportsSummaryHomeCard("Relatórios analisados", "26/01/2026", "450") {},
+                UnitEmissionsHomeCard("2.403", "tCO₂e/mês", "12% ↗ em relação ao período anterior"),
+                SealProgressHomeCard("50%", "2 de 4 critérios atendidos")
             ),
-            unitEmissionsValue = "2.403",
-            unitEmissionsChangeLabel = "12% ↗ em relação ao período anterior",
-            sealLevelPercent = "50%",
-            sealCriteriaLabel = "2 de 4 critérios atendidos",
             quickActions = listOf(
-                QuickAction("Histórico", R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, MaterialTheme.colorScheme.primaryContainer) {},
-                QuickAction("Calcular CO2", R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, MaterialTheme.colorScheme.secondaryContainer) {},
-                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, MaterialTheme.colorScheme.primaryContainer) {}
+                QuickAction("Histórico", R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, QuickActionContainer.PRIMARY) {},
+                QuickAction("Calcular CO2", R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
             ),
             recentReports = listOf(
                 RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
                 RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
                 RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
             ),
+            cardsFailed = false,
+            quickActionsFailed = false,
+            isRefreshing = false,
+            onRefresh = {},
             onNotificationsClick = {},
             onSettingsClick = {},
-            onViewHistoryClick = {},
             onSeeAllReportsClick = {},
-            onReportMenuClick = {}
+            onReportClick = {}
         )
     }
 }
