@@ -49,7 +49,7 @@ class NewReportViewModel(
 
         uploadJob?.cancel()
         uploadedFileUrl = null
-        _uiState.update { it.copy(selectedFileName = fileName, uploadProgress = 0f) }
+        _uiState.update { it.copy(selectedFileName = fileName, uploadProgress = 0f, errorMessage = null) }
 
         uploadJob = viewModelScope.launch {
             val job = coroutineContext[Job]!!
@@ -81,7 +81,7 @@ class NewReportViewModel(
     fun onRemoveFileClicked() {
         uploadJob?.cancel()
         uploadedFileUrl = null
-        _uiState.update { it.copy(selectedFileName = null, uploadProgress = null) }
+        _uiState.update { it.copy(selectedFileName = null, uploadProgress = null, errorMessage = null) }
     }
 
     fun onReportNameChanged(name: String) {
@@ -107,7 +107,7 @@ class NewReportViewModel(
             return
         }
 
-        _uiState.update { it.copy(isSubmitting = true) }
+        _uiState.update { it.copy(isSubmitting = true, errorMessage = null) }
         viewModelScope.launch {
             try {
                 val report = newReportRepository.createReport(
@@ -127,7 +127,8 @@ class NewReportViewModel(
         }
     }
 
-    fun onErrorShown() {
+    /** Both steps share this state, so the error of one must not follow the user to the other. */
+    fun clearError() {
         _uiState.update { it.copy(errorMessage = null) }
     }
 

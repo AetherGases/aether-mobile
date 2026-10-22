@@ -2,6 +2,7 @@ package com.aether.application.core.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -302,24 +303,20 @@ fun AppNavigation(
             composable<CreateReportRoute> {
                 val viewModel = koinViewModel<NewReportViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                val context = LocalContext.current
-
-                LaunchedEffect(uiState.errorMessage) {
-                    uiState.errorMessage?.let {
-                        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-                        viewModel.onErrorShown()
-                    }
-                }
 
                 CreateReportUploadScreen(
                     selectedFileName = uiState.selectedFileName,
                     uploadProgress = uiState.uploadProgress,
                     reportName = uiState.reportName,
                     reportNameError = uiState.reportNameError,
+                    errorMessage = uiState.errorMessage,
                     onReportNameChanged = viewModel::onReportNameChanged,
                     onFileSelected = viewModel::onFileSelected,
                     onRemoveFileClicked = viewModel::onRemoveFileClicked,
-                    onConfirmSubmit = { navController.navigate(ConsolidationApproachRoute) },
+                    onConfirmSubmit = {
+                        viewModel.clearError()
+                        navController.navigate(ConsolidationApproachRoute)
+                    },
                     onBackClicked = { navController.popBackStack() }
                 )
             }
@@ -333,11 +330,9 @@ fun AppNavigation(
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 val context = LocalContext.current
 
-                LaunchedEffect(uiState.errorMessage) {
-                    uiState.errorMessage?.let {
-                        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-                        viewModel.onErrorShown()
-                    }
+                // Covers the back button and the system back gesture alike
+                DisposableEffect(Unit) {
+                    onDispose { viewModel.clearError() }
                 }
 
                 LaunchedEffect(Unit) {
@@ -357,6 +352,7 @@ fun AppNavigation(
 
                 ConsolidationApproachScreen(
                     isSubmitting = uiState.isSubmitting,
+                    errorMessage = uiState.errorMessage,
                     onBackClick = { navController.popBackStack() },
                     onEquityShareClick = { viewModel.onApproachSelected(ConsolidationApproach.EQUITY_SHARE) },
                     onFinancialControlClick = { viewModel.onApproachSelected(ConsolidationApproach.FINANCIAL_CONTROL) },

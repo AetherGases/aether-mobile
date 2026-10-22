@@ -20,6 +20,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
+import com.aether.application.ui.components.FormErrorText
 import com.aether.core.ui.theme.*
 
 @Composable
@@ -30,7 +31,8 @@ fun ConsolidationApproachScreen(
     onOperationalControlClick: () -> Unit,
     onConsultAekoClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isSubmitting: Boolean = false
+    isSubmitting: Boolean = false,
+    errorMessage: String? = null
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         ConsolidationApproachContent(
@@ -38,7 +40,8 @@ fun ConsolidationApproachScreen(
             onEquityShareClick = onEquityShareClick,
             onFinancialControlClick = onFinancialControlClick,
             onOperationalControlClick = onOperationalControlClick,
-            onConsultAekoClick = onConsultAekoClick
+            onConsultAekoClick = onConsultAekoClick,
+            errorMessage = errorMessage
         )
 
         if (isSubmitting) {
@@ -63,6 +66,7 @@ private fun ConsolidationApproachContent(
     onFinancialControlClick: () -> Unit,
     onOperationalControlClick: () -> Unit,
     onConsultAekoClick: () -> Unit,
+    errorMessage: String?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -158,6 +162,11 @@ private fun ConsolidationApproachContent(
             onClick = onOperationalControlClick
         )
 
+        if (errorMessage != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+            FormErrorText(errorMessage)
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         Box(
@@ -247,6 +256,21 @@ fun ConsolidationApproachScreenPreview() {
             onFinancialControlClick = {},
             onOperationalControlClick = {},
             onConsultAekoClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, heightDp = 800)
+@Composable
+fun ConsolidationApproachScreenErrorPreview() {
+    AetherTheme {
+        ConsolidationApproachScreen(
+            onBackClick = {},
+            onEquityShareClick = {},
+            onFinancialControlClick = {},
+            onOperationalControlClick = {},
+            onConsultAekoClick = {},
+            errorMessage = "Não foi possível criar o relatório. Tente novamente."
         )
     }
 }

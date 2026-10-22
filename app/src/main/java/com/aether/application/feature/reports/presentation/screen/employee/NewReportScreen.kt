@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.aether.application.ui.components.FormErrorText
 import com.aether.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
 import com.aether.application.R
@@ -52,6 +53,7 @@ fun CreateReportUploadScreen(
     uploadProgress: Float?,
     reportName: String,
     reportNameError: String?,
+    errorMessage: String?,
     onReportNameChanged: (String) -> Unit,
     onFileSelected: (Uri) -> Unit,
     onRemoveFileClicked: () -> Unit,
@@ -97,6 +99,11 @@ fun CreateReportUploadScreen(
             SelectFileRow(
                 onClick = { filePickerLauncher.launch(spreadsheetMimeTypes) }
             )
+
+            if (errorMessage != null) {
+                Spacer(Modifier.height(12.dp))
+                FormErrorText(errorMessage)
+            }
 
             Spacer(Modifier.weight(1f))
 
@@ -366,6 +373,7 @@ fun CreateReportUploadScreenEmptyPreview() {
             uploadProgress = null,
             reportName = "",
             reportNameError = null,
+            errorMessage = null,
             onReportNameChanged = {},
             onFileSelected = {},
             onRemoveFileClicked = {},
@@ -384,6 +392,7 @@ fun CreateReportUploadScreenUploadingPreview() {
             uploadProgress = 0.6f,
             reportName = "",
             reportNameError = null,
+            errorMessage = null,
             onReportNameChanged = {},
             onFileSelected = {},
             onRemoveFileClicked = {},
@@ -402,6 +411,7 @@ fun CreateReportUploadScreenReadyPreview() {
             uploadProgress = 1f,
             reportName = "",
             reportNameError = null,
+            errorMessage = null,
             onReportNameChanged = {},
             onFileSelected = {},
             onRemoveFileClicked = {},
