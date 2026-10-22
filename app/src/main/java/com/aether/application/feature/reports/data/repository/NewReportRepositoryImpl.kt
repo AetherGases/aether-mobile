@@ -57,7 +57,9 @@ class NewReportRepositoryImpl(
         try {
             block()
         } catch (e: HttpException) {
-            throw ReportException(e.readErrorMessage() ?: fallbackMessage, e)
+            // Only 4xx messages are written for the user; a 5xx carries the raw exception text
+            val serverMessage = if (e.code() in 400..499) e.readErrorMessage() else null
+            throw ReportException(serverMessage ?: fallbackMessage, e)
         } catch (e: IOException) {
             throw ReportException("Sem conexão com o servidor. Tente novamente.", e)
         }
