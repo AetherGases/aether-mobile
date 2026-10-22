@@ -25,16 +25,23 @@ import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-private const val UPLOAD_URL = "https://api.cloudinary.com/v1_1/%s/%s/upload"
+const val CLOUDINARY_BASE_URL = "https://api.cloudinary.com/"
+
+/** Cloud name of the signature Mockoon hands out, which the real Cloudinary would reject. */
+const val MOCK_CLOUD_NAME = "mock-cloud"
+
+private const val UPLOAD_PATH = "v1_1/%s/%s/upload"
 private const val CHUNK_SIZE = 8L * 1024
 
 /**
  * Sends a file from the device to Cloudinary using a signature issued by ms-cloudinary.
  * [client] must be a plain OkHttpClient: the app's own client would add our access token.
+ * [uploadBaseUrl] picks the host for a signature, so a mock signature can go to Mockoon.
  */
 class CloudinaryUploader(
     private val contentResolver: ContentResolver,
-    private val client: OkHttpClient
+    private val client: OkHttpClient,
+    private val uploadBaseUrl: (UploadSignatureResponse) -> String = { CLOUDINARY_BASE_URL }
 ) {
 
     fun displayName(uri: Uri): String? =
@@ -63,7 +70,10 @@ class CloudinaryUploader(
             .addFormDataPart("file", fileName, file)
             .build()
         val request = Request.Builder()
-            .url(UPLOAD_URL.format(signature.cloudName, signature.cloudinaryResourceType))
+            .url(
+                uploadBaseUrl(signature).trimEnd('/') + "/" +
+                    UPLOAD_PATH.format(signature.cloudName, signature.cloudinaryResourceType)
+            )
             .post(body)
             .build()
 
