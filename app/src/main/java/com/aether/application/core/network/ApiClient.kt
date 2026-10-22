@@ -8,6 +8,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 object ApiClient {
+    /** Fields the backend adds later must not break the DTOs that don't declare them yet. */
+    val json = Json { ignoreUnknownKeys = true }
+
     fun getOkHttpClient(
         authInterceptor: AuthInterceptor,
         tokenAuthenticator: TokenAuthenticator,
@@ -29,7 +32,7 @@ object ApiClient {
             .baseUrl(ApiConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(
-                Json.asConverterFactory("application/json".toMediaType())
+                json.asConverterFactory("application/json".toMediaType())
             )
             .build()
     }

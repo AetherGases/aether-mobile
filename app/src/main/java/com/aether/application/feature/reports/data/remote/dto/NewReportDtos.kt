@@ -23,7 +23,10 @@ data class RegisterReportRequest(
     val path: String,
 )
 
-/** Response of ms-inventory `POST /api/inventories`; every field is declared since unknown keys fail decoding. */
+/**
+ * Response of ms-inventory `POST /api/inventories`. The backend omits null fields, and both
+ * `createdAt` come back null because the database fills them only after the insert.
+ */
 @Serializable
 data class RegisterReportResponse(
     val id: Long,
@@ -31,7 +34,7 @@ data class RegisterReportResponse(
     val type: String,
     val status: String,
     @Serializable(with = LocalDateTimeSerializer::class)
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime? = null,
     val storageFile: StorageFileDto? = null,
 ) {
     @Serializable
