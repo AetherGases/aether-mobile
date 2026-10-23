@@ -2,8 +2,7 @@ package com.aether.application.feature.reports.data.remote.dto
 
 import com.aether.application.core.serialization.LocalDateSerializer
 import com.aether.application.core.serialization.LocalDateTimeSerializer
-import com.aether.application.feature.home.domain.model.InventoryStatus
-import com.aether.application.feature.home.domain.model.InventoryStatusSerializer
+import com.aether.application.feature.home.domain.model.inventoryStatusOf
 import com.aether.application.feature.reports.domain.model.GasEmission
 import com.aether.application.feature.reports.domain.model.ImprovementPlan
 import com.aether.application.feature.reports.domain.model.Replacement
@@ -29,8 +28,7 @@ data class GetReportResponse(
     @Serializable(with = LocalDateSerializer::class)
     val inventoryPeriodEnd: LocalDate? = null,
     val type: String,
-    @Serializable(with = InventoryStatusSerializer::class)
-    val status: InventoryStatus,
+    val status: String,
     val validationMessage: String? = null,
     @Serializable(with = LocalDateTimeSerializer::class)
     val createdAt: LocalDateTime,
@@ -50,7 +48,7 @@ data class GetReportResponse(
         unitName = null,
         description = description,
         createdAt = createdAt,
-        status = status,
+        status = inventoryStatusOf(status, type),
         reviewer = validator?.let { ReportReviewer(name = it.name, avatarUrl = it.imageUrl) },
         validationMessage = validationMessage,
         emissionsByScope = emissions
