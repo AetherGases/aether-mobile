@@ -78,6 +78,10 @@
         {
           "type": "route",
           "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d"
+        },
+        {
+          "type": "route",
+          "uuid": "7b16615c-c3f5-46e8-a533-f74372a6eebe"
         }
       ]
     },
@@ -90,6 +94,20 @@
           "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10"
         }
       ]
+    },
+    {
+      "uuid": "2fc9fd4a-6825-4d29-b565-b675e5ace465",
+      "name": "Cloudinary",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "dbd453e1-f5b9-4a02-885d-2ee4fff120ed"
+        },
+        {
+          "type": "route",
+          "uuid": "5e0a9c47-2b6d-4f1e-9a3c-7d8e1f2a4b60"
+        }
+      ]
     }
   ],
   "routes": [
@@ -98,7 +116,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/login",
+      "endpoint": "api/auth/login",
       "responses": [
         {
           "uuid": "db9a2bde-3a0c-4937-a423-f73ca34191c7",
@@ -129,7 +147,7 @@
       "type": "http",
       "documentation": "",
       "method": "put",
-      "endpoint": "auth/refresh/:email",
+      "endpoint": "api/auth/refresh/:email",
       "responses": [
         {
           "uuid": "653259a6-0a2d-467b-89a2-bb56abbbf04b",
@@ -160,7 +178,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/send-code",
+      "endpoint": "api/auth/reset-password/send-code",
       "responses": [
         {
           "uuid": "298b3cb9-ec5a-40e3-8990-52bdcf2c538a",
@@ -191,7 +209,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/resend-code",
+      "endpoint": "api/auth/reset-password/resend-code",
       "responses": [
         {
           "uuid": "dd607589-1e31-4542-b6e3-54023e92054d",
@@ -222,7 +240,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/validate-code",
+      "endpoint": "api/auth/reset-password/validate-code",
       "responses": [
         {
           "uuid": "4f2c53a4-73a9-4124-8ee1-2d436a72343c",
@@ -253,7 +271,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "auth/reset-password/change-password",
+      "endpoint": "api/auth/reset-password/change-password",
       "responses": [
         {
           "uuid": "fc152fbe-5061-4c7f-a18a-c1d48bf1daaa",
@@ -284,7 +302,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "profile",
+      "endpoint": "api/profile",
       "responses": [
         {
           "uuid": "4869549d-a7c5-471f-b506-cab41880b7f5",
@@ -315,7 +333,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "inventories/mine",
+      "endpoint": "api/inventories/mine",
       "responses": [
         {
           "uuid": "ace919ab-a679-4e01-883e-8b1438ddb7a3",
@@ -346,7 +364,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "inventories/pending",
+      "endpoint": "api/inventories/pending",
       "responses": [
         {
           "uuid": "310b2cf1-7a3f-4d96-85ba-569a2906a5b8",
@@ -377,7 +395,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/unit-info",
+      "endpoint": "api/inventories/unit-info",
       "responses": [
         {
           "uuid": "64791859-f8f6-4685-9c99-894e251bb1b1",
@@ -408,7 +426,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/enterprise-info",
+      "endpoint": "api/inventories/enterprise-info",
       "responses": [
         {
           "uuid": "db10513f-a8ad-4e78-92fc-ce693183f301",
@@ -439,7 +457,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/reviewed/last",
+      "endpoint": "api/inventories/reviewed/last",
       "responses": [
         {
           "uuid": "b449699f-45b0-44fb-b025-4b027fe65019",
@@ -470,7 +488,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/mine/last",
+      "endpoint": "api/inventories/mine/last",
       "responses": [
         {
           "uuid": "b959cb2c-085d-42b4-9f02-3ad320da22c3",
@@ -501,7 +519,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "inventories/count",
+      "endpoint": "api/inventories/count",
       "responses": [
         {
           "uuid": "b38a02cd-f9d3-4a7e-abee-5ae3ced04da6",
@@ -557,6 +575,397 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "dbd453e1-f5b9-4a02-885d-2ee4fff120ed",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/cloudinary/upload-signature",
+      "responses": [
+        {
+          "uuid": "270c4ed2-1cb3-4e99-a5c9-4c2773bb60e3",
+          "body": "{\n  \"message\": \"Informar o tipo do arquivo é obrigatório.\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "fileType missing",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "fileType",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "455e6d86-6f43-426d-84b2-3aed8001707f",
+          "body": "{\n  \"message\": \"Valor inválido para o parâmetro 'fileType': '{{queryParam 'fileType'}}'. Valores permitidos: IMAGE, XLSX.\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "fileType not IMAGE or XLSX",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "fileType",
+              "value": "^(IMAGE|XLSX)$",
+              "invert": true,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "c682a62d-d10f-45cb-9d86-1e6227dd3214",
+          "body": "{\n  \"signature\": \"mock-signature\",\n  \"timestamp\": 1790000000,\n  \"apiKey\": \"mock-api-key\",\n  \"cloudName\": \"mock-cloud\",\n  \"cloudinaryFolder\": \"spreadsheets\",\n  \"cloudinaryResourceType\": \"raw\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Signature",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "5e0a9c47-2b6d-4f1e-9a3c-7d8e1f2a4b60",
+      "type": "http",
+      "documentation": "Stands in for api.cloudinary.com. Debug builds call it only when the signature uses cloudName mock-cloud. Set an error response as default to test a failed upload.",
+      "method": "post",
+      "endpoint": "v1_1/:cloud/:type/upload",
+      "responses": [
+        {
+          "uuid": "54f3a345-dead-4462-a2a4-0279a4fbd87a",
+          "body": "{\n  \"asset_id\": \"{{faker 'string.uuid'}}\",\n  \"public_id\": \"spreadsheets/{{faker 'string.alphanumeric' 20}}.xlsx\",\n  \"resource_type\": \"{{urlParam 'type'}}\",\n  \"secure_url\": \"https://res.cloudinary.com/{{urlParam 'cloud'}}/{{urlParam 'type'}}/upload/spreadsheets/{{faker 'string.alphanumeric' 20}}.xlsx\"\n}",
+          "latency": 1500,
+          "statusCode": 200,
+          "label": "Uploaded",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "dd3367ea-6cb9-4972-95a5-db250c60be2f",
+          "body": "{\n  \"error\": {\n    \"message\": \"Invalid Signature mock-signature. String to sign - 'folder=spreadsheets&timestamp=1790000000'.\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Invalid signature",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "e8b4fa57-37db-4291-aa93-a0cc44bbc146",
+          "body": "{\n  \"error\": {\n    \"message\": \"File size too large. Got 20971520. Maximum is 10485760.\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "File too large",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "7b16615c-c3f5-46e8-a533-f74372a6eebe",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "api/inventories",
+      "responses": [
+        {
+          "uuid": "d3b600de-ddfb-4f73-9fa6-955efda5e0c0",
+          "body": "{\n  \"message\": \"O nome deve conter apenas letras.\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "Name with digits or symbols",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "name",
+              "value": "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:\\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)*$",
+              "invert": true,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "7ab89d42-4428-4e16-b225-78982c634e9e",
+          "body": "{\n  \"id\": {{faker 'number.int' min=100 max=999}},\n  \"name\": \"{{body 'name'}}\",\n  \"type\": \"INPUT\",\n  \"status\": \"PROCESSING\",\n  \"storageFile\": {\n    \"id\": {{faker 'number.int' min=1 max=999}},\n    \"fileName\": \"{{body 'fileName'}}\",\n    \"path\": \"{{body 'path'}}\"\n  }\n}",
+          "latency": 800,
+          "statusCode": 201,
+          "label": "Created",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "92723d6d-a29a-439b-b59f-84245c741d8b",
+          "body": "{\n  \"message\": \"O nome deve ter entre 3 e 150 caracteres.\\nA mensagem de abordagem é obrigatória.\\nO caminho do arquivo deve ser um HTTPS válido.\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "Several validation errors",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "34a19768-7d88-4692-83b8-f835f284e619",
+          "body": "{\n  \"message\": \"Corpo da requisição inválido ou malformado\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "Malformed body",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "e1631db3-6ae4-4aea-9277-1e953b436deb",
+          "body": "{\n  \"message\": \"Usuário e/ou senha inválidos.\",\n  \"status\": \"UNAUTHORIZED\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "User is not an employee",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "39920f72-1da9-4b97-9114-d5749fb06444",
+          "body": "{\n  \"timestamp\": \"2026-10-22T10:00:00.000+00:00\",\n  \"status\": 401,\n  \"error\": \"Unauthorized\",\n  \"message\": \"\",\n  \"path\": \"/api/inventories\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Missing or invalid token (Spring default body)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "015f32b1-c09d-4452-abd5-f48cb57fc960",
+          "body": "",
+          "latency": 0,
+          "statusCode": 403,
+          "label": "No permission for /api/inventories",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "b2cebce2-4de7-4e94-a535-7a91127c2ab5",
+          "body": "{\n  \"message\": \"could not execute statement [ERROR: value too long for type character varying(255)]\",\n  \"status\": \"INTERNAL_SERVER_ERROR\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "Unhandled exception (raw message)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -575,10 +984,14 @@
     {
       "type": "folder",
       "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75"
+    },
+    {
+      "type": "folder",
+      "uuid": "2fc9fd4a-6825-4d29-b565-b675e5ace465"
     }
   ],
   "proxyMode": false,
-  "proxyHost": "",
+  "proxyHost": "https://aethergases.org",
   "proxyRemovePrefix": false,
   "tlsOptions": {
     "enabled": false,

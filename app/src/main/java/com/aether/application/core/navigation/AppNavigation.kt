@@ -2,12 +2,15 @@ package com.aether.application.core.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import android.widget.Toast
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -45,6 +48,11 @@ import com.aether.application.feature.settings.presentation.screen.label
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
+import com.aether.application.feature.report.presentation.screen.ConsolidationApproachScreen
+import com.aether.application.feature.reports.domain.model.ConsolidationApproach
+import com.aether.application.feature.reports.presentation.screen.CreateReportUploadScreen
+import com.aether.application.feature.reports.presentation.state.NewReportEvent
+import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -289,6 +297,67 @@ fun AppNavigation(
                     onSettingsClick = { navController.navigate(SettingsRoute) },
                     onSeeAllReportsClick = { navController.navigate(ReportHistoryRoute) },
                     onReportClick = viewModel::onReportClick,
+                )
+            }
+
+            composable<CreateReportRoute> {
+                val viewModel = koinViewModel<NewReportViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                CreateReportUploadScreen(
+                    selectedFileName = uiState.selectedFileName,
+                    uploadProgress = uiState.uploadProgress,
+                    reportName = uiState.reportName,
+                    reportNameError = uiState.reportNameError,
+                    errorMessage = uiState.errorMessage,
+                    onReportNameChanged = viewModel::onReportNameChanged,
+                    onFileSelected = viewModel::onFileSelected,
+                    onRemoveFileClicked = viewModel::onRemoveFileClicked,
+                    onConfirmSubmit = {
+                        viewModel.clearError()
+                        navController.navigate(ConsolidationApproachRoute)
+                    },
+                    onBackClicked = { navController.popBackStack() }
+                )
+            }
+
+            composable<ConsolidationApproachRoute> { backStackEntry ->
+                // Shares the state of the upload step, which holds the file and the name
+                val uploadEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry<CreateReportRoute>()
+                }
+                val viewModel = koinViewModel<NewReportViewModel>(viewModelStoreOwner = uploadEntry)
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                val context = LocalContext.current
+
+                // Covers the back button and the system back gesture alike
+                DisposableEffect(Unit) {
+                    onDispose { viewModel.clearError() }
+                }
+
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is NewReportEvent.Created -> {
+                                Toast.makeText(
+                                    context,
+                                    "Relatório enviado! Estamos processando a planilha.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                navController.popBackStack<HomeRoute>(inclusive = false)
+                            }
+                        }
+                    }
+                }
+
+                ConsolidationApproachScreen(
+                    isSubmitting = uiState.isSubmitting,
+                    errorMessage = uiState.errorMessage,
+                    onBackClick = { navController.popBackStack() },
+                    onEquityShareClick = { viewModel.onApproachSelected(ConsolidationApproach.EQUITY_SHARE) },
+                    onFinancialControlClick = { viewModel.onApproachSelected(ConsolidationApproach.FINANCIAL_CONTROL) },
+                    onOperationalControlClick = { viewModel.onApproachSelected(ConsolidationApproach.OPERATIONAL_CONTROL) },
+                    onConsultAekoClick = { navController.navigate(ChatbotRoute) }
                 )
             }
 
