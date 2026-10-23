@@ -2,6 +2,7 @@ package com.aether.application.feature.reports.data.repository
 
 import android.util.Log
 import com.aether.application.feature.home.data.remote.InventoryApi
+import com.aether.application.feature.reports.data.remote.HubApi
 import com.aether.application.feature.reports.data.remote.ReportsApi
 import com.aether.application.feature.reports.data.remote.dto.ReviewReportRequest
 import com.aether.application.feature.reports.domain.model.ImprovementPlan
@@ -18,7 +19,8 @@ private const val TAG = "ReportsRepository"
 
 class ReportsRepositoryImpl(
     private val inventoryApi: InventoryApi,
-    private val reportsApi: ReportsApi
+    private val reportsApi: ReportsApi,
+    private val hubApi: HubApi
 ) : ReportsRepository {
 
     override suspend fun getMyReports(skip: Int, take: Int): ReportsPage =
@@ -63,7 +65,7 @@ class ReportsRepositoryImpl(
 
     override suspend fun getImprovementPlan(id: Long): ImprovementPlan? =
         try {
-            reportsApi.getImprovementPlan(id).toDomain()
+            hubApi.getImprovementPlan(id).toDomain()
         } catch (e: HttpException) {
             if (e.code() == 404) null else throw e
         }
