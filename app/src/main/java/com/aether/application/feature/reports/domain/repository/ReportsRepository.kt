@@ -3,16 +3,21 @@ package com.aether.application.feature.reports.domain.repository
 import com.aether.application.feature.reports.domain.model.ImprovementPlan
 import com.aether.application.feature.reports.domain.model.ReportAnalysis
 import com.aether.application.feature.reports.domain.model.ReportDetails
+import com.aether.application.feature.reports.domain.model.ReportsPage
 
 interface ReportsRepository {
 
-    /** [asReviewer] picks the route to try first: the reviewer's department or the user's own reports. */
+    suspend fun getMyReports(skip: Int, take: Int): ReportsPage
+
     suspend fun getReport(id: Long, asReviewer: Boolean): ReportDetails
 
     suspend fun getReportAnalysis(id: Long): ReportAnalysis
 
-    /** Returns null when Aeko has no plan stored for the report. */
+    suspend fun getPendingReports(skip: Int, take: Int): ReportsPage
+
     suspend fun getImprovementPlan(id: Long): ImprovementPlan?
+
+    suspend fun getReviewedReports(skip: Int, take: Int): ReportsPage
 
     suspend fun approveReport(id: Long, comment: String)
 

@@ -10,7 +10,8 @@ fun HttpException.readErrorMessage(): String? {
     val body = response()?.errorBody()?.string() ?: return null
 
     return try {
-        errorJson.decodeFromString<ErrorResponse>(body).message
+        // Spring's default error body carries an empty message, which is no use to show
+        errorJson.decodeFromString<ErrorResponse>(body).message?.takeIf { it.isNotBlank() }
     } catch (_: SerializationException) {
         null
     }

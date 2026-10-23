@@ -23,6 +23,11 @@ import com.aether.application.feature.auth.presentation.viewmodel.VerificationVi
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.shared.ReportReviewViewModel
+import com.aether.application.feature.reports.domain.usecase.GetPendingReportsUseCase
+import com.aether.application.feature.reports.domain.usecase.GetReportsUseCase
+import com.aether.application.feature.reports.domain.usecase.GetReviewedReportsUseCase
+import com.aether.application.feature.reports.presentation.viewmodel.ReportHistoryViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
@@ -126,6 +131,28 @@ object AppModule {
                 reportsRepository = get(),
                 sessionManager = get()
             )
+        }
+
+        single<GetReportsUseCase> {
+            GetReportsUseCase(reportsRepository = get())
+        }
+        single<GetPendingReportsUseCase> {
+            GetPendingReportsUseCase(reportsRepository = get())
+        }
+        single<GetReviewedReportsUseCase> {
+            GetReviewedReportsUseCase(reportsRepository = get())
+        }
+        viewModel {
+            ReportHistoryViewModel(
+                getReports = get(),
+                getPendingReports = get(),
+                getReviewedReports = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel {
+            NewReportViewModel(newReportRepository = get())
         }
 
         viewModel {

@@ -4,16 +4,28 @@ import com.aether.application.feature.reports.data.remote.dto.GetImprovementPlan
 import com.aether.application.feature.reports.data.remote.dto.GetReportAnalysisResponse
 import com.aether.application.feature.reports.data.remote.dto.GetReportExtrasResponse
 import com.aether.application.feature.reports.data.remote.dto.GetReportResponse
+import com.aether.application.feature.reports.data.remote.dto.RegisterReportRequest
+import com.aether.application.feature.reports.data.remote.dto.RegisterReportResponse
 import com.aether.application.feature.reports.data.remote.dto.ReviewReportRequest
+import com.aether.application.feature.reports.data.remote.dto.UploadSignatureResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 // Kong forwards /api/inventories to ms-inventory without stripping the prefix
 private const val INVENTORY = "api/inventories"
 
 interface ReportsApi {
+
+    /** Asks ms-cloudinary to sign an upload, so the file can go straight to Cloudinary. */
+    @GET("api/cloudinary/upload-signature")
+    suspend fun getUploadSignature(@Query("fileType") fileType: String): UploadSignatureResponse
+
+    @POST(INVENTORY)
+    suspend fun registerReport(@Body request: RegisterReportRequest): RegisterReportResponse
 
     /** A report the logged user owns. */
     @GET("$INVENTORY/mine/{id}")

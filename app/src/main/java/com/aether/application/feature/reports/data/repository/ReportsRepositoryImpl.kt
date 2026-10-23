@@ -1,11 +1,13 @@
 package com.aether.application.feature.reports.data.repository
 
 import android.util.Log
+import com.aether.application.feature.home.data.remote.InventoryApi
 import com.aether.application.feature.reports.data.remote.ReportsApi
 import com.aether.application.feature.reports.data.remote.dto.ReviewReportRequest
 import com.aether.application.feature.reports.domain.model.ImprovementPlan
 import com.aether.application.feature.reports.domain.model.ReportAnalysis
 import com.aether.application.feature.reports.domain.model.ReportDetails
+import com.aether.application.feature.reports.domain.model.ReportsPage
 import com.aether.application.feature.reports.domain.repository.ReportsRepository
 import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
@@ -15,8 +17,21 @@ import java.net.HttpURLConnection.HTTP_NOT_FOUND
 private const val TAG = "ReportsRepository"
 
 class ReportsRepositoryImpl(
+    private val inventoryApi: InventoryApi,
     private val reportsApi: ReportsApi
 ) : ReportsRepository {
+
+    override suspend fun getMyReports(skip: Int, take: Int): ReportsPage =
+        inventoryApi.getMyInventories(skip = skip, take = take)
+            .let { page -> ReportsPage(page.inventories.map { it.toDomain() }, page.totalCount) }
+
+    override suspend fun getPendingReports(skip: Int, take: Int): ReportsPage =
+        inventoryApi.getPendingInventories(skip = skip, take = take)
+            .let { page -> ReportsPage(page.inventories.map { it.toDomain() }, page.totalCount) }
+
+    override suspend fun getReviewedReports(skip: Int, take: Int): ReportsPage =
+        inventoryApi.getReviewedInventories(skip = skip, take = take)
+            .let { page -> ReportsPage(page.inventories.map { it.toDomain() }, page.totalCount) }
 
     override suspend fun getReport(id: Long, asReviewer: Boolean): ReportDetails {
         // Owners read through mine/{id}, reviewers through their department's reviewed/{id};

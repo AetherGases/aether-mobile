@@ -20,6 +20,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
+import com.aether.application.ui.components.FormErrorText
 import com.aether.core.ui.theme.*
 
 @Composable
@@ -29,6 +30,43 @@ fun ConsolidationApproachScreen(
     onFinancialControlClick: () -> Unit,
     onOperationalControlClick: () -> Unit,
     onConsultAekoClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    isSubmitting: Boolean = false,
+    errorMessage: String? = null
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        ConsolidationApproachContent(
+            onBackClick = onBackClick,
+            onEquityShareClick = onEquityShareClick,
+            onFinancialControlClick = onFinancialControlClick,
+            onOperationalControlClick = onOperationalControlClick,
+            onConsultAekoClick = onConsultAekoClick,
+            errorMessage = errorMessage
+        )
+
+        if (isSubmitting) {
+            // Swallows touches so an option can't be chosen twice while the report is created
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.6f))
+                    .clickable(enabled = false, onClick = {}),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+}
+
+@Composable
+private fun ConsolidationApproachContent(
+    onBackClick: () -> Unit,
+    onEquityShareClick: () -> Unit,
+    onFinancialControlClick: () -> Unit,
+    onOperationalControlClick: () -> Unit,
+    onConsultAekoClick: () -> Unit,
+    errorMessage: String?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -124,6 +162,11 @@ fun ConsolidationApproachScreen(
             onClick = onOperationalControlClick
         )
 
+        if (errorMessage != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+            FormErrorText(errorMessage)
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         Box(
@@ -213,6 +256,21 @@ fun ConsolidationApproachScreenPreview() {
             onFinancialControlClick = {},
             onOperationalControlClick = {},
             onConsultAekoClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, heightDp = 800)
+@Composable
+fun ConsolidationApproachScreenErrorPreview() {
+    AetherTheme {
+        ConsolidationApproachScreen(
+            onBackClick = {},
+            onEquityShareClick = {},
+            onFinancialControlClick = {},
+            onOperationalControlClick = {},
+            onConsultAekoClick = {},
+            errorMessage = "Não foi possível criar o relatório. Tente novamente."
         )
     }
 }
