@@ -164,7 +164,12 @@ fun ReportHistoryScreen(
         ) {
             Spacer(Modifier.height(12.dp))
 
-            Text("Histórico", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+            // Reviewers browse the whole department, not a history of their own
+            val heading = when (viewerRole) {
+                ReportViewerRole.GERENTE -> "Relatórios do departamento"
+                ReportViewerRole.FUNCIONARIO -> "Histórico"
+            }
+            Text(heading, style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
 
             Spacer(Modifier.height(16.dp))
 

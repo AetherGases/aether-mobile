@@ -145,7 +145,6 @@ object AppModule {
         viewModel {
             ReportHistoryViewModel(
                 getReports = get(),
-                getPendingReports = get(),
                 getReviewedReports = get(),
                 sessionManager = get()
             )
