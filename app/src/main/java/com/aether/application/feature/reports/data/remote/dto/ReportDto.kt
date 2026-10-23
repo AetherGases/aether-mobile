@@ -39,20 +39,22 @@ data class GetReportResponse(
     val owner: EmployeeDto? = null,
     val validator: EmployeeDto? = null,
     val storageFile: StorageFileDto? = null,
+    // TODO: not sent by ms-inventory yet, the shape follows its nested records but isn't agreed on
+    val emissions: List<EmissionDto> = emptyList(),
 ) {
-    /** [extras] fills what ms-inventory doesn't send yet; null leaves those parts empty. */
-    fun toDomain(extras: GetReportExtrasResponse?) = ReportDetails(
+    fun toDomain() = ReportDetails(
         id = id,
         name = name,
-        sector = extras?.sector,
-        unitName = extras?.unitName,
+        // TODO: ms-inventory sends neither the sector nor the unit name
+        sector = null,
+        unitName = null,
         description = description,
         createdAt = createdAt,
         status = status,
         reviewer = validator?.let { ReportReviewer(name = it.name, avatarUrl = it.imageUrl) },
         validationMessage = validationMessage,
-        emissionsByScope = extras?.emissions.orEmpty()
-            .groupBy { it.scope }
+        emissionsByScope = emissions
+            .groupBy { it.scope.name }
             .map { (scope, rows) ->
                 ScopeEmissions(
                     scope = scope,
@@ -84,23 +86,22 @@ data class StorageFileDto(
     val createdAt: LocalDateTime? = null,
 )
 
-/** TODO: guessed contract, ms-inventory sends neither the emissions nor the sector and unit name. */
 @Serializable
-data class GetReportExtrasResponse(
-    val sector: String? = null,
-    val unitName: String? = null,
-    val emissions: List<EmissionDto> = emptyList(),
+data class EmissionDto(
+    val quantityCo2e: Double,
+    val scope: ScopeDto,
+    val gas: GasDto,
 )
 
 @Serializable
-data class EmissionDto(
-    val scope: String,
-    val gas: GasDto,
-    val quantityCo2e: Double,
+data class ScopeDto(
+    val id: Long,
+    val name: String,
 )
 
 @Serializable
 data class GasDto(
+    val id: Long,
     val name: String,
     val formula: String,
 )

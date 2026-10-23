@@ -81,10 +81,6 @@
         },
         {
           "type": "route",
-          "uuid": "9f625fb4-0773-44f8-896d-f1876735b2cc"
-        },
-        {
-          "type": "route",
           "uuid": "18174f78-56ca-40b9-8f64-000aca6dd89e"
         },
         {
@@ -615,37 +611,6 @@
       "streamingInterval": 0
     },
     {
-      "uuid": "9f625fb4-0773-44f8-896d-f1876735b2cc",
-      "type": "http",
-      "documentation": "",
-      "method": "get",
-      "endpoint": "api/inventories/:id/emissions",
-      "responses": [
-        {
-          "uuid": "e1daf5aa-dedd-44f0-8c92-f71bcaf10810",
-          "body": "{\n  \"sector\": \"Frigorífico\",\n  \"unitName\": \"Frigorífico São Paulo - Unidade 3\",\n  \"emissions\": [\n    {\n      \"scope\": \"Escopo 1\",\n      \"gas\": {\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      },\n      \"quantityCo2e\": 1240\n    },\n    {\n      \"scope\": \"Escopo 1\",\n      \"gas\": {\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      },\n      \"quantityCo2e\": 312.5\n    },\n    {\n      \"scope\": \"Escopo 2\",\n      \"gas\": {\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      },\n      \"quantityCo2e\": 540\n    },\n    {\n      \"scope\": \"Escopo 3\",\n      \"gas\": {\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      },\n      \"quantityCo2e\": 48\n    }\n  ]\n}",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "",
-          "headers": [],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id",
-          "callbacks": []
-        }
-      ],
-      "responseMode": null,
-      "streamingMode": null,
-      "streamingInterval": 0
-    },
-    {
       "uuid": "18174f78-56ca-40b9-8f64-000aca6dd89e",
       "type": "http",
       "documentation": "",
@@ -805,7 +770,7 @@
       "responses": [
         {
           "uuid": "3c794100-b8aa-484e-88d4-1344d9f28015",
-          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"UNDER_REVIEW\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  }\n}",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"UNDER_REVIEW\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "Pending",
@@ -824,7 +789,7 @@
         },
         {
           "uuid": "92bd5622-d33d-4e5b-b343-041851ca4b1a",
-          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório detalhado, vai ajudar muito na nossa análise.\"\n}",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório detalhado, vai ajudar muito na nossa análise.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "Approved",
@@ -851,7 +816,7 @@
         },
         {
           "uuid": "b9a872b4-4263-460a-bc21-faef7d0e48ad",
-          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório com informações não coerentes.\"\n}",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório com informações não coerentes.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "Rejected",
@@ -890,7 +855,7 @@
       "responses": [
         {
           "uuid": "6b714db6-7233-43c7-8055-c9d59452a6f8",
-          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"UNDER_REVIEW\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  }\n}",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"UNDER_REVIEW\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "Pending",
@@ -909,7 +874,7 @@
         },
         {
           "uuid": "df7a701c-1639-4177-b8b9-f56c79143374",
-          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório detalhado, vai ajudar muito na nossa análise.\"\n}",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório detalhado, vai ajudar muito na nossa análise.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "Approved",
@@ -936,7 +901,7 @@
         },
         {
           "uuid": "ef4af226-83be-4988-ad16-838f3813e79f",
-          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório com informações não coerentes.\"\n}",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório com informações não coerentes.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "Rejected",

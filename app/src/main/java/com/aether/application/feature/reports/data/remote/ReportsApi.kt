@@ -1,7 +1,6 @@
 package com.aether.application.feature.reports.data.remote
 
 import com.aether.application.feature.reports.data.remote.dto.GetReportAnalysisResponse
-import com.aether.application.feature.reports.data.remote.dto.GetReportExtrasResponse
 import com.aether.application.feature.reports.data.remote.dto.GetReportResponse
 import com.aether.application.feature.reports.data.remote.dto.RegisterReportRequest
 import com.aether.application.feature.reports.data.remote.dto.RegisterReportResponse
@@ -29,10 +28,7 @@ interface ReportsApi {
     @GET("$INVENTORY/reviewed/{id}")
     suspend fun getDepartmentReport(@Path("id") id: Long): GetReportResponse
 
-    // TODO: guessed endpoints, ms-inventory has no route yet that returns the emissions or the analysis
-    @GET("$INVENTORY/{id}/emissions")
-    suspend fun getReportExtras(@Path("id") id: Long): GetReportExtrasResponse
-
+    // TODO: guessed endpoint, ms-inventory has no route yet that returns the analysis
     @GET("$INVENTORY/{id}/analysis")
     suspend fun getReportAnalysis(@Path("id") id: Long): GetReportAnalysisResponse
 

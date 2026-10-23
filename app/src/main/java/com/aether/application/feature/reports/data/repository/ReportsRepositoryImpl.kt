@@ -1,6 +1,5 @@
 package com.aether.application.feature.reports.data.repository
 
-import android.util.Log
 import com.aether.application.feature.home.data.remote.InventoryApi
 import com.aether.application.feature.reports.data.remote.HubApi
 import com.aether.application.feature.reports.data.remote.ReportsApi
@@ -10,12 +9,9 @@ import com.aether.application.feature.reports.domain.model.ReportAnalysis
 import com.aether.application.feature.reports.domain.model.ReportDetails
 import com.aether.application.feature.reports.domain.model.ReportsPage
 import com.aether.application.feature.reports.domain.repository.ReportsRepository
-import kotlinx.coroutines.CancellationException
 import retrofit2.HttpException
 import java.net.HttpURLConnection.HTTP_FORBIDDEN
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
-
-private const val TAG = "ReportsRepository"
 
 class ReportsRepositoryImpl(
     private val inventoryApi: InventoryApi,
@@ -46,19 +42,8 @@ class ReportsRepositoryImpl(
             if (e.code() != HTTP_NOT_FOUND && e.code() != HTTP_FORBIDDEN) throw e
             routes[1](id)
         }
-        return report.toDomain(extras = getReportExtras(id))
+        return report.toDomain()
     }
-
-    // Emissions, sector and unit come from a guessed endpoint, so the report still shows without them
-    private suspend fun getReportExtras(id: Long) =
-        try {
-            reportsApi.getReportExtras(id)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Log.w(TAG, "Report $id extras unavailable", e)
-            null
-        }
 
     override suspend fun getReportAnalysis(id: Long): ReportAnalysis =
         reportsApi.getReportAnalysis(id).toDomain()
