@@ -21,6 +21,8 @@ import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.shared.ReportReviewViewModel
 import com.aether.application.feature.reports.domain.usecase.GetPendingReportsUseCase
 import com.aether.application.feature.reports.domain.usecase.GetReportsUseCase
 import com.aether.application.feature.reports.domain.usecase.GetReviewedReportsUseCase
@@ -115,6 +117,22 @@ object AppModule {
             )
         }
 
+        viewModel { (reportId: Long) ->
+            ReportReviewViewModel(
+                reportId = reportId,
+                reportsRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel { (reportId: Long) ->
+            ReportAnalysisViewModel(
+                reportId = reportId,
+                reportsRepository = get(),
+                sessionManager = get()
+            )
+        }
+
         single<GetReportsUseCase> {
             GetReportsUseCase(reportsRepository = get())
         }
@@ -127,7 +145,6 @@ object AppModule {
         viewModel {
             ReportHistoryViewModel(
                 getReports = get(),
-                getPendingReports = get(),
                 getReviewedReports = get(),
                 sessionManager = get()
             )

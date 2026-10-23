@@ -7,6 +7,8 @@ import com.aether.application.feature.home.domain.model.InventoryCount
 import com.aether.application.feature.home.domain.model.SealProgress
 import com.aether.application.feature.home.domain.model.UnitInfo
 import com.aether.application.feature.home.domain.repository.HomeRepository
+import retrofit2.HttpException
+import java.net.HttpURLConnection.HTTP_NOT_FOUND
 
 class HomeRepositoryImpl(
     private val inventoryApi: InventoryApi
@@ -29,11 +31,19 @@ class HomeRepositoryImpl(
     override suspend fun getEnterpriseInfos(): EnterpriseInfo =
         inventoryApi.getEnterpriseInfo().toDomain()
 
-    override suspend fun getLastReviewedInventory(): Inventory =
-        inventoryApi.getLastReviewedInventory().toDomain()
+    override suspend fun getLastReviewedInventory(): Inventory? =
+        orNullWhenNotFound { inventoryApi.getLastReviewedInventory().toDomain() }
 
-    override suspend fun getLastSubmittedInventory(): Inventory =
-        inventoryApi.getLastSubmittedInventory().toDomain()
+    override suspend fun getLastSubmittedInventory(): Inventory? =
+        orNullWhenNotFound { inventoryApi.getLastSubmittedInventory().toDomain() }
+
+    // The last routes answer 404 while the user has no inventory yet
+    private suspend fun <T> orNullWhenNotFound(block: suspend () -> T): T? =
+        try {
+            block()
+        } catch (e: HttpException) {
+            if (e.code() == HTTP_NOT_FOUND) null else throw e
+        }
 
     override suspend fun getInventoryCount(): InventoryCount =
         inventoryApi.countInventories().toDomain()

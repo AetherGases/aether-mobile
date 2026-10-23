@@ -15,7 +15,9 @@ import com.aether.application.feature.auth.domain.usecase.LoginUseCase
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.home.data.remote.InventoryApi
 import com.aether.application.feature.reports.data.remote.CLOUDINARY_BASE_URL
+import com.aether.application.feature.reports.data.remote.CloudinaryApi
 import com.aether.application.feature.reports.data.remote.CloudinaryUploader
+import com.aether.application.feature.reports.data.remote.HubApi
 import com.aether.application.feature.reports.data.remote.MOCK_CLOUD_NAME
 import com.aether.application.feature.reports.data.remote.ReportsApi
 import com.aether.application.feature.reports.data.repository.NewReportRepositoryImpl
@@ -97,10 +99,21 @@ object NetworkModule {
             retrofit.create(ReportsApi::class.java)
         }
 
+        single<CloudinaryApi> {
+            val retrofit: Retrofit = get()
+            retrofit.create(CloudinaryApi::class.java)
+        }
+
+        single<HubApi> {
+            val retrofit: Retrofit = get()
+            retrofit.create(HubApi::class.java)
+        }
+
         single<NewReportRepository> {
             val serverConfigCache: ServerConfigCache = get()
             NewReportRepositoryImpl(
                 reportsApi = get(),
+                cloudinaryApi = get(),
                 uploader = CloudinaryUploader(
                     contentResolver = androidContext().contentResolver,
                     // A plain client: the app's own one would send our access token to Cloudinary
@@ -122,7 +135,7 @@ object NetworkModule {
         }
 
         single<ReportsRepository> {
-            ReportsRepositoryImpl(inventoryApi = get())
+            ReportsRepositoryImpl(inventoryApi = get(), reportsApi = get(), hubApi = get())
         }
     }
 }

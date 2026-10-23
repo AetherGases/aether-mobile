@@ -1,4 +1,4 @@
-package com.aether.application.ui.components
+package com.aether.application.core.ui.components
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

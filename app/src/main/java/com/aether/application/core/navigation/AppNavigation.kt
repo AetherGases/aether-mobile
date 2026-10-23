@@ -41,6 +41,10 @@ import com.aether.application.feature.auth.presentation.viewmodel.SendCodeEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeEvent
+import com.aether.application.feature.reports.presentation.screen.manager.AetherAnalysisScreen
+import com.aether.application.feature.reports.presentation.screen.shared.ReportReviewScreen
+import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.shared.ReportReviewViewModel
 import com.aether.application.feature.settings.presentation.screen.PrivacyPolicyScreen
 import com.aether.application.feature.settings.presentation.screen.SettingsScreen
 import com.aether.application.feature.settings.presentation.screen.ThemePickerDialog
@@ -57,6 +61,8 @@ import com.aether.application.feature.reports.presentation.state.NewReportEvent
 import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+
+private const val REPORT_REVIEWED_KEY = "report_reviewed"
 
 @Composable
 fun AppNavigation(
@@ -278,7 +284,7 @@ fun AppNavigation(
                             HomeEvent.NavigateToHistory ->
                                 navController.navigate(ReportHistoryRoute)
                             is HomeEvent.NavigateToReport ->
-                                navController.navigate(ReportAnalysisRoute(event.reportId))
+                                navController.navigate(ReportReviewRoute(event.reportId))
                         }
                     }
                 }
@@ -299,6 +305,34 @@ fun AppNavigation(
                     onSettingsClick = { navController.navigate(SettingsRoute) },
                     onSeeAllReportsClick = { navController.navigate(ReportHistoryRoute) },
                     onReportClick = viewModel::onReportClick,
+                )
+            }
+
+            composable<ReportReviewRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ReportReviewRoute>()
+                val viewModel = koinViewModel<ReportReviewViewModel> {
+                    parametersOf(route.reportId)
+                }
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                val wasReviewed by backStackEntry.savedStateHandle
+                    .getStateFlow(REPORT_REVIEWED_KEY, false)
+                    .collectAsStateWithLifecycle()
+
+                // Coming back from the analysis after approving/rejecting: show the new status
+                LaunchedEffect(wasReviewed) {
+                    if (wasReviewed) {
+                        backStackEntry.savedStateHandle[REPORT_REVIEWED_KEY] = false
+                        viewModel.load()
+                    }
+                }
+
+                ReportReviewScreen(
+                    report = uiState.report,
+                    isLoading = uiState.isLoading,
+                    errorMessage = uiState.errorMessage,
+                    onRetry = viewModel::load,
+                    onBackClick = { navController.popBackStack() },
+                    onProceedClick = { navController.navigate(ReportAnalysisRoute(route.reportId)) }
                 )
             }
 
@@ -363,8 +397,32 @@ fun AppNavigation(
                 )
             }
 
-            composable<ReportAnalysisRoute> {
-                TODO()
+            composable<ReportAnalysisRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ReportAnalysisRoute>()
+                val viewModel = koinViewModel<ReportAnalysisViewModel> {
+                    parametersOf(route.reportId)
+                }
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                LaunchedEffect(uiState.decision) {
+                    if (uiState.decision != null) {
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(REPORT_REVIEWED_KEY, true)
+                    }
+                }
+
+                AetherAnalysisScreen(
+                    analysis = uiState.analysis,
+                    isLoading = uiState.isLoading,
+                    errorMessage = uiState.errorMessage,
+                    onRetry = viewModel::load,
+                    decision = uiState.decision,
+                    isSubmitting = uiState.isSubmitting,
+                    submitErrorMessage = uiState.submitErrorMessage,
+                    onBackClick = { navController.popBackStack() },
+                    onDecisionSubmit = viewModel::onDecisionSubmit
+                )
             }
 
             composable<ReportHistoryRoute> {

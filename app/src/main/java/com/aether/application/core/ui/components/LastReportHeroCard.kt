@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
 import dev.chrisbanes.haze.HazeState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.core.ui.theme.*
-import dev.chrisbanes.haze.HazeEffectScope
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource

@@ -8,7 +8,6 @@ import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.model.Inventory
 import com.aether.application.feature.home.domain.model.InventoryStatus
-import com.aether.application.feature.reports.domain.usecase.GetPendingReportsUseCase
 import com.aether.application.feature.reports.domain.model.ReportsPage
 import com.aether.application.feature.reports.domain.usecase.GetReportsUseCase
 import com.aether.application.feature.reports.domain.usecase.GetReviewedReportsUseCase
@@ -45,14 +44,17 @@ private const val PAGE_SIZE = 6
 
 class ReportHistoryViewModel(
     private val getReports: GetReportsUseCase,
-    private val getPendingReports: GetPendingReportsUseCase,
     private val getReviewedReports: GetReviewedReportsUseCase,
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
-    private enum class Kind { MINE, PENDING, REVIEWED }
+    /**
+     * Reviewers see their whole department through the reviewed route, pending ones included;
+     * everyone else sees only their own reports.
+     */
+    private enum class Kind { MINE, DEPARTMENT }
 
-    /** One paged list on the server. The history is the merge of every source the user can see. */
+    /** One paged list on the server. */
     private class Source(
         val kind: Kind,
         private val fetch: suspend (skip: Int, take: Int) -> ReportsPage
@@ -159,16 +161,14 @@ class ReportHistoryViewModel(
                 ?: throw Exception("nah man, u need to be authed")
 
             val isAnalyst = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
-            val canCreate = sessionManager.hasPermission(AppPermission.INVENTORY_CREATING)
 
-            val newSources = buildList {
-                if (canCreate || !isAnalyst) add(Source(Kind.MINE) { skip, take -> getReports(skip, take) })
-                // Reviewing permission also brings the reports the user already reviewed
+            val newSources = listOf(
                 if (isAnalyst) {
-                    add(Source(Kind.PENDING) { skip, take -> getPendingReports(skip, take) })
-                    add(Source(Kind.REVIEWED) { skip, take -> getReviewedReports(skip, take) })
+                    Source(Kind.DEPARTMENT) { skip, take -> getReviewedReports(skip, take) }
+                } else {
+                    Source(Kind.MINE) { skip, take -> getReports(skip, take) }
                 }
-            }
+            )
             val firstPage = coroutineScope {
                 newSources.map { source -> async { source.next() } }.awaitAll()
             }.flatten()
@@ -222,7 +222,7 @@ class ReportHistoryViewModel(
         }
     }
 
-    /** Appends [fetched] to [existing]; a report that is also pending keeps its review action. */
+    /** Appends [fetched] to [existing]; a report that shifted to another page keeps its first place. */
     private fun merge(
         existing: List<Entry>,
         fetched: List<Pair<Kind, Inventory>>,
@@ -232,13 +232,12 @@ class ReportHistoryViewModel(
         existing.forEach { byId[it.item.id] = it }
         fetched.forEach { (kind, inventory) ->
             val entry = inventory.toEntry(session, kind)
-            if (entry.item.id !in byId || entry.item.canReview) byId[entry.item.id] = entry
+            byId[entry.item.id] = entry
         }
         return byId.values.toList()
     }
 
     private fun Inventory.toEntry(session: Session, kind: Kind): Entry {
-        val status = status.toHistoryStatus()
         return Entry(
             createdAt = createdAt,
             item = ReportItem(
@@ -246,11 +245,10 @@ class ReportHistoryViewModel(
                 avatarUrl = authorImageUrl ?: session.avatar,
                 title = name,
                 authorName = author ?: session.name,
-                // The user reviewed everything on the reviewed list, even if the API omits the name
-                reviewerName = reviewer ?: session.name.takeIf { kind == Kind.REVIEWED },
+                reviewerName = reviewer,
                 createdAt = createdAt.format(dateFormatter),
-                status = status,
-                canReview = kind == Kind.PENDING && status == ReportStatus.EM_ANALISE
+                status = status.toHistoryStatus(),
+                canReview = kind == Kind.DEPARTMENT && status == InventoryStatus.Input.UNDER_REVIEW
             )
         )
     }
