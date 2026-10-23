@@ -22,6 +22,8 @@ import com.aether.application.feature.reports.data.repository.NewReportRepositor
 import com.aether.application.feature.reports.domain.repository.NewReportRepository
 import com.aether.application.feature.home.data.repository.HomeRepositoryImpl
 import com.aether.application.feature.home.domain.repository.HomeRepository
+import com.aether.application.feature.reports.data.repository.ReportsRepositoryImpl
+import com.aether.application.feature.reports.domain.repository.ReportsRepository
 import com.aether.application.feature.settings.data.repository.SettingsRepositoryImpl
 import com.aether.application.feature.settings.domain.repository.SettingsRepository
 import okhttp3.OkHttpClient
@@ -117,6 +119,10 @@ object NetworkModule {
 
         single<HomeRepository> {
             HomeRepositoryImpl(inventoryApi = get())
+        }
+
+        single<ReportsRepository> {
+            ReportsRepositoryImpl(inventoryApi = get())
         }
     }
 }

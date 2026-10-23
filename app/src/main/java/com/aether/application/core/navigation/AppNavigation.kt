@@ -48,6 +48,8 @@ import com.aether.application.feature.settings.presentation.screen.label
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
+import com.aether.application.feature.reports.presentation.screen.ReportHistoryScreen
+import com.aether.application.feature.reports.presentation.viewmodel.ReportHistoryViewModel
 import com.aether.application.feature.report.presentation.screen.ConsolidationApproachScreen
 import com.aether.application.feature.reports.domain.model.ConsolidationApproach
 import com.aether.application.feature.reports.presentation.screen.CreateReportUploadScreen
@@ -366,7 +368,34 @@ fun AppNavigation(
             }
 
             composable<ReportHistoryRoute> {
-                TODO()
+                val viewModel = koinViewModel<ReportHistoryViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                ReportHistoryScreen(
+                    viewerRole = uiState.viewerRole,
+                    currentWeek = uiState.currentWeek,
+                    month = uiState.month,
+                    reportDates = uiState.reportDates,
+                    selectedDate = uiState.selectedDate,
+                    reportItems = uiState.reportItems,
+                    searchQuery = uiState.searchQuery,
+                    selectedTimeFilters = uiState.selectedTimeFilters,
+                    selectedStatusFilters = uiState.selectedStatusFilters,
+                    isRefreshing = uiState.isRefreshing,
+                    loadFailed = uiState.loadFailed,
+                    isLoadingMore = uiState.isLoadingMore,
+                    loadMoreFailed = uiState.loadMoreFailed,
+                    hasMore = uiState.hasMore,
+                    onRefresh = viewModel::refresh,
+                    onLoadMore = viewModel::loadMore,
+                    onSearchQueryChanged = viewModel::onSearchQueryChanged,
+                    onTimeFilterToggled = viewModel::onTimeFilterToggled,
+                    onStatusFilterToggled = viewModel::onStatusFilterToggled,
+                    onDaySelected = viewModel::onDaySelected,
+                    onMonthChanged = viewModel::onMonthChanged,
+                    onReviewClick = { id -> navController.navigate(ReportAnalysisRoute(id.toLong())) },
+                    onBackClicked = { navController.popBackStack() }
+                )
             }
 
             composable<NotificationsRoute> {

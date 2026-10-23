@@ -178,19 +178,21 @@ class HomeViewModel(
                 "MMM",
                 Locale.forLanguageTag("pt-BR")
             )
-        val reportingPeriodLabel = buildString {
-            append(lastInventory.period.start.format(monthFormatter))
-            append("-")
-            append(lastInventory.period.end.format(monthFormatter))
-            append(" ")
-            if (lastInventory.period.start.year == lastInventory.period.end.year) {
-                append(lastInventory.period.end.year)
-            } else {
-                append(lastInventory.period.start.year)
+        val reportingPeriodLabel = lastInventory.period?.let { period ->
+            buildString {
+                append(period.start.format(monthFormatter))
                 append("-")
-                append(lastInventory.period.end.year)
+                append(period.end.format(monthFormatter))
+                append(" ")
+                if (period.start.year == period.end.year) {
+                    append(period.end.year)
+                } else {
+                    append(period.start.year)
+                    append("-")
+                    append(period.end.year)
+                }
             }
-        }
+        } ?: "Período não informado"
 
         return EmployeeHeroCard(
             lastSubmittedLabel = lastDate,
