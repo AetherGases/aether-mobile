@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val TAG = "ChatbotViewModel"
-private const val TITLE_MAX_LENGTH = 60
 
 private val SUGGESTIONS = listOf(
     "Como funciona o Aether?",
@@ -165,7 +164,7 @@ class ChatbotViewModel(
                     it.copy(
                         messages = it.messages + newMessage(ChatSender.AEKO, reply.turn.output),
                         activeConversationId = reply.conversationId,
-                        title = if (conversationId == null) text.toTitle() else it.title,
+                        title = reply.conversationName,
                         isSending = false
                     )
                 }
@@ -192,7 +191,6 @@ class ChatbotViewModel(
         try {
             val conversations = chatbotRepository.getConversations()
             _uiState.update { state ->
-                // Prefer the name the hub gave the session over the one made from the first message
                 val activeName = conversations.firstOrNull { it.id == state.activeConversationId }?.name
                 state.copy(conversations = conversations, title = activeName ?: state.title)
             }
@@ -216,11 +214,6 @@ class ChatbotViewModel(
 
     private fun newMessage(sender: ChatSender, text: String) =
         ChatMessage(id = "${nextMessageId++}", sender = sender, text = text)
-
-    private fun String.toTitle(): String {
-        val title = split(Regex("\\s+")).joinToString(" ")
-        return if (title.length <= TITLE_MAX_LENGTH) title else title.take(TITLE_MAX_LENGTH).trimEnd() + "..."
-    }
 
     private fun Exception.userMessage(): String =
         (this as? ChatbotException)?.message ?: "Algo deu errado. Tente novamente."

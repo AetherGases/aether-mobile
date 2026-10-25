@@ -56,6 +56,7 @@ class ChatbotRepositoryImpl(
         )
         ChatReply(
             conversationId = response.idSession,
+            conversationName = response.sessionName,
             turn = ChatTurn(input = response.inputMessage, output = response.outputMessage),
         )
     }

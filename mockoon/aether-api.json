@@ -606,13 +606,13 @@
     {
       "uuid": "c4d88dcb-42de-48a9-bf1f-ec825f17c061",
       "type": "http",
-      "documentation": "The hub does not return `id_session` yet. Proposed: without it a new conversation cannot be continued.",
+      "documentation": "",
       "method": "post",
       "endpoint": "hub/ai/user/session/message",
       "responses": [
         {
           "uuid": "8d77aced-a512-4431-90ef-9e5b43ebfa1c",
-          "body": "{\n  \"input_message\": \"{{body 'input'}}\",\n  \"output_message\": \"Esta é uma resposta simulada da Aeko.\",\n  \"submitted_at\": \"2026-10-17T14:32:00\",\n  \"id_session\": \"{{#if (body 'id_session')}}{{body 'id_session'}}{{else}}65a8b3d6c0f8e1d7f4b2c003{{/if}}\"\n}",
+          "body": "{\n  \"input_message\": \"{{body 'input'}}\",\n  \"output_message\": \"Esta é uma resposta simulada da Aeko.\",\n  \"submitted_at\": \"2026-10-17T14:32:00\",\n  \"id_session\": \"{{#if (body 'id_session')}}{{body 'id_session'}}{{else}}65a8b3d6c0f8e1d7f4b2c003{{/if}}\",\n  \"session_name\": \"Conversa simulada\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",

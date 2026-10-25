@@ -12,9 +12,10 @@ data class ChatTurn(
     val output: String,
 )
 
-/** The assistant's answer to a message and the session it was stored in. */
+/** The assistant's answer to a message and the session it was stored in, with the name the hub gave it. */
 data class ChatReply(
     val conversationId: String,
+    val conversationName: String,
     val turn: ChatTurn,
 )
 

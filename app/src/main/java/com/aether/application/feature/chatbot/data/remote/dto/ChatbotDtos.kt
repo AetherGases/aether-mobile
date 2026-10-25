@@ -29,6 +29,6 @@ data class SendMessageResponse(
     @SerialName("input_message") val inputMessage: String,
     @SerialName("output_message") val outputMessage: String,
     @SerialName("submitted_at") val submittedAt: String? = null,
-    // TODO: not returned by ms-aeko-hub yet; the hub team is adding it
     @SerialName("id_session") val idSession: String,
+    @SerialName("session_name") val sessionName: String,
 )
