@@ -10,6 +10,7 @@ import com.aether.application.core.security.Encryptor
 import com.aether.application.feature.auth.data.local.SessionStorageImpl
 import com.aether.application.feature.auth.data.storage.SessionManagerImpl
 import com.aether.application.feature.auth.presentation.viewmodel.SplashViewModel
+import com.aether.application.feature.chatbot.domain.repository.SavedConversationsRepository
 import com.aether.application.feature.qa.presentation.viewmodel.ServerConfigViewModel
 import com.aether.application.feature.auth.domain.usecase.ChangePasswordUseCase
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
@@ -44,7 +45,8 @@ object AppModule {
 
         single<SessionManager> {
             SessionManagerImpl(
-                sessionStorage = get()
+                sessionStorage = get(),
+                onLogout = { get<SavedConversationsRepository>().clear() }
             )
         }
 
