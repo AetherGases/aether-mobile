@@ -82,8 +82,8 @@ fun ChatMessageBubble(
                     if (message.isTyping) {
                         TypingDots()
                     } else {
-                        Text(
-                            text = message.text,
+                        MarkdownText(
+                            markdown = message.text,
                             style = bodyMediumMd,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
