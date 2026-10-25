@@ -11,7 +11,7 @@ data class UserProfileResponse(
     val cpf: String,
     val email: String,
     val name: String,
-    val phone: String,
+    val phone: String?,
     val image: ImageDto? = null,
     val permissions: List<Permission>,
     @Serializable(with = InstantSerializer::class)
