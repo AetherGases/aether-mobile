@@ -27,7 +27,7 @@ data class ChatbotUiState(
     /** The messages plus a placeholder from the assistant while it is answering. */
     val displayMessages: List<ChatMessage>
         get() = if (isSending) {
-            messages + ChatMessage(TYPING_MESSAGE_ID, ChatSender.AEKO, "Digitando…")
+            messages + ChatMessage(TYPING_MESSAGE_ID, ChatSender.AEKO, "", isTyping = true)
         } else {
             messages
         }
