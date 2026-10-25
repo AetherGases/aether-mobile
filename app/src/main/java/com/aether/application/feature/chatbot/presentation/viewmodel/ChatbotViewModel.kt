@@ -21,6 +21,9 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "ChatbotViewModel"
 
+// The hub rejects longer messages
+private const val MAX_INPUT_LENGTH = 8192
+
 private val SUGGESTIONS = listOf(
     "Como funciona o Aether?",
     "O que é o Selo Paraná?",
@@ -60,7 +63,7 @@ class ChatbotViewModel(
     }
 
     fun onInputTextChanged(text: String) {
-        _uiState.update { it.copy(inputText = text) }
+        _uiState.update { it.copy(inputText = text.take(MAX_INPUT_LENGTH)) }
     }
 
     fun onConversationSearchQueryChanged(query: String) {
@@ -147,7 +150,7 @@ class ChatbotViewModel(
     }
 
     private fun send(rawText: String) {
-        val text = rawText.trim()
+        val text = rawText.trim().take(MAX_INPUT_LENGTH)
         val state = _uiState.value
         if (text.isEmpty() || state.isSending || state.isLoadingConversation) return
 

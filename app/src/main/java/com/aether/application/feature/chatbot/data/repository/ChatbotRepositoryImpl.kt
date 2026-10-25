@@ -15,7 +15,11 @@ import kotlinx.coroutines.sync.withLock
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.HttpURLConnection.HTTP_BAD_GATEWAY
+import java.net.HttpURLConnection.HTTP_BAD_REQUEST
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
+
+// Not in HttpURLConnection
+private const val HTTP_UNPROCESSABLE_ENTITY = 422
 
 class ChatbotRepositoryImpl(
     private val chatbotApi: ChatbotApi,
@@ -84,10 +88,11 @@ class ChatbotRepositoryImpl(
             throw ChatbotException("Sem conexão com o servidor. Tente novamente.", e)
         }
 
-    private fun HttpException.userMessage(): String =
-        if (code() == HTTP_BAD_GATEWAY) {
+    // The hub's `detail` texts are in English, so these statuses get their own messages
+    private fun HttpException.userMessage(): String = when (code()) {
+        HTTP_BAD_GATEWAY, HTTP_UNPROCESSABLE_ENTITY ->
             "A Aeko não conseguiu responder. Tente reformular a pergunta."
-        } else {
-            readErrorMessage() ?: "Não foi possível falar com a Aeko. Tente novamente."
-        }
+        HTTP_BAD_REQUEST -> "Não foi possível enviar a mensagem. Verifique o texto e tente novamente."
+        else -> readErrorMessage() ?: "Não foi possível falar com a Aeko. Tente novamente."
+    }
 }

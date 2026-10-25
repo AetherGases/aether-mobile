@@ -5,7 +5,10 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 import retrofit2.Retrofit
+
+private const val READ_TIMEOUT_SECONDS = 90L
 
 object ApiClient {
     fun getOkHttpClient(
@@ -21,6 +24,8 @@ object ApiClient {
             }
             .addInterceptor(authInterceptor)
             .authenticator(tokenAuthenticator)
+            // The AI hub only answers after the whole agent run, which outlasts OkHttp's 10s default
+            .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
     }
 
