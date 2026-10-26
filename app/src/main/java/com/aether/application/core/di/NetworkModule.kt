@@ -7,6 +7,10 @@ import com.aether.application.core.network.AuthInterceptor
 import com.aether.application.core.network.BaseUrlInterceptor
 import com.aether.application.core.network.ServerConfigCache
 import com.aether.application.core.network.TokenAuthenticator
+import com.aether.application.core.network.cloudinary.CLOUDINARY_BASE_URL
+import com.aether.application.core.network.cloudinary.CloudinaryApi
+import com.aether.application.core.network.cloudinary.CloudinaryUploader
+import com.aether.application.core.network.cloudinary.MOCK_CLOUD_NAME
 import com.aether.application.feature.auth.data.remote.AuthApi
 import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.auth.data.repository.AuthRepositoryImpl
@@ -19,19 +23,13 @@ import com.aether.application.feature.chatbot.data.repository.SavedConversations
 import com.aether.application.feature.chatbot.domain.repository.ChatbotRepository
 import com.aether.application.feature.chatbot.domain.repository.SavedConversationsRepository
 import com.aether.application.feature.home.data.remote.InventoryApi
-import com.aether.application.feature.reports.data.remote.CLOUDINARY_BASE_URL
-import com.aether.application.feature.reports.data.remote.CloudinaryApi
-import com.aether.application.feature.reports.data.remote.CloudinaryUploader
 import com.aether.application.feature.reports.data.remote.HubApi
-import com.aether.application.feature.reports.data.remote.MOCK_CLOUD_NAME
 import com.aether.application.feature.reports.data.remote.ReportsApi
 import com.aether.application.feature.reports.data.repository.NewReportRepositoryImpl
 import com.aether.application.feature.reports.domain.repository.NewReportRepository
 import com.aether.application.feature.home.data.repository.HomeRepositoryImpl
 import com.aether.application.feature.home.domain.repository.HomeRepository
 import com.aether.application.feature.profile.data.local.AvatarImageProcessor
-import com.aether.application.feature.profile.data.remote.CloudinaryApi as ProfileCloudinaryApi
-import com.aether.application.feature.profile.data.remote.CloudinaryUploader as ProfileCloudinaryUploader
 import com.aether.application.feature.profile.data.repository.ProfileRepositoryImpl
 import com.aether.application.feature.profile.domain.repository.ProfileRepository
 import com.aether.application.feature.reports.data.repository.ReportsRepositoryImpl
@@ -120,39 +118,33 @@ object NetworkModule {
             retrofit.create(HubApi::class.java)
         }
 
-        single<NewReportRepository> {
+        single {
             val serverConfigCache: ServerConfigCache = get()
+            CloudinaryUploader(
+                contentResolver = androidContext().contentResolver,
+                // A plain client: the app's own one would send our access token to Cloudinary
+                client = OkHttpClient(),
+                uploadBaseUrl = { signature ->
+                    // A Mockoon signature can only be accepted by Mockoon itself
+                    if (BuildConfig.DEBUG && signature.cloudName == MOCK_CLOUD_NAME) {
+                        serverConfigCache.selectedDomain.value ?: ApiConfig.BASE_URL
+                    } else {
+                        CLOUDINARY_BASE_URL
+                    }
+                }
+            )
+        }
+
+        single<NewReportRepository> {
             NewReportRepositoryImpl(
                 reportsApi = get(),
                 cloudinaryApi = get(),
-                uploader = CloudinaryUploader(
-                    contentResolver = androidContext().contentResolver,
-                    // A plain client: the app's own one would send our access token to Cloudinary
-                    client = OkHttpClient(),
-                    uploadBaseUrl = { signature ->
-                        // A Mockoon signature can only be accepted by Mockoon itself
-                        if (BuildConfig.DEBUG && signature.cloudName == MOCK_CLOUD_NAME) {
-                            serverConfigCache.selectedDomain.value ?: ApiConfig.BASE_URL
-                        } else {
-                            CLOUDINARY_BASE_URL
-                        }
-                    }
-                )
+                uploader = get()
             )
         }
 
         single<HomeRepository> {
             HomeRepositoryImpl(inventoryApi = get())
-        }
-
-        single<ProfileCloudinaryApi> {
-            val retrofit: Retrofit = get()
-            retrofit.create(ProfileCloudinaryApi::class.java)
-        }
-
-        // Not the shared OkHttpClient: its interceptors must not touch Cloudinary requests
-        single {
-            ProfileCloudinaryUploader()
         }
 
         single {

@@ -6,16 +6,6 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 @Serializable
-data class UploadSignatureResponse(
-    val signature: String,
-    val timestamp: Long,
-    val apiKey: String,
-    val cloudName: String,
-    val cloudinaryFolder: String,
-    val cloudinaryResourceType: String,
-)
-
-@Serializable
 data class RegisterReportRequest(
     val name: String,
     val consolidationApproach: ConsolidationApproach,

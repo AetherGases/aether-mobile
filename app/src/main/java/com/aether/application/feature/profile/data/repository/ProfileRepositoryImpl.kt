@@ -3,15 +3,15 @@ package com.aether.application.feature.profile.data.repository
 import android.net.Uri
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.database.ProfileLocalDataSource
+import com.aether.application.core.network.cloudinary.CloudinaryApi
+import com.aether.application.core.network.cloudinary.CloudinaryFileType
+import com.aether.application.core.network.cloudinary.CloudinaryUploader
 import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.profile.data.local.AvatarImageProcessor
-import com.aether.application.feature.profile.data.remote.CloudinaryApi
-import com.aether.application.feature.profile.data.remote.CloudinaryUploader
 import com.aether.application.feature.profile.data.remote.dto.ImageRequest
 import com.aether.application.feature.profile.data.remote.dto.UpdateProfileRequest
 import com.aether.application.feature.profile.domain.repository.ProfileRepository
 
-private const val IMAGE_FILE_TYPE = "IMAGE"
 private const val AVATAR_MIME_TYPE = "image/jpeg"
 
 class ProfileRepositoryImpl(
@@ -27,24 +27,24 @@ class ProfileRepositoryImpl(
         val bytes = avatarImageProcessor.toJpeg(uri)
         val fileName = "avatar_${System.currentTimeMillis()}.jpg"
 
-        val signature = cloudinaryApi.getUploadSignature(fileType = IMAGE_FILE_TYPE)
-        val uploaded = cloudinaryUploader.upload(
-            signature = signature,
-            fileName = fileName,
+        val signature = cloudinaryApi.getUploadSignature(fileType = CloudinaryFileType.IMAGE)
+        val imageUrl = cloudinaryUploader.upload(
             bytes = bytes,
-            mimeType = AVATAR_MIME_TYPE
+            fileName = fileName,
+            mimeType = AVATAR_MIME_TYPE,
+            signature = signature
         )
 
         profileApi.updateProfile(
             UpdateProfileRequest(
-                image = ImageRequest(imageName = fileName, imageUrl = uploaded.secureUrl)
+                image = ImageRequest(imageName = fileName, imageUrl = imageUrl)
             )
         )
 
-        profileLocalDataSource.updateAvatar(uploaded.secureUrl)
+        profileLocalDataSource.updateAvatar(imageUrl)
         sessionManager.getSession()?.let { session ->
-            sessionManager.save(session.copy(avatar = uploaded.secureUrl))
+            sessionManager.save(session.copy(avatar = imageUrl))
         }
-        return uploaded.secureUrl
+        return imageUrl
     }
 }

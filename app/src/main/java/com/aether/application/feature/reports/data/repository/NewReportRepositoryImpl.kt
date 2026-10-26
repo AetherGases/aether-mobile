@@ -1,9 +1,10 @@
 package com.aether.application.feature.reports.data.repository
 
 import android.net.Uri
+import com.aether.application.core.network.cloudinary.CloudinaryApi
+import com.aether.application.core.network.cloudinary.CloudinaryFileType
+import com.aether.application.core.network.cloudinary.CloudinaryUploader
 import com.aether.application.core.network.readErrorMessage
-import com.aether.application.feature.reports.data.remote.CloudinaryApi
-import com.aether.application.feature.reports.data.remote.CloudinaryUploader
 import com.aether.application.feature.reports.data.remote.ReportsApi
 import com.aether.application.feature.reports.data.remote.dto.RegisterReportRequest
 import com.aether.application.feature.reports.domain.model.ConsolidationApproach
@@ -13,8 +14,7 @@ import com.aether.application.feature.reports.domain.repository.NewReportReposit
 import retrofit2.HttpException
 import java.io.IOException
 
-// ms-cloudinary file type for spreadsheets, see StorageFileTypeEnum
-private const val SPREADSHEET_FILE_TYPE = "XLSX"
+private const val SPREADSHEET_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 class NewReportRepositoryImpl(
     private val reportsApi: ReportsApi,
@@ -34,8 +34,8 @@ class NewReportRepositoryImpl(
         fileName: String,
         onProgress: (Float) -> Unit
     ): String = call("Não foi possível enviar o arquivo. Tente novamente.") {
-        val signature = cloudinaryApi.getUploadSignature(SPREADSHEET_FILE_TYPE)
-        uploader.upload(Uri.parse(uri), fileName, signature, onProgress)
+        val signature = cloudinaryApi.getUploadSignature(CloudinaryFileType.SPREADSHEET)
+        uploader.upload(Uri.parse(uri), fileName, SPREADSHEET_MIME_TYPE, signature, onProgress)
     }
 
     override suspend fun createReport(
