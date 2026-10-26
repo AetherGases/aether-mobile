@@ -245,7 +245,8 @@ fun AekoScreen(
                             rowSuggestions.forEachIndexed { index, suggestion ->
                                 SuggestionChip(
                                     text = suggestion,
-                                    onClick = { onSuggestionClicked(suggestion) }
+                                    onClick = { onSuggestionClicked(suggestion) },
+                                    modifier = Modifier.weight(1f)
                                 )
                                 if (index < rowSuggestions.lastIndex) {
                                     Spacer(Modifier.width(16.dp))
@@ -367,7 +368,12 @@ fun AekoScreenWelcomePreview() {
         AekoScreen(
             screenTitle = "Conteúdo fulano",
             messages = emptyList(),
-            suggestions = listOf("Como funciona?", "Como funciona?", "Bla bla bla", "Bla bla bla"),
+            suggestions = listOf(
+                "Como funciona o Aether?",
+                "O que é o Selo Paraná?",
+                "Como reduzir minhas emissões?",
+                "Como criar um relatório?",
+            ),
             inputText = "",
             isConversationPinned = false,
             conversations = listOf(
