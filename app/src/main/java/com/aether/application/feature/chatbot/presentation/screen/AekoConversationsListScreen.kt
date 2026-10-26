@@ -1,6 +1,8 @@
 package com.aether.application.feature.chatbot.presentation.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -56,52 +59,74 @@ fun AekoConversationsListScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(14.dp))
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(10.dp))
                     .background(
                         Brush.linearGradient(
                             listOf(
-                                MaterialTheme.colorScheme.inversePrimary,
-                                MaterialTheme.colorScheme.primary
+                                MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.7f),
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                             )
                         )
+                    )
+                    .border(
+                        border = BorderStroke(
+                            0.3.dp,
+                            Brush.linearGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                                )
+                            )
+                        ),
+                        shape = RoundedCornerShape(10.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_aeko),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(22.dp)
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(60.dp)
+                        .offset(x = 3.dp, y = 5.25.dp)
                 )
             }
             Spacer(Modifier.width(12.dp))
             Text("Aeko", style = titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         }
 
+        Spacer(Modifier.height(16.dp))
+
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+
         Spacer(Modifier.height(24.dp))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(52.dp)
                 .clickable(onClick = onNewConversationClick)
-                .padding(vertical = 6.dp),
+                .padding(vertical = 6.dp)
+                .background(MaterialTheme.colorScheme.surface),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Spacer(Modifier.width(10.dp))
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(20.dp)
+                tint = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.size(30.dp)
             )
             Spacer(Modifier.width(10.dp))
-            Text("Nova conversa", style = bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+            Text("Nova conversa")
         }
 
         Spacer(Modifier.height(16.dp))
@@ -112,7 +137,7 @@ fun AekoConversationsListScreen(
             placeholder = { Text("Pesquisar conversa") },
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Default.Search,
+                    painter = painterResource(R.drawable.ic_search),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.outline
                 )
@@ -133,15 +158,16 @@ fun AekoConversationsListScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            "Conversas",
-            style = bodySmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.outline
+            "Conversas salvas",
+            style = titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
 
-        LazyColumn(modifier = Modifier.weight(1f)) {
+        LazyColumn(
+            modifier = Modifier.weight(1f)
+        ) {
             items(conversations, key = { it.id }) { conversation ->
                 ConversationRow(
                     conversation = conversation,
@@ -169,7 +195,7 @@ fun AekoConversationsListScreen(
             }
             IconButton(onClick = onSettingsClick) {
                 Icon(
-                    imageVector = Icons.Default.Settings,
+                    painter = painterResource(R.drawable.ic_settings),
                     contentDescription = "Configurações",
                     tint = MaterialTheme.colorScheme.outline
                 )
@@ -186,21 +212,25 @@ private fun ConversationRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(
+                if (conversation.isSelected) MaterialTheme.colorScheme.secondary.copy(alpha = 0.175f)
+                else Color.Transparent)
             .clickable(onClick = onClick)
-            .padding(vertical = 12.dp),
+            .padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Spacer(Modifier.width(8.dp))
         Box(
             modifier = Modifier
                 .width(4.dp)
-                .height(20.dp)
+                .height(40.dp)
                 .clip(RoundedCornerShape(50))
                 .background(if (conversation.isSelected) MaterialTheme.colorScheme.secondary else Color.Transparent)
         )
         Spacer(Modifier.width(12.dp))
         Text(
             conversation.title,
-            style = bodyMedium,
+            style = titleMediumMD,
             fontWeight = if (conversation.isSelected) FontWeight.Bold else FontWeight.Normal,
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1,
@@ -215,6 +245,7 @@ private fun ConversationRow(
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(16.dp)
             )
+            Spacer(Modifier.width(8.dp))
         }
     }
 }

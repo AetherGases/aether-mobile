@@ -117,7 +117,7 @@ fun AekoScreen(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet(drawerContainerColor = MaterialTheme.colorScheme.surface) {
+            ModalDrawerSheet(drawerContainerColor = MaterialTheme.colorScheme.background) {
                 AekoConversationsListScreen(
                     userName = userName,
                     userRole = userRole,
@@ -246,7 +246,7 @@ fun AekoScreen(
                                 SuggestionChip(
                                     text = suggestion,
                                     onClick = { onSuggestionClicked(suggestion) },
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier.weight(suggestion.length.coerceAtLeast(1).toFloat())
                                 )
                                 if (index < rowSuggestions.lastIndex) {
                                     Spacer(Modifier.width(16.dp))
