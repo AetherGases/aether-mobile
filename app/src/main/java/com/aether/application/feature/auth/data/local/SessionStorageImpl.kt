@@ -1,5 +1,6 @@
 package com.aether.application.feature.auth.data.local
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -12,6 +13,8 @@ import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
+
+private const val TAG = "SessionStorage"
 
 /**
  * Keeps the tokens in the encrypted DataStore. Profile data (name, avatar, permissions)
@@ -59,6 +62,7 @@ class SessionStorageImpl(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
+            Log.e(TAG, "Failed to restore session, clearing it", e)
             clear()
             null
         }

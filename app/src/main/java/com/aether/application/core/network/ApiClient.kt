@@ -26,6 +26,7 @@ object ApiClient {
                 }
             }
             .addInterceptor(authInterceptor)
+            .addInterceptor(HttpErrorLoggingInterceptor())
             .authenticator(tokenAuthenticator)
             // The AI hub only answers after the whole agent run, which outlasts OkHttp's 10s default
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
