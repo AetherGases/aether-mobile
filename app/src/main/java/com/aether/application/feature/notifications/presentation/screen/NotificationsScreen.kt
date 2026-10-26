@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.components.AetherTopBar
+import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.components.NotificationCard
 import com.aether.core.ui.components.NotificationStatus
 import com.aether.core.ui.theme.*

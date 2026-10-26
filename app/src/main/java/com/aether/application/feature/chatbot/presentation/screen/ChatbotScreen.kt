@@ -27,8 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.components.AetherTopBar
-import com.aether.core.ui.components.AetherTrailingIconButton
+import com.aether.application.core.ui.components.AetherTopBar
+import com.aether.application.core.ui.components.AetherTrailingIconButton
 import com.aether.core.ui.components.ChatInputBar
 import com.aether.core.ui.components.ChatMessage
 import com.aether.core.ui.components.ChatMessageBubble

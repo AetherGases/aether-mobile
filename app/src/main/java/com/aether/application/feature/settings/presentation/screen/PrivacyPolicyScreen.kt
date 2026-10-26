@@ -13,7 +13,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.components.AetherTopBar
+import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
 
 @Composable

@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.aether.application.R
 import com.aether.application.feature.reports.presentation.components.ReportLoadState
-import com.aether.core.ui.components.AetherTopBar
+import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
 
 data class ReportReviewUi(

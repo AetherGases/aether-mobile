@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -71,6 +72,7 @@ fun AetherTrailingIconButton(
     contentDescription: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    tint: Color? = null
 ) {
     ThemeAwareIconButton(
         painter = painter,
@@ -78,6 +80,7 @@ fun AetherTrailingIconButton(
         onClick = onClick,
         iconSize = 24.dp,
         modifier = modifier,
+        tint = tint
     )
 }
 
@@ -88,7 +91,10 @@ private fun ThemeAwareIconButton(
     onClick: () -> Unit,
     iconSize: Dp,
     modifier: Modifier = Modifier,
+    tint: Color? = null
 ) {
+    val finalTint = tint ?: MaterialTheme.colorScheme.onBackground
+
     var buttonModifier = modifier.size(44.dp)
 
     buttonModifier = buttonModifier
@@ -127,7 +133,7 @@ private fun ThemeAwareIconButton(
         Icon(
             painter = painter,
             contentDescription = contentDescription,
-            tint = MaterialTheme.colorScheme.onBackground,
+            tint = finalTint,
             modifier = Modifier.size(iconSize)
         )
     }
