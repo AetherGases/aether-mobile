@@ -1,5 +1,6 @@
 package com.aether.application.feature.reports.data.repository
 
+import android.util.Log
 import android.net.Uri
 import com.aether.application.core.network.cloudinary.CloudinaryApi
 import com.aether.application.core.network.cloudinary.CloudinaryFileType
@@ -14,6 +15,7 @@ import com.aether.application.feature.reports.domain.repository.NewReportReposit
 import retrofit2.HttpException
 import java.io.IOException
 
+private const val TAG = "NewReportRepository"
 private const val SPREADSHEET_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 class NewReportRepositoryImpl(
@@ -25,7 +27,8 @@ class NewReportRepositoryImpl(
     override fun displayName(uri: String): String? =
         try {
             uploader.displayName(Uri.parse(uri))
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to read the name of $uri", e)
             null
         }
 
@@ -59,10 +62,12 @@ class NewReportRepositoryImpl(
         try {
             block()
         } catch (e: HttpException) {
+            Log.e(TAG, "Request failed (${e.code()})", e)
             // Only 4xx messages are written for the user; a 5xx carries the raw exception text
             val serverMessage = if (e.code() in 400..499) e.readErrorMessage() else null
             throw ReportException(serverMessage ?: fallbackMessage, e)
         } catch (e: IOException) {
+            Log.e(TAG, "Request failed", e)
             throw ReportException("Sem conexão com o servidor. Tente novamente.", e)
         }
 }
