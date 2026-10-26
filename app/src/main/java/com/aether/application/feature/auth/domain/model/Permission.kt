@@ -4,7 +4,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Permission(
-    val id: Int,
+    val id: Long,
     val name: String,
     val description: String? = null
 )
+
+enum class AppPermission(val value: String) {
+    INVENTORY_VIEW("inventory:view"),
+    INVENTORY_ANALYSIS("inventory:analysis"),
+    INVENTORY_CREATING("inventory:edit"),
+    CALCULATOR("calculator"),
+    CHATBOT("chatbot"),
+}

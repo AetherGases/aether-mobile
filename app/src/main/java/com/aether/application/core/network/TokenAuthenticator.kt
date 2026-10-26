@@ -1,5 +1,6 @@
 package com.aether.application.core.network
 
+import android.util.Log
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.data.remote.AuthApi
 import kotlinx.coroutines.runBlocking
@@ -10,6 +11,8 @@ import okhttp3.Response
 import okhttp3.Route
 import retrofit2.HttpException
 import java.io.IOException
+
+private const val TAG = "TokenAuthenticator"
 
 class TokenAuthenticator(
     private val sessionManager: SessionManager,
@@ -39,9 +42,11 @@ class TokenAuthenticator(
                     sessionManager.save(loginResponse.toDomain())
                     loginResponse.accessToken
                 } catch (e: HttpException) {
+                    Log.w(TAG, "Token refresh rejected (${e.code()}), logging out", e)
                     sessionManager.logout()
                     null
                 } catch (e: IOException) {
+                    Log.w(TAG, "Token refresh failed", e)
                     null
                 }
             }

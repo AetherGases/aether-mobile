@@ -1,5 +1,6 @@
 package com.aether.application.core.network
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -8,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
+
+private const val TAG = "ServerConfigStorage"
 
 class ServerConfigStorageImpl(
     private val dataStore: DataStore<Preferences>
@@ -42,6 +45,7 @@ class ServerConfigStorageImpl(
         try {
             Json.decodeFromString(json)
         } catch (e: Exception) {
+            Log.w(TAG, "Failed to read saved server domains", e)
             emptyList()
         }
 
