@@ -3,6 +3,8 @@ package com.aether.application.core.di
 import com.aether.application.R
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.location.AddressGeocoder
+import com.aether.application.core.location.DeviceLocationProvider
 import com.aether.application.core.network.ServerConfigStorage
 import com.aether.application.core.network.ServerConfigStorageImpl
 import com.aether.application.core.security.AndroidEncryptor
@@ -23,6 +25,8 @@ import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecove
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
 import com.aether.application.feature.chatbot.presentation.viewmodel.ChatbotViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
+import com.aether.application.feature.proximity.domain.WorkplaceProximityChecker
+import com.aether.application.feature.proximity.presentation.viewmodel.ProximityViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.shared.ReportReviewViewModel
 import com.aether.application.feature.reports.domain.usecase.GetPendingReportsUseCase
@@ -31,6 +35,7 @@ import com.aether.application.feature.reports.domain.usecase.GetReviewedReportsU
 import com.aether.application.feature.reports.presentation.viewmodel.ReportHistoryViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -46,7 +51,8 @@ object AppModule {
         single<SessionStorage> {
             SessionStorageImpl(
                 dataStore = get(),
-                encryptor = get()
+                encryptor = get(),
+                profileLocalDataSource = get()
             )
         }
 
@@ -169,8 +175,29 @@ object AppModule {
             SettingsViewModel(
                 settingsRepository = get(),
                 homeRepository = get(),
+                profileRepository = get(),
                 sessionManager = get()
             )
+        }
+
+        single {
+            DeviceLocationProvider(context = androidContext())
+        }
+
+        single {
+            AddressGeocoder(context = androidContext())
+        }
+
+        single {
+            WorkplaceProximityChecker(
+                profileLocalDataSource = get(),
+                locationProvider = get(),
+                geocoder = get()
+            )
+        }
+
+        viewModel {
+            ProximityViewModel(proximityChecker = get())
         }
     }
 }

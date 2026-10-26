@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -66,6 +65,15 @@ import com.aether.application.feature.reports.presentation.state.NewReportEvent
 import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.aether.application.feature.proximity.presentation.screen.ProximityGateScreen
+import com.aether.application.feature.proximity.presentation.viewmodel.ProximityViewModel
 
 private const val REPORT_REVIEWED_KEY = "report_reviewed"
 
@@ -73,6 +81,40 @@ private const val REPORT_REVIEWED_KEY = "report_reviewed"
 fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+) {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val isInAppGraph = backStackEntry?.destination?.hierarchy?.any { it.hasRoute<AppGraph>() } == true
+    val proximityViewModel = koinViewModel<ProximityViewModel>()
+    val proximityState by proximityViewModel.uiState.collectAsStateWithLifecycle()
+
+    // The app can only be used around the workplace: checked on entering the app and on every return to it
+    LaunchedEffect(isInAppGraph) {
+        if (isInAppGraph) proximityViewModel.check() else proximityViewModel.reset()
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        if (isInAppGraph) proximityViewModel.check()
+    }
+
+    Box(modifier = modifier) {
+        AppNavHost(
+            modifier = Modifier.fillMaxSize(),
+            navController = navController
+        )
+
+        if (isInAppGraph && (proximityState.status == null || proximityState.isBlocked)) {
+            ProximityGateScreen(
+                status = proximityState.status,
+                isChecking = proximityState.isChecking,
+                onRetry = proximityViewModel::check
+            )
+        }
+    }
+}
+
+@Composable
+private fun AppNavHost(
+    modifier: Modifier,
+    navController: NavHostController,
 ) {
     val sessionManager = koinInject<SessionManager>()
     val isAuthenticated by sessionManager.authState.collectAsStateWithLifecycle()
@@ -469,10 +511,20 @@ fun AppNavigation(
                 val viewModel = koinViewModel<SettingsViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 var showThemePicker by remember { mutableStateOf(false) }
+                val context = LocalContext.current
+
+                LaunchedEffect(uiState.avatarErrorMessage) {
+                    uiState.avatarErrorMessage?.let { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        viewModel.onAvatarErrorShown()
+                    }
+                }
 
                 SettingsScreen(
                     userName = uiState.userName,
                     avatarUrl = uiState.avatarUrl,
+                    isUploadingAvatar = uiState.isUploadingAvatar,
+                    onAvatarPicked = viewModel::onAvatarPicked,
                     reportsCount = uiState.reportsCount,
                     entryDate = uiState.entryDate,
                     notificationsEnabled = uiState.notificationsEnabled,

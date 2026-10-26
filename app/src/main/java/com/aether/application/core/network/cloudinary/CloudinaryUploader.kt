@@ -1,9 +1,8 @@
-package com.aether.application.feature.reports.data.remote
+package com.aether.application.core.network.cloudinary
 
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.OpenableColumns
-import com.aether.application.feature.reports.data.remote.dto.UploadSignatureResponse
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -18,6 +17,7 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.BufferedSink
 import okio.source
@@ -48,19 +48,34 @@ class CloudinaryUploader(
         contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
             ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
 
-    /** Returns the `secure_url` of the uploaded file. */
+    /** Streams [uri] to Cloudinary and returns the `secure_url` of the uploaded file. */
     suspend fun upload(
         uri: Uri,
         fileName: String,
+        mimeType: String,
         signature: UploadSignatureResponse,
-        onProgress: (Float) -> Unit
-    ): String {
-        val file = ContentUriBody(
+        onProgress: (Float) -> Unit = {}
+    ): String = send(
+        file = ContentUriBody(
             contentResolver = contentResolver,
             uri = uri,
-            contentType = SPREADSHEET_MEDIA_TYPE,
+            contentType = mimeType.toMediaType(),
             onProgress = onProgress
-        )
+        ),
+        fileName = fileName,
+        signature = signature
+    )
+
+    /** Sends [bytes] already in memory to Cloudinary and returns the `secure_url` of the uploaded file. */
+    suspend fun upload(
+        bytes: ByteArray,
+        fileName: String,
+        mimeType: String,
+        signature: UploadSignatureResponse
+    ): String = send(bytes.toRequestBody(mimeType.toMediaType()), fileName, signature)
+
+    private suspend fun send(file: RequestBody, fileName: String, signature: UploadSignatureResponse): String {
+        // Only the signed params (timestamp, folder) plus api_key, signature and file may be sent
         val body = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
             .addFormDataPart("api_key", signature.apiKey)
@@ -129,10 +144,5 @@ class CloudinaryUploader(
                 }
             }
         }
-    }
-
-    private companion object {
-        val SPREADSHEET_MEDIA_TYPE =
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".toMediaType()
     }
 }

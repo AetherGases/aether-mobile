@@ -44,6 +44,10 @@
         {
           "type": "route",
           "uuid": "fb515b07-6ce3-4b82-a0b6-99168681ee9c"
+        },
+        {
+          "type": "route",
+          "uuid": "8dd78489-5878-447a-bda0-a1e1899d65cf"
         }
       ]
     },
@@ -354,7 +358,38 @@
       "responses": [
         {
           "uuid": "4869549d-a7c5-471f-b506-cab41880b7f5",
-          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"inventory:view\",\n      \"description\": \"Visualizar inventários\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"inventory:analysis\",\n      \"description\": \"Analisar inventários\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"inventory:edit\",\n      \"description\": \"Criar e editar inventários\"\n    },\n    {\n      \"id\": 4,\n      \"name\": \"calculator\",\n      \"description\": \"Usar a calculadora de CO2\"\n    },\n    {\n      \"id\": 5,\n      \"name\": \"chatbot\",\n      \"description\": \"Usar o chatbot\"\n    }\n  ],\n  \"phone\": \"11999999999\",\n  \"createdAt\": \"2023-02-24T12:00:00Z\",\n  \"enterprise\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock Company\",\n    \"tradeName\": \"Aether Mock\",\n    \"cnpj\": \"12345678000199\"\n  },\n  \"image\": {\n    \"id\": 1,\n    \"name\": \"avatar.png\",\n    \"path\": \"https://i.pravatar.cc/150?img=12\"\n  }\n}",
+          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"phone\": \"11999999999\",\n  \"image\": {\n    \"id\": 1,\n    \"name\": \"avatar.png\",\n    \"path\": \"https://i.pravatar.cc/150?img=12\"\n  },\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"inventory:view\",\n      \"description\": \"Visualizar inventários\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"inventory:analysis\",\n      \"description\": \"Analisar inventários\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"inventory:edit\",\n      \"description\": \"Criar e editar inventários\"\n    },\n    {\n      \"id\": 4,\n      \"name\": \"calculator\",\n      \"description\": \"Usar a calculadora de CO2\"\n    },\n    {\n      \"id\": 5,\n      \"name\": \"chatbot\",\n      \"description\": \"Usar o chatbot\"\n    }\n  ],\n  \"enterprise\": {\n    \"id\": 1,\n    \"name\": \"Aether Alimentos LTDA\",\n    \"tradeName\": \"Aether Alimentos\",\n    \"cnpj\": \"12345678000190\",\n    \"address\": {\n      \"id\": 1,\n      \"zipCode\": \"80215901\",\n      \"state\": \"PR\",\n      \"city\": \"Curitiba\",\n      \"neighborhood\": \"Prado Velho\",\n      \"street\": \"Rua Imaculada Conceição\",\n      \"number\": 1155,\n      \"complement\": null\n    }\n  },\n  \"unit\": {\n    \"id\": 1,\n    \"cnae\": \"1011201\",\n    \"cnpj\": \"12345678000271\",\n    \"isActive\": true,\n    \"address\": {\n      \"id\": 2,\n      \"zipCode\": \"80215901\",\n      \"state\": \"PR\",\n      \"city\": \"Curitiba\",\n      \"neighborhood\": \"Prado Velho\",\n      \"street\": \"Rua Imaculada Conceição\",\n      \"number\": 1155,\n      \"complement\": null\n    }\n  },\n  \"createdAt\": \"2023-02-24T12:00:00Z\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "8dd78489-5878-447a-bda0-a1e1899d65cf",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "api/profile",
+      "responses": [
+        {
+          "uuid": "3656c451-38ed-436e-adc6-66ceabf2cdde",
+          "body": "{\n  \"id\": 1,\n  \"name\": \"Aether Mock User\",\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"phone\": \"11999999999\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -1017,6 +1052,33 @@
           "callbacks": []
         },
         {
+          "uuid": "4564d8bd-1dd0-4f9c-96f7-5b2d432334ee",
+          "body": "{\n  \"signature\": \"mock-signature\",\n  \"timestamp\": 1760000000,\n  \"apiKey\": \"mock-api-key\",\n  \"cloudName\": \"mock-cloud\",\n  \"cloudinaryFolder\": \"images\",\n  \"cloudinaryResourceType\": \"image\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Image signature",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "fileType",
+              "value": "IMAGE",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
           "uuid": "c682a62d-d10f-45cb-9d86-1e6227dd3214",
           "body": "{\n  \"signature\": \"mock-signature\",\n  \"timestamp\": 1790000000,\n  \"apiKey\": \"mock-api-key\",\n  \"cloudName\": \"mock-cloud\",\n  \"cloudinaryFolder\": \"spreadsheets\",\n  \"cloudinaryResourceType\": \"raw\"\n}",
           "latency": 0,
@@ -1068,6 +1130,38 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "a7c3e1f0-5b2d-4c8e-9f6a-3d1b7e2c4a90",
+          "body": "{\n  \"asset_id\": \"{{faker 'string.uuid'}}\",\n  \"public_id\": \"images/{{faker 'string.alphanumeric' 20}}\",\n  \"resource_type\": \"image\",\n  \"secure_url\": \"https://i.pravatar.cc/300?u={{faker 'string.uuid'}}\"\n}",
+          "latency": 1500,
+          "statusCode": 200,
+          "label": "Uploaded image",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "type",
+              "value": "image",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
           "crudKey": "id",
           "callbacks": []
         },
