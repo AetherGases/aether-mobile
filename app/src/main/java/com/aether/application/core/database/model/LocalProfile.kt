@@ -8,7 +8,7 @@ data class LocalProfile(
     val name: String,
     val email: String,
     val cpf: String,
-    val phone: String,
+    val phone: String?,
     val avatarUrl: String?,
     val createdAt: Instant?,
     val permissions: List<Permission>,

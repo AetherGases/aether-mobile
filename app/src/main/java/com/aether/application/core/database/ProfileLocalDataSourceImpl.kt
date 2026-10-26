@@ -32,7 +32,7 @@ class ProfileLocalDataSourceImpl(
                 put(Profile.NAME, profile.name)
                 put(Profile.EMAIL, encryptor.encrypt(profile.email))
                 put(Profile.CPF, encryptor.encrypt(profile.cpf))
-                put(Profile.PHONE, encryptor.encrypt(profile.phone))
+                profile.phone?.let { put(Profile.PHONE, encryptor.encrypt(it)) }
                 put(Profile.AVATAR_URL, profile.avatarUrl)
                 put(Profile.CREATED_AT, profile.createdAt?.toEpochMilli())
             })
