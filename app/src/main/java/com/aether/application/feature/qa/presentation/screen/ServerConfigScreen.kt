@@ -9,8 +9,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -58,17 +58,17 @@ fun ServerConfigScreen(
                 placeholder = { Text("http://192.168.0.10:8080/") },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = textPrimaryLight,
-                    unfocusedTextColor = textPrimaryLight,
-                    focusedBorderColor = purple300,
-                    unfocusedBorderColor = textDisabledLight,
-                    disabledBorderColor = textDisabledLight,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                    disabledBorderColor = MaterialTheme.colorScheme.outlineVariant,
                     errorBorderColor = MaterialTheme.colorScheme.error,
                     errorTextColor = MaterialTheme.colorScheme.error,
                     errorLabelColor = MaterialTheme.colorScheme.error,
                     errorCursorColor = MaterialTheme.colorScheme.error
                 ),
-                modifier = Modifier.fillMaxWidth().menuAnchor(MenuAnchorType.PrimaryEditable)
+                modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable)
             )
 
             ExposedDropdownMenu(

@@ -2,12 +2,17 @@ package com.aether.application.core.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import android.widget.Toast
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -38,20 +43,85 @@ import com.aether.application.feature.auth.presentation.viewmodel.SendCodeEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationEvent
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeEvent
+import com.aether.application.feature.reports.presentation.screen.manager.AetherAnalysisScreen
+import com.aether.application.feature.reports.presentation.screen.shared.ReportReviewScreen
+import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.shared.ReportReviewViewModel
 import com.aether.application.feature.settings.presentation.screen.PrivacyPolicyScreen
 import com.aether.application.feature.settings.presentation.screen.SettingsScreen
 import com.aether.application.feature.settings.presentation.screen.ThemePickerDialog
 import com.aether.application.feature.settings.presentation.screen.label
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
+import com.aether.application.feature.chatbot.presentation.screen.AekoScreen
+import com.aether.application.feature.chatbot.presentation.viewmodel.ChatbotViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
+import com.aether.application.feature.reports.presentation.screen.ReportHistoryScreen
+import com.aether.application.feature.reports.presentation.viewmodel.ReportHistoryViewModel
+import com.aether.application.feature.report.presentation.screen.ConsolidationApproachScreen
+import com.aether.application.feature.reports.domain.model.ConsolidationApproach
+import com.aether.application.feature.reports.presentation.screen.CreateReportUploadScreen
+import com.aether.application.feature.reports.presentation.state.NewReportEvent
+import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.aether.application.feature.proximity.presentation.qa.QaProximityBypass
+import com.aether.application.feature.proximity.presentation.screen.ProximityGateScreen
+import com.aether.application.feature.proximity.presentation.viewmodel.ProximityViewModel
+
+private const val REPORT_REVIEWED_KEY = "report_reviewed"
 
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+) {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val isInAppGraph = backStackEntry?.destination?.hierarchy?.any { it.hasRoute<AppGraph>() } == true
+    val proximityViewModel = koinViewModel<ProximityViewModel>()
+    val proximityState by proximityViewModel.uiState.collectAsStateWithLifecycle()
+    val isQaBypassed by QaProximityBypass.isActive.collectAsStateWithLifecycle()
+
+    // The app can only be used around the workplace: checked on entering the app and on every return to it
+    LaunchedEffect(isInAppGraph) {
+        if (isInAppGraph) {
+            proximityViewModel.check()
+        } else {
+            proximityViewModel.reset()
+            QaProximityBypass.reset()
+        }
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        if (isInAppGraph) proximityViewModel.check()
+    }
+
+    Box(modifier = modifier) {
+        AppNavHost(
+            modifier = Modifier.fillMaxSize(),
+            navController = navController
+        )
+
+        if (isInAppGraph && !isQaBypassed && (proximityState.status == null || proximityState.isBlocked)) {
+            ProximityGateScreen(
+                status = proximityState.status,
+                isChecking = proximityState.isChecking,
+                onRetry = proximityViewModel::check
+            )
+        }
+    }
+}
+
+@Composable
+private fun AppNavHost(
+    modifier: Modifier,
+    navController: NavHostController,
 ) {
     val sessionManager = koinInject<SessionManager>()
     val isAuthenticated by sessionManager.authState.collectAsStateWithLifecycle()
@@ -268,7 +338,7 @@ fun AppNavigation(
                             HomeEvent.NavigateToHistory ->
                                 navController.navigate(ReportHistoryRoute)
                             is HomeEvent.NavigateToReport ->
-                                navController.navigate(ReportAnalysisRoute(event.reportId))
+                                navController.navigate(ReportReviewRoute(event.reportId))
                         }
                     }
                 }
@@ -292,12 +362,152 @@ fun AppNavigation(
                 )
             }
 
-            composable<ReportAnalysisRoute> {
-                TODO()
+            composable<ReportReviewRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ReportReviewRoute>()
+                val viewModel = koinViewModel<ReportReviewViewModel> {
+                    parametersOf(route.reportId)
+                }
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                val wasReviewed by backStackEntry.savedStateHandle
+                    .getStateFlow(REPORT_REVIEWED_KEY, false)
+                    .collectAsStateWithLifecycle()
+
+                // Coming back from the analysis after approving/rejecting: show the new status
+                LaunchedEffect(wasReviewed) {
+                    if (wasReviewed) {
+                        backStackEntry.savedStateHandle[REPORT_REVIEWED_KEY] = false
+                        viewModel.load()
+                    }
+                }
+
+                ReportReviewScreen(
+                    report = uiState.report,
+                    isLoading = uiState.isLoading,
+                    errorMessage = uiState.errorMessage,
+                    onRetry = viewModel::load,
+                    onBackClick = { navController.popBackStack() },
+                    onProceedClick = { navController.navigate(ReportAnalysisRoute(route.reportId)) }
+                )
+            }
+
+            composable<CreateReportRoute> {
+                val viewModel = koinViewModel<NewReportViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                CreateReportUploadScreen(
+                    selectedFileName = uiState.selectedFileName,
+                    uploadProgress = uiState.uploadProgress,
+                    reportName = uiState.reportName,
+                    reportNameError = uiState.reportNameError,
+                    errorMessage = uiState.errorMessage,
+                    onReportNameChanged = viewModel::onReportNameChanged,
+                    onFileSelected = viewModel::onFileSelected,
+                    onRemoveFileClicked = viewModel::onRemoveFileClicked,
+                    onConfirmSubmit = {
+                        viewModel.clearError()
+                        navController.navigate(ConsolidationApproachRoute)
+                    },
+                    onBackClicked = { navController.popBackStack() }
+                )
+            }
+
+            composable<ConsolidationApproachRoute> { backStackEntry ->
+                // Shares the state of the upload step, which holds the file and the name
+                val uploadEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry<CreateReportRoute>()
+                }
+                val viewModel = koinViewModel<NewReportViewModel>(viewModelStoreOwner = uploadEntry)
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                val context = LocalContext.current
+
+                // Covers the back button and the system back gesture alike
+                DisposableEffect(Unit) {
+                    onDispose { viewModel.clearError() }
+                }
+
+                LaunchedEffect(Unit) {
+                    viewModel.events.collect { event ->
+                        when (event) {
+                            is NewReportEvent.Created -> {
+                                Toast.makeText(
+                                    context,
+                                    "Relatório enviado! Estamos processando a planilha.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                navController.popBackStack<HomeRoute>(inclusive = false)
+                            }
+                        }
+                    }
+                }
+
+                ConsolidationApproachScreen(
+                    isSubmitting = uiState.isSubmitting,
+                    errorMessage = uiState.errorMessage,
+                    onBackClick = { navController.popBackStack() },
+                    onEquityShareClick = { viewModel.onApproachSelected(ConsolidationApproach.EQUITY_SHARE) },
+                    onFinancialControlClick = { viewModel.onApproachSelected(ConsolidationApproach.FINANCIAL_CONTROL) },
+                    onOperationalControlClick = { viewModel.onApproachSelected(ConsolidationApproach.OPERATIONAL_CONTROL) },
+                    onConsultAekoClick = { navController.navigate(ChatbotRoute) }
+                )
+            }
+
+            composable<ReportAnalysisRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ReportAnalysisRoute>()
+                val viewModel = koinViewModel<ReportAnalysisViewModel> {
+                    parametersOf(route.reportId)
+                }
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                LaunchedEffect(uiState.decision) {
+                    if (uiState.decision != null) {
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(REPORT_REVIEWED_KEY, true)
+                    }
+                }
+
+                AetherAnalysisScreen(
+                    analysis = uiState.analysis,
+                    isLoading = uiState.isLoading,
+                    errorMessage = uiState.errorMessage,
+                    onRetry = viewModel::load,
+                    decision = uiState.decision,
+                    isSubmitting = uiState.isSubmitting,
+                    submitErrorMessage = uiState.submitErrorMessage,
+                    onBackClick = { navController.popBackStack() },
+                    onDecisionSubmit = viewModel::onDecisionSubmit
+                )
             }
 
             composable<ReportHistoryRoute> {
-                TODO()
+                val viewModel = koinViewModel<ReportHistoryViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                ReportHistoryScreen(
+                    viewerRole = uiState.viewerRole,
+                    currentWeek = uiState.currentWeek,
+                    month = uiState.month,
+                    reportDates = uiState.reportDates,
+                    selectedDate = uiState.selectedDate,
+                    reportItems = uiState.reportItems,
+                    searchQuery = uiState.searchQuery,
+                    selectedTimeFilters = uiState.selectedTimeFilters,
+                    selectedStatusFilters = uiState.selectedStatusFilters,
+                    isRefreshing = uiState.isRefreshing,
+                    loadFailed = uiState.loadFailed,
+                    isLoadingMore = uiState.isLoadingMore,
+                    loadMoreFailed = uiState.loadMoreFailed,
+                    hasMore = uiState.hasMore,
+                    onRefresh = viewModel::refresh,
+                    onLoadMore = viewModel::loadMore,
+                    onSearchQueryChanged = viewModel::onSearchQueryChanged,
+                    onTimeFilterToggled = viewModel::onTimeFilterToggled,
+                    onStatusFilterToggled = viewModel::onStatusFilterToggled,
+                    onDaySelected = viewModel::onDaySelected,
+                    onMonthChanged = viewModel::onMonthChanged,
+                    onReviewClick = { id -> navController.navigate(ReportAnalysisRoute(id.toLong())) },
+                    onBackClicked = { navController.popBackStack() }
+                )
             }
 
             composable<NotificationsRoute> {
@@ -308,10 +518,20 @@ fun AppNavigation(
                 val viewModel = koinViewModel<SettingsViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 var showThemePicker by remember { mutableStateOf(false) }
+                val context = LocalContext.current
+
+                LaunchedEffect(uiState.avatarErrorMessage) {
+                    uiState.avatarErrorMessage?.let { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        viewModel.onAvatarErrorShown()
+                    }
+                }
 
                 SettingsScreen(
                     userName = uiState.userName,
                     avatarUrl = uiState.avatarUrl,
+                    isUploadingAvatar = uiState.isUploadingAvatar,
+                    onAvatarPicked = viewModel::onAvatarPicked,
                     reportsCount = uiState.reportsCount,
                     entryDate = uiState.entryDate,
                     notificationsEnabled = uiState.notificationsEnabled,
@@ -355,7 +575,44 @@ fun AppNavigation(
             }
 
             composable<ChatbotRoute> {
-                TODO()
+                val viewModel = koinViewModel<ChatbotViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                val clipboard = LocalClipboardManager.current
+                val context = LocalContext.current
+
+                LaunchedEffect(uiState.errorMessage) {
+                    uiState.errorMessage?.let {
+                        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                        viewModel.onErrorShown()
+                    }
+                }
+
+                AekoScreen(
+                    screenTitle = uiState.title,
+                    messages = uiState.displayMessages,
+                    suggestions = uiState.suggestions,
+                    inputText = uiState.inputText,
+                    isConversationPinned = uiState.isConversationPinned,
+                    conversations = uiState.visibleConversations,
+                    conversationSearchQuery = uiState.conversationSearchQuery,
+                    userName = uiState.userName,
+                    userRole = uiState.userRole,
+                    avatarUrl = uiState.avatarUrl,
+                    onInputTextChanged = viewModel::onInputTextChanged,
+                    onSuggestionClicked = viewModel::onSuggestionClicked,
+                    onSendClicked = viewModel::onSendClicked,
+                    onBookmarkClicked = viewModel::onBookmarkClicked,
+                    onCopyMessage = { id ->
+                        uiState.messages.firstOrNull { it.id == id }?.let {
+                            clipboard.setText(AnnotatedString(it.text))
+                        }
+                    },
+                    onConversationSearchQueryChanged = viewModel::onConversationSearchQueryChanged,
+                    onNewConversationClick = viewModel::onNewConversationClick,
+                    onConversationClick = viewModel::onConversationClick,
+                    onSettingsClick = { navController.navigate(SettingsRoute) },
+                    onBackClicked = { navController.popBackStack() }
+                )
             }
         }
     }

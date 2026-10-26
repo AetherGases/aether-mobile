@@ -1,5 +1,6 @@
 package com.aether.application.feature.auth.data.storage
 
+import android.util.Log
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
@@ -10,8 +11,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+private const val TAG = "SessionManager"
+
 class SessionManagerImpl(
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val onLogout: suspend () -> Unit = {}
 ): SessionManager {
     private var session: Session? = null
     private val _authState = MutableStateFlow(false)
@@ -48,12 +52,14 @@ class SessionManagerImpl(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
+            Log.e(TAG, "Failed to save session", e)
             false
         }
     }
 
     override suspend fun logout() {
         sessionStorage.clear()
+        onLogout()
         session = null
         _authState.value = false
     }

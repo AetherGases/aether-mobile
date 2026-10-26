@@ -10,7 +10,7 @@ fun HttpException.readErrorMessage(): String? {
     val body = response()?.errorBody()?.string() ?: return null
 
     return try {
-        errorJson.decodeFromString<ErrorResponse>(body).message
+        errorJson.decodeFromString<ErrorResponse>(body).let { it.message ?: it.detail }
     } catch (_: SerializationException) {
         null
     }

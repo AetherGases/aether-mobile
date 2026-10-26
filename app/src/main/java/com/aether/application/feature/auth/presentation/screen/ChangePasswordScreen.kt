@@ -26,7 +26,8 @@ import com.aether.application.R
 import com.aether.application.feature.auth.domain.model.DefaultPasswordRules
 import com.aether.application.feature.auth.domain.model.PasswordRule
 import com.aether.core.ui.theme.*
-import com.aether.application.ui.components.RequirementItem
+import com.aether.application.core.ui.components.FormErrorText
+import com.aether.application.core.ui.components.RequirementItem
 import com.aether.core.ui.components.GlassIconButton
 
 @Composable
@@ -192,11 +193,7 @@ fun ChangePasswordScreen(
 
             if (errorMessage != null) {
                 Spacer(Modifier.height(16.dp))
-                Text(
-                    text = errorMessage,
-                    style = labelMedium,
-                    color = lightRed
-                )
+                FormErrorText(errorMessage)
             }
 
             Spacer(Modifier.height(24.dp))

@@ -16,12 +16,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.components.GlassIconButton
 import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.components.FormErrorText
 
 @Composable
 fun PasswordRecoveryScreen(
@@ -159,11 +158,7 @@ fun PasswordRecoveryScreen(
 
             if (errorMessage != null) {
                 Spacer(Modifier.height(16.dp))
-                Text(
-                    text = errorMessage,
-                    style = labelMedium,
-                    color = lightRed
-                )
+                FormErrorText(errorMessage)
             }
 
             Spacer(Modifier.weight(1f))

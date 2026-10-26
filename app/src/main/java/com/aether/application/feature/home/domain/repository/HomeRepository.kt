@@ -16,8 +16,9 @@ interface HomeRepository {
         take: Int
     ): List<Inventory>
 
-    suspend fun getLastReviewedInventory(): Inventory
-    suspend fun getLastSubmittedInventory(): Inventory
+    /** Null while the user has no inventory yet. */
+    suspend fun getLastReviewedInventory(): Inventory?
+    suspend fun getLastSubmittedInventory(): Inventory?
     suspend fun getMonthlyUnitInfos(): UnitInfo
     suspend fun getEnterpriseInfos(): EnterpriseInfo
     suspend fun getInventoryCount(): InventoryCount

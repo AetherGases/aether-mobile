@@ -1,35 +1,24 @@
 package com.aether.application.feature.home.domain.model
 
-import com.aether.application.core.serialization.LocalDateSerializer
-import com.aether.application.core.serialization.LocalDateTimeSerializer
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@Serializable
 data class Inventory(
     val id: Long,
     val name: String,
-    @Serializable(with = LocalDateTimeSerializer::class)
     val createdAt: LocalDateTime,
-    val period: ReportingPeriod,
+    /** Null when the inventory has no reporting period set. */
+    val period: ReportingPeriod?,
+    /** Null on the user's own list, where the author is always the user. */
     val author: String?,
     val authorImageUrl: String?,
-    @Serializable(with = InventoryStatusSerializer::class)
+    /** TODO: not sent by the backend yet. */
+    val reviewer: String?,
     val status: InventoryStatus,
 )
 
-@Serializable
 data class ReportingPeriod(
-    @Serializable(with = LocalDateSerializer::class)
     val start: LocalDate,
-    @Serializable(with = LocalDateSerializer::class)
     val end: LocalDate
 )
 
@@ -51,22 +40,13 @@ sealed interface InventoryStatus {
 }
 
 /**
- * Serializes an [InventoryStatus] as its plain enum name.
- * TODO: confirm with the backend; PROCESSING_FAILED exists in both enums and is
- *  always decoded as [InventoryStatus.Input.PROCESSING_FAILED].
+ * Builds the status from the backend's `status` and `type` (INPUT or OUTPUT) fields.
+ * PROCESSING_FAILED exists in both enums, so [type] decides which one it is.
  */
-object InventoryStatusSerializer : KSerializer<InventoryStatus> {
-    override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("InventoryStatus", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: InventoryStatus) {
-        encoder.encodeString((value as Enum<*>).name)
-    }
-
-    override fun deserialize(decoder: Decoder): InventoryStatus {
-        val name = decoder.decodeString()
-        return InventoryStatus.Input.entries.firstOrNull { it.name == name }
-            ?: InventoryStatus.Output.entries.firstOrNull { it.name == name }
-            ?: throw IllegalArgumentException("Unknown inventory status: $name")
-    }
+fun inventoryStatusOf(status: String, type: String): InventoryStatus {
+    val inputs = InventoryStatus.Input.entries.firstOrNull { it.name == status }
+    val outputs = InventoryStatus.Output.entries.firstOrNull { it.name == status }
+    val preferred = if (type.equals("OUTPUT", ignoreCase = true)) outputs else inputs
+    return preferred ?: inputs ?: outputs
+        ?: throw IllegalArgumentException("Unknown inventory status: $status ($type)")
 }
