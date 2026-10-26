@@ -26,7 +26,8 @@ enum class ChatSender { USER, AEKO }
 data class ChatMessage(
     val id: String,
     val sender: ChatSender,
-    val text: String
+    val text: String,
+    val isTyping: Boolean = false
 )
 
 @Composable
@@ -78,11 +79,15 @@ fun ChatMessageBubble(
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(horizontal = 16.dp, vertical = 18.dp)
                 ) {
-                    Text(
-                        text = message.text,
-                        style = bodyMediumMd,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    if (message.isTyping) {
+                        TypingDots()
+                    } else {
+                        MarkdownText(
+                            markdown = message.text,
+                            style = bodyMediumMd,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(8.dp))
@@ -93,20 +98,22 @@ fun ChatMessageBubble(
                 ) {
                     AekoAvatarSmall()
 
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surface)
-                            .clickable(onClick = onCopyClick),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_copy),
-                            contentDescription = "Copiar",
-                            tint = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier.size(20.dp)
-                        )
+                    if (!message.isTyping) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surface)
+                                .clickable(onClick = onCopyClick),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_copy),
+                                contentDescription = "Copiar",
+                                tint = MaterialTheme.colorScheme.outline,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
                 }
             }

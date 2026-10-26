@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class SessionManagerImpl(
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val onLogout: suspend () -> Unit = {}
 ): SessionManager {
     private var session: Session? = null
     private val _authState = MutableStateFlow(false)
@@ -54,6 +55,7 @@ class SessionManagerImpl(
 
     override suspend fun logout() {
         sessionStorage.clear()
+        onLogout()
         session = null
         _authState.value = false
     }

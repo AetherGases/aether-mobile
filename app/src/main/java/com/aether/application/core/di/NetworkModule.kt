@@ -13,6 +13,11 @@ import com.aether.application.feature.auth.data.repository.AuthRepositoryImpl
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
+import com.aether.application.feature.chatbot.data.remote.ChatbotApi
+import com.aether.application.feature.chatbot.data.repository.ChatbotRepositoryImpl
+import com.aether.application.feature.chatbot.data.repository.SavedConversationsRepositoryImpl
+import com.aether.application.feature.chatbot.domain.repository.ChatbotRepository
+import com.aether.application.feature.chatbot.domain.repository.SavedConversationsRepository
 import com.aether.application.feature.home.data.remote.InventoryApi
 import com.aether.application.feature.reports.data.remote.CLOUDINARY_BASE_URL
 import com.aether.application.feature.reports.data.remote.CloudinaryUploader
@@ -123,6 +128,19 @@ object NetworkModule {
 
         single<ReportsRepository> {
             ReportsRepositoryImpl(inventoryApi = get())
+        }
+
+        single<ChatbotApi> {
+            val retrofit: Retrofit = get()
+            retrofit.create(ChatbotApi::class.java)
+        }
+
+        single<ChatbotRepository> {
+            ChatbotRepositoryImpl(chatbotApi = get(), profileApi = get(), sessionManager = get())
+        }
+
+        single<SavedConversationsRepository> {
+            SavedConversationsRepositoryImpl(dataStore = get(), sessionManager = get())
         }
     }
 }

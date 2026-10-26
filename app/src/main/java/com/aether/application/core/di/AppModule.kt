@@ -10,6 +10,7 @@ import com.aether.application.core.security.Encryptor
 import com.aether.application.feature.auth.data.local.SessionStorageImpl
 import com.aether.application.feature.auth.data.storage.SessionManagerImpl
 import com.aether.application.feature.auth.presentation.viewmodel.SplashViewModel
+import com.aether.application.feature.chatbot.domain.repository.SavedConversationsRepository
 import com.aether.application.feature.qa.presentation.viewmodel.ServerConfigViewModel
 import com.aether.application.feature.auth.domain.usecase.ChangePasswordUseCase
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
@@ -20,6 +21,7 @@ import com.aether.application.feature.auth.presentation.viewmodel.ChangePassword
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
+import com.aether.application.feature.chatbot.presentation.viewmodel.ChatbotViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import com.aether.application.feature.reports.domain.usecase.GetPendingReportsUseCase
 import com.aether.application.feature.reports.domain.usecase.GetReportsUseCase
@@ -48,7 +50,8 @@ object AppModule {
 
         single<SessionManager> {
             SessionManagerImpl(
-                sessionStorage = get()
+                sessionStorage = get(),
+                onLogout = { get<SavedConversationsRepository>().clear() }
             )
         }
 
@@ -135,6 +138,14 @@ object AppModule {
 
         viewModel {
             NewReportViewModel(newReportRepository = get())
+        }
+
+        viewModel {
+            ChatbotViewModel(
+                chatbotRepository = get(),
+                savedConversationsRepository = get(),
+                sessionManager = get()
+            )
         }
 
         viewModel {
