@@ -56,7 +56,7 @@ interface InventoryApi {
     @GET("$INVENTORY/enterprise-info")
     suspend fun getEnterpriseInfo(): GetEnterpriseInfoResponse
 
-    @GET("seal/progress")
+    @GET("$INVENTORY/seal/progress")
     suspend fun getSealProgress(): GetSealProgressResponse
 
 }

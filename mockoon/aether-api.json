@@ -81,6 +81,26 @@
         },
         {
           "type": "route",
+          "uuid": "18174f78-56ca-40b9-8f64-000aca6dd89e"
+        },
+        {
+          "type": "route",
+          "uuid": "0cf12fcf-e4b1-40c1-a7ee-f30bb326471b"
+        },
+        {
+          "type": "route",
+          "uuid": "aa5cce69-38dd-4e7f-996b-ab7225c8a720"
+        },
+        {
+          "type": "route",
+          "uuid": "bd9fd1a4-801a-40bf-b8c2-45b6821f6e41"
+        },
+        {
+          "type": "route",
+          "uuid": "e984a8cb-2f76-48af-a1c7-da6d542e7f8e"
+        },
+        {
+          "type": "route",
           "uuid": "7b16615c-c3f5-46e8-a533-f74372a6eebe"
         },
         {
@@ -100,16 +120,12 @@
       ]
     },
     {
-      "uuid": "737848b5-6fb7-49df-b5e7-d0e30d20f3ea",
-      "name": "Chatbot",
+      "uuid": "125d73f5-27f8-42b7-a28b-f9cc251aba04",
+      "name": "Hub",
       "children": [
         {
           "type": "route",
-          "uuid": "91221fd5-2a42-4233-9f1e-5ec833cc5313"
-        },
-        {
-          "type": "route",
-          "uuid": "c4d88dcb-42de-48a9-bf1f-ec825f17c061"
+          "uuid": "4e20ceeb-73eb-40ce-9973-ce811146beb9"
         }
       ]
     },
@@ -124,6 +140,20 @@
         {
           "type": "route",
           "uuid": "5e0a9c47-2b6d-4f1e-9a3c-7d8e1f2a4b60"
+        }
+      ]
+    },
+    {
+      "uuid": "737848b5-6fb7-49df-b5e7-d0e30d20f3ea",
+      "name": "Chatbot",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "91221fd5-2a42-4233-9f1e-5ec833cc5313"
+        },
+        {
+          "type": "route",
+          "uuid": "c4d88dcb-42de-48a9-bf1f-ec825f17c061"
         }
       ]
     }
@@ -568,7 +598,7 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "seal/progress",
+      "endpoint": "api/inventories/seal/progress",
       "responses": [
         {
           "uuid": "a8d5e1b4-2c63-4f97-8e0a-5b9c4d3f2e61",
@@ -595,15 +625,15 @@
       "streamingInterval": 0
     },
     {
-      "uuid": "91221fd5-2a42-4233-9f1e-5ec833cc5313",
+      "uuid": "18174f78-56ca-40b9-8f64-000aca6dd89e",
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "hub/ai/session/:sessionId/messages",
+      "endpoint": "api/inventories/:id/analysis",
       "responses": [
         {
-          "uuid": "ffe3f44c-f9e0-42f3-a625-7ff4d8db74b9",
-          "body": "[\n  {\n    \"input_message\": \"Como funciona o Aether?\",\n    \"output_message\": \"O Aether ajuda sua empresa a registrar o inventário de emissões e a acompanhar o Selo Paraná.\",\n    \"submitted_at\": \"2026-10-17T14:30:00\"\n  },\n  {\n    \"input_message\": \"E como crio um relatório?\",\n    \"output_message\": \"Na tela inicial, toque em Criar relatório e envie o arquivo do inventário.\",\n    \"submitted_at\": \"2026-10-17T14:31:10\"\n  }\n]",
+          "uuid": "468bb61d-d67c-4655-afdb-def181112d85",
+          "body": "{\n  \"totalEmissions\": 2403,\n  \"changePercent\": 12,\n  \"scopes\": [\n    {\n      \"name\": \"Escopo 1\",\n      \"percent\": 63\n    },\n    {\n      \"name\": \"Escopo 2\",\n      \"percent\": 27\n    },\n    {\n      \"name\": \"Escopo 3\",\n      \"percent\": 10\n    }\n  ],\n  \"priorityReplacement\": {\n    \"reduction\": 817,\n    \"percent\": 34,\n    \"technology\": \"Biometano\",\n    \"scope\": \"Escopo 1\"\n  },\n  \"secondaryReplacement\": {\n    \"reduction\": 264,\n    \"percent\": 11,\n    \"technology\": \"Energia solar fotovoltaica\",\n    \"scope\": \"Escopo 2\"\n  },\n  \"monthlySavings\": 87400,\n  \"initialInvestment\": 1220000\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -626,15 +656,15 @@
       "streamingInterval": 0
     },
     {
-      "uuid": "c4d88dcb-42de-48a9-bf1f-ec825f17c061",
+      "uuid": "0cf12fcf-e4b1-40c1-a7ee-f30bb326471b",
       "type": "http",
       "documentation": "",
-      "method": "post",
-      "endpoint": "hub/ai/user/session/message",
+      "method": "patch",
+      "endpoint": "api/inventories/pending/:id/approve",
       "responses": [
         {
-          "uuid": "8d77aced-a512-4431-90ef-9e5b43ebfa1c",
-          "body": "{\n  \"input_message\": \"{{body 'input'}}\",\n  \"output_message\": \"Esta é uma resposta simulada da Aeko.\",\n  \"submitted_at\": \"2026-10-17T14:32:00\",\n  \"id_session\": \"{{#if (body 'id_session')}}{{body 'id_session'}}{{else}}65a8b3d6c0f8e1d7f4b2c003{{/if}}\",\n  \"session_name\": \"Conversa simulada\"\n}",
+          "uuid": "e49347bf-3e2d-4f28-a511-3de4746b527e",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"validationMessage\": \"{{body 'message'}}\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-10-19T10:00:00\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -657,15 +687,15 @@
       "streamingInterval": 0
     },
     {
-      "uuid": "6576d3e9-1386-4274-a997-3c7fdb749dba",
+      "uuid": "aa5cce69-38dd-4e7f-996b-ab7225c8a720",
       "type": "http",
       "documentation": "",
-      "method": "get",
-      "endpoint": "hub/ai/sessions/user/:userId",
+      "method": "patch",
+      "endpoint": "api/inventories/pending/:id/reject",
       "responses": [
         {
-          "uuid": "db109117-8e8a-4370-afd3-0194e0565e8f",
-          "body": "[\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c001\",\n    \"name\": \"Funcionamento do Aether\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c002\",\n    \"name\": \"Como reduzir emissões\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c003\",\n    \"name\": \"Criação de relatório\"\n  }\n]",
+          "uuid": "d372014c-82b2-42b6-9cda-6fc73e7032ca",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"validationMessage\": \"{{body 'message'}}\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-10-19T10:00:00\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -679,6 +709,234 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "4e20ceeb-73eb-40ce-9973-ce811146beb9",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "hub/ai/report/:id",
+      "responses": [
+        {
+          "uuid": "e02b7de9-4be2-4da1-8d02-750fb15aa0ab",
+          "body": "{\n  \"defined_problem\": \"Elevada emissão no processo produtivo\",\n  \"solving_method\": \"Substituir combustível fóssil por biometano.\",\n  \"reasoning\": \"A utilização de biometano pode reduzir as emissões associadas ao consumo de combustíveis fósseis, dependendo das características do processo produtivo e da origem do combustível.\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "0e49c824-e11c-4f87-9a5a-31134daee0b5",
+          "body": "{\n  \"detail\": \"Improvement plan with id_external_inventory {{urlParam 'id'}} not found.\"\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "No plan",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "404",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "bd9fd1a4-801a-40bf-b8c2-45b6821f6e41",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/mine/:id",
+      "responses": [
+        {
+          "uuid": "3c794100-b8aa-484e-88d4-1344d9f28015",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"UNDER_REVIEW\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Pending",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "92bd5622-d33d-4e5b-b343-041851ca4b1a",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório detalhado, vai ajudar muito na nossa análise.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Approved",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "2",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "b9a872b4-4263-460a-bc21-faef7d0e48ad",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório com informações não coerentes.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Rejected",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "3",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "e984a8cb-2f76-48af-a1c7-da6d542e7f8e",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/reviewed/:id",
+      "responses": [
+        {
+          "uuid": "6b714db6-7233-43c7-8055-c9d59452a6f8",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"UNDER_REVIEW\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Pending",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "df7a701c-1639-4177-b8b9-f56c79143374",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório detalhado, vai ajudar muito na nossa análise.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Approved",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "2",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "ef4af226-83be-4988-ad16-838f3813e79f",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório com informações não coerentes.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Rejected",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "3",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
           "crudKey": "id",
           "callbacks": []
         }
@@ -1108,6 +1366,99 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "91221fd5-2a42-4233-9f1e-5ec833cc5313",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "hub/ai/session/:sessionId/messages",
+      "responses": [
+        {
+          "uuid": "ffe3f44c-f9e0-42f3-a625-7ff4d8db74b9",
+          "body": "[\n  {\n    \"input_message\": \"Como funciona o Aether?\",\n    \"output_message\": \"O Aether ajuda sua empresa a registrar o inventário de emissões e a acompanhar o Selo Paraná.\",\n    \"submitted_at\": \"2026-10-17T14:30:00\"\n  },\n  {\n    \"input_message\": \"E como crio um relatório?\",\n    \"output_message\": \"Na tela inicial, toque em Criar relatório e envie o arquivo do inventário.\",\n    \"submitted_at\": \"2026-10-17T14:31:10\"\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "c4d88dcb-42de-48a9-bf1f-ec825f17c061",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "hub/ai/user/session/message",
+      "responses": [
+        {
+          "uuid": "8d77aced-a512-4431-90ef-9e5b43ebfa1c",
+          "body": "{\n  \"input_message\": \"{{body 'input'}}\",\n  \"output_message\": \"Esta é uma resposta simulada da Aeko.\",\n  \"submitted_at\": \"2026-10-17T14:32:00\",\n  \"id_session\": \"{{#if (body 'id_session')}}{{body 'id_session'}}{{else}}65a8b3d6c0f8e1d7f4b2c003{{/if}}\",\n  \"session_name\": \"Conversa simulada\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "6576d3e9-1386-4274-a997-3c7fdb749dba",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "hub/ai/sessions/user/:userId",
+      "responses": [
+        {
+          "uuid": "db109117-8e8a-4370-afd3-0194e0565e8f",
+          "body": "[\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c001\",\n    \"name\": \"Funcionamento do Aether\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c002\",\n    \"name\": \"Como reduzir emissões\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c003\",\n    \"name\": \"Criação de relatório\"\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -1126,6 +1477,10 @@
     {
       "type": "folder",
       "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75"
+    },
+    {
+      "type": "folder",
+      "uuid": "125d73f5-27f8-42b7-a28b-f9cc251aba04"
     },
     {
       "type": "folder",

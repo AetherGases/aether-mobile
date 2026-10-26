@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.core.ui.components.GlassIconButton
 import com.aether.core.ui.theme.*
-import com.aether.application.ui.components.FormErrorText
+import com.aether.application.core.ui.components.FormErrorText
 
 @Composable
 fun VerificationScreen(

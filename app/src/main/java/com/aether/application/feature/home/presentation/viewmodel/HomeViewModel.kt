@@ -33,6 +33,9 @@ import java.util.Locale
 
 private const val TAG = "HomeViewModel"
 
+// Shown on a card while the user has no inventory yet
+private const val NO_VALUE = "—"
+
 data class HomeUiState(
     val userName: String = "",
     val userLastName: String = "",
@@ -135,32 +138,43 @@ class HomeViewModel(
         }
     }
 
+    // Cards load independently: one failing is left out and the others still show
     private suspend fun getHomeCards(): List<HomeHeroCard> {
         val isManager = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
-        val lastInventory = if (isManager) {
-            homeRepository.getLastReviewedInventory()
-        } else {
-            homeRepository.getLastSubmittedInventory()
-        }
-        val inventoryCount = homeRepository.getInventoryCount().let {
-            if (isManager) it.reviewedCount else it.submittedCount
+        // The hero and summary cards share these, so they are fetched once
+        val summary = loadSection("inventory summary") {
+            val lastInventory = if (isManager) {
+                homeRepository.getLastReviewedInventory()
+            } else {
+                homeRepository.getLastSubmittedInventory()
+            }
+            val inventoryCount = homeRepository.getInventoryCount().let {
+                if (isManager) it.reviewedCount else it.submittedCount
+            }
+            lastInventory to inventoryCount
         }
 
-        val cards = listOf(
-            getHeroCard(isManager, lastInventory, inventoryCount),
-            getReportsSummaryCard(isManager, lastInventory, inventoryCount),
-            getUnitEmissionsCard(),
+        val cards = listOfNotNull(
+            summary?.let { (lastInventory, inventoryCount) ->
+                loadSection("hero card") { getHeroCard(isManager, lastInventory, inventoryCount) }
+            },
+            summary?.let { (lastInventory, inventoryCount) ->
+                getReportsSummaryCard(isManager, lastInventory, inventoryCount)
+            },
+            loadSection("unit emissions card") { getUnitEmissionsCard() },
             getSealProgressCard()
         )
-        return cards.filterNotNull()
+        // Nothing loaded counts as a failure, so the previous cards are kept
+        check(cards.isNotEmpty()) { "No home card loaded" }
+        return cards
     }
 
     private suspend fun getHeroCard(
         isManager: Boolean,
-        lastInventory: Inventory,
+        lastInventory: Inventory?,
         inventoryCount: Int
     ): HomeHeroCard? {
-        val lastDate = lastInventory.createdAt.format(dateFormatter)
+        val lastDate = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE
 
         if (isManager) {
             val enterpriseInfo = homeRepository.getEnterpriseInfos()
@@ -178,7 +192,7 @@ class HomeViewModel(
                 "MMM",
                 Locale.forLanguageTag("pt-BR")
             )
-        val reportingPeriodLabel = lastInventory.period?.let { period ->
+        val reportingPeriodLabel = lastInventory?.period?.let { period ->
             buildString {
                 append(period.start.format(monthFormatter))
                 append("-")
@@ -197,19 +211,19 @@ class HomeViewModel(
         return EmployeeHeroCard(
             lastSubmittedLabel = lastDate,
             reportingPeriodLabel = reportingPeriodLabel,
-            statusLabel = lastInventory.status.toReportStatus().name,
+            statusLabel = lastInventory?.status?.toReportStatus()?.name ?: NO_VALUE,
             summaryCount = "$inventoryCount"
         )
     }
 
     private fun getReportsSummaryCard(
         isManager: Boolean,
-        lastInventory: Inventory,
+        lastInventory: Inventory?,
         inventoryCount: Int
     ): HomeHeroCard? =
         ReportsSummaryHomeCard(
             title = if (isManager) "Relatórios analisados" else "Relatórios realizados",
-            lastSubmittedLabel = lastInventory.createdAt.format(dateFormatter),
+            lastSubmittedLabel = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE,
             count = "$inventoryCount",
             onViewHistoryClick = {
                 viewModelScope.launch { _events.send(HomeEvent.NavigateToHistory) }
