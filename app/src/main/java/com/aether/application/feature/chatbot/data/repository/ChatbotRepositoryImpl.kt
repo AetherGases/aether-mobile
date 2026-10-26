@@ -1,5 +1,6 @@
 package com.aether.application.feature.chatbot.data.repository
 
+import android.util.Log
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.network.readErrorMessage
 import com.aether.application.feature.auth.data.remote.ProfileApi
@@ -17,6 +18,8 @@ import java.io.IOException
 import java.net.HttpURLConnection.HTTP_BAD_GATEWAY
 import java.net.HttpURLConnection.HTTP_BAD_REQUEST
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
+
+private const val TAG = "ChatbotRepository"
 
 // Not in HttpURLConnection
 private const val HTTP_UNPROCESSABLE_ENTITY = 422
@@ -38,7 +41,9 @@ class ChatbotRepositoryImpl(
             chatbotApi.getSessions(identity.userId.toString()).map { Conversation(it.id, it.name) }
         } catch (e: HttpException) {
             // The hub answers 404 instead of an empty list for a user without sessions
-            if (e.code() == HTTP_NOT_FOUND) emptyList() else throw e
+            if (e.code() != HTTP_NOT_FOUND) throw e
+            Log.d(TAG, "No conversations yet (404)")
+            emptyList()
         }
     }
 
@@ -83,8 +88,10 @@ class ChatbotRepositoryImpl(
         } catch (e: ChatbotException) {
             throw e
         } catch (e: HttpException) {
+            Log.e(TAG, "Hub request failed (${e.code()})", e)
             throw ChatbotException(e.userMessage(), e)
         } catch (e: IOException) {
+            Log.e(TAG, "Hub unreachable", e)
             throw ChatbotException("Sem conexão com o servidor. Tente novamente.", e)
         }
 

@@ -1,5 +1,6 @@
 package com.aether.application.feature.home.data.repository
 
+import android.util.Log
 import com.aether.application.feature.home.data.remote.InventoryApi
 import com.aether.application.feature.home.domain.model.EnterpriseInfo
 import com.aether.application.feature.home.domain.model.Inventory
@@ -9,6 +10,8 @@ import com.aether.application.feature.home.domain.model.UnitInfo
 import com.aether.application.feature.home.domain.repository.HomeRepository
 import retrofit2.HttpException
 import java.net.HttpURLConnection.HTTP_NOT_FOUND
+
+private const val TAG = "HomeRepository"
 
 class HomeRepositoryImpl(
     private val inventoryApi: InventoryApi
@@ -42,7 +45,9 @@ class HomeRepositoryImpl(
         try {
             block()
         } catch (e: HttpException) {
-            if (e.code() == HTTP_NOT_FOUND) null else throw e
+            if (e.code() != HTTP_NOT_FOUND) throw e
+            Log.d(TAG, "No inventory yet (404)")
+            null
         }
 
     override suspend fun getInventoryCount(): InventoryCount =

@@ -2,6 +2,7 @@ package com.aether.application.core.di
 
 import com.aether.application.BuildConfig
 import com.aether.application.core.network.ApiClient
+import com.aether.application.core.network.HttpErrorLoggingInterceptor
 import com.aether.application.core.network.ApiConfig
 import com.aether.application.core.network.AuthInterceptor
 import com.aether.application.core.network.BaseUrlInterceptor
@@ -123,7 +124,9 @@ object NetworkModule {
             CloudinaryUploader(
                 contentResolver = androidContext().contentResolver,
                 // A plain client: the app's own one would send our access token to Cloudinary
-                client = OkHttpClient(),
+                client = OkHttpClient.Builder()
+                    .addInterceptor(HttpErrorLoggingInterceptor())
+                    .build(),
                 uploadBaseUrl = { signature ->
                     // A Mockoon signature can only be accepted by Mockoon itself
                     if (BuildConfig.DEBUG && signature.cloudName == MOCK_CLOUD_NAME) {
