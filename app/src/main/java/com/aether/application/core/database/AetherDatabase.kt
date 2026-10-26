@@ -51,7 +51,7 @@ class AetherDatabase(context: Context) :
                 ${Profile.NAME} TEXT NOT NULL,
                 ${Profile.EMAIL} TEXT NOT NULL,
                 ${Profile.CPF} TEXT NOT NULL,
-                ${Profile.PHONE} TEXT NOT NULL,
+                ${Profile.PHONE} TEXT,
                 ${Profile.AVATAR_URL} TEXT,
                 ${Profile.CREATED_AT} INTEGER
             )
