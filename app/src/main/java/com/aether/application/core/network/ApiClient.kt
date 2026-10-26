@@ -11,6 +11,9 @@ import retrofit2.Retrofit
 private const val READ_TIMEOUT_SECONDS = 90L
 
 object ApiClient {
+    /** Fields the backend adds later must not break the DTOs that don't declare them yet. */
+    val json = Json { ignoreUnknownKeys = true }
+
     fun getOkHttpClient(
         authInterceptor: AuthInterceptor,
         tokenAuthenticator: TokenAuthenticator,
@@ -34,8 +37,7 @@ object ApiClient {
             .baseUrl(ApiConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(
-                Json { ignoreUnknownKeys = true }
-                    .asConverterFactory("application/json".toMediaType())
+                json.asConverterFactory("application/json".toMediaType())
             )
             .build()
     }

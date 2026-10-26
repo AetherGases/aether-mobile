@@ -1,8 +1,6 @@
 package com.aether.application.feature.home.data.repository
 
 import com.aether.application.feature.home.data.remote.InventoryApi
-import com.aether.application.feature.home.data.remote.dto.GetMyInventoriesRequest
-import com.aether.application.feature.home.data.remote.dto.GetPendingInventoriesRequest
 import com.aether.application.feature.home.domain.model.EnterpriseInfo
 import com.aether.application.feature.home.domain.model.Inventory
 import com.aether.application.feature.home.domain.model.InventoryCount
@@ -15,20 +13,16 @@ class HomeRepositoryImpl(
 ): HomeRepository {
 
     override suspend fun getMyInventories(take: Int): List<Inventory> {
-        val response = inventoryApi.getMyInventories(
-            request = GetMyInventoriesRequest(take = take)
-        )
-        return response.inventories
+        val response = inventoryApi.getMyInventories(take = take)
+        return response.inventories.map { it.toDomain() }
     }
 
     override suspend fun getPendingInventories(take: Int): List<Inventory> {
-        val response = inventoryApi.getPendingInventories(
-            request = GetPendingInventoriesRequest(take = take)
-        )
-        return response.inventories
+        val response = inventoryApi.getPendingInventories(take = take)
+        return response.inventories.map { it.toDomain() }
     }
 
-    // TODO: backed by guessed endpoints, see InventoryApi
+    // TODO: no backend route yet for unit and enterprise info, see InventoryApi
     override suspend fun getMonthlyUnitInfos(): UnitInfo =
         inventoryApi.getUnitInfo().toDomain()
 
@@ -36,10 +30,10 @@ class HomeRepositoryImpl(
         inventoryApi.getEnterpriseInfo().toDomain()
 
     override suspend fun getLastReviewedInventory(): Inventory =
-        inventoryApi.getLastReviewedInventory()
+        inventoryApi.getLastReviewedInventory().toDomain()
 
     override suspend fun getLastSubmittedInventory(): Inventory =
-        inventoryApi.getLastSubmittedInventory()
+        inventoryApi.getLastSubmittedInventory().toDomain()
 
     override suspend fun getInventoryCount(): InventoryCount =
         inventoryApi.countInventories().toDomain()
