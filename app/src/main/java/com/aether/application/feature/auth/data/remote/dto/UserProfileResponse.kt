@@ -11,9 +11,19 @@ data class UserProfileResponse(
     val cpf: String,
     val email: String,
     val name: String,
-    val avatarUrl: String? = null, // TODO(confirmar nome no back)
-    val phone: String,
+    val phone: String?,
+    val image: ImageDto? = null,
     val permissions: List<Permission>,
     @Serializable(with = InstantSerializer::class)
-    val createdAt: Instant? = null // TODO(confirmar nome no back)
-)
+    val createdAt: Instant? = null, // TODO(confirmar nome no back)
+    val enterprise: EnterpriseDto? = null
+) {
+    val avatarUrl: String?
+        get() = image?.path
+
+    @Serializable
+    data class ImageDto(val id: Long, val name: String, val path: String)
+
+    @Serializable
+    data class EnterpriseDto(val id: Long)
+}
