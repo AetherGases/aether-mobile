@@ -1,305 +1,224 @@
 package com.aether.core.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.aether.application.R
-import com.aether.core.ui.theme.AetherTheme
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Star
+import com.aether.core.ui.theme.*
 
-data class BottomNavItemData<T>(
-    val route: T,
+data class BottomBarItem(
+    val route: String,
     val label: String,
-    val iconRes: Int? = null,
-    val iconVector: ImageVector? = null
+    @DrawableRes val iconRes: Int
 )
 
+private val HomeButtonSize = 56.dp
+private val HomeOverlap = 24.dp
+private val BarContentHeight = 76.dp
+
 @Composable
-fun <T> AppBottomNavigationBar(
-    leftItems: List<BottomNavItemData<T>>,
-    rightItems: List<BottomNavItemData<T>>,
-    centerItem: BottomNavItemData<T>,
-    currentRoute: T,
-    onItemSelected: (T) -> Unit,
+fun AetherBottomBar(
+    items: List<BottomBarItem>,
+    homeItem: BottomBarItem,
+    selectedRoute: String?,
+    onItemClick: (BottomBarItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(96.dp),
-        contentAlignment = Alignment.BottomCenter
-    ) {
+    val half = items.size / 2
+    val barShape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+    val shadowColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.12f)
 
-        Box(
+    Box(modifier = modifier.fillMaxWidth()) {
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(72.dp)
+                .padding(top = HomeOverlap)
                 .shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                    spotColor = Color.Black.copy(alpha = 0.08f)
+                    elevation = 16.dp,
+                    shape = barShape,
+                    ambientColor = shadowColor,
+                    spotColor = shadowColor
                 )
-                .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                .background(Color.White.copy(alpha = 0.92f))
+                .background(MaterialTheme.colorScheme.surface, barShape)
+                .navigationBarsPadding()
+                .height(BarContentHeight)
+                .padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                leftItems.forEach { item ->
-                    BottomNavItem(
-                        item = item,
-                        isSelected = currentRoute == item.route,
-                        onClick = { onItemSelected(item.route) }
-                    )
-                }
-                Spacer(modifier = Modifier.width(64.dp))
-                rightItems.forEach { item ->
-                    BottomNavItem(
-                        item = item,
-                        isSelected = currentRoute == item.route,
-                        onClick = { onItemSelected(item.route) }
-                    )
-                }
+            items.take(half).forEach { item ->
+                BottomBarTab(
+                    item = item,
+                    selected = item.route == selectedRoute,
+                    onClick = { onItemClick(item) },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(Modifier.width(HomeButtonSize + 16.dp))
+
+            items.drop(half).forEach { item ->
+                BottomBarTab(
+                    item = item,
+                    selected = item.route == selectedRoute,
+                    onClick = { onItemClick(item) },
+                    modifier = Modifier.weight(1f)
+                )
             }
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = (-4).dp)
-                .size(64.dp)
-                .shadow(
-                    elevation = 10.dp,
-                    shape = CircleShape,
-                    spotColor = Color(0xFF34D399).copy(alpha = 0.4f)
-                )
-                .clip(CircleShape)
-                .background(Color(0xFF34D399))
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { onItemSelected(centerItem.route) },
-            contentAlignment = Alignment.Center
-        ) {
-            RenderNavItemIcon(
-                item = centerItem,
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
-            )
-        }
+        HomeButton(
+            item = homeItem,
+            selected = homeItem.route == selectedRoute,
+            onClick = { onItemClick(homeItem) },
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 
 @Composable
-private fun <T> BottomNavItem(
-    item: BottomNavItemData<T>,
-    isSelected: Boolean,
-    onClick: () -> Unit
+private fun BottomBarTab(
+    item: BottomBarItem,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val activeColor = Color(0xFF34D399)
-    val inactiveColor = Color(0xFF94A3B8)
+    val color = if (selected) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.outline
+    }
 
     Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .selectable(selected = selected, role = Role.Tab, onClick = onClick)
+            .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { onClick() }
-            .padding(vertical = 4.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        RenderNavItemIcon(
-            item = item,
-            tint = if (isSelected) activeColor else inactiveColor,
-            modifier = Modifier.size(26.dp)
+        Icon(
+            painter = painterResource(id = item.iconRes),
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(24.dp)
         )
-        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = item.label,
-            color = if (isSelected) activeColor else inactiveColor,
-            fontSize = 12.sp
+            style = bodySmallMedium,
+            color = color,
+            maxLines = 1
         )
     }
 }
 
 @Composable
-private fun <T> RenderNavItemIcon(
-    item: BottomNavItemData<T>,
-    tint: Color,
+private fun HomeButton(
+    item: BottomBarItem,
+    selected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isPreview = LocalInspectionMode.current
+    val secondary = MaterialTheme.colorScheme.secondary
+    val onSecondary = MaterialTheme.colorScheme.onSecondary
 
-    if (isPreview) {
-        // Ícones nativos do Material 3 exclusivos para o Preview (evita o Render Issue)
+    Box(
+        modifier = modifier
+            .size(HomeButtonSize)
+            .shadow(
+                elevation = 12.dp,
+                shape = CircleShape,
+                ambientColor = secondary.copy(alpha = 0.4f),
+                spotColor = secondary.copy(alpha = 0.4f)
+            )
+            .clip(CircleShape)
+            .background(Brush.linearGradient(listOf(lerp(secondary, onSecondary, 0.25f), secondary)))
+            .border(if (selected) 2.5.dp else 1.5.dp, onSecondary.copy(alpha = 0.85f), CircleShape)
+            .selectable(selected = selected, role = Role.Tab, onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
         Icon(
-            imageVector = item.iconVector ?: Icons.Outlined.Star,
+            painter = painterResource(id = item.iconRes),
             contentDescription = item.label,
-            tint = tint,
-            modifier = modifier
+            tint = onSecondary,
+            modifier = Modifier.size(28.dp)
         )
-    } else {
-        if (item.iconRes != null) {
-            Icon(
-                painter = painterResource(id = item.iconRes),
-                contentDescription = item.label,
-                tint = tint,
-                modifier = modifier
+    }
+}
+
+private val previewHome = BottomBarItem("home", "Início", R.drawable.ic_nav_home)
+
+private fun previewItems(firstLabel: String) = listOf(
+    BottomBarItem("reports", firstLabel, R.drawable.ic_nav_reports),
+    BottomBarItem("calculator", "Calculadora", R.drawable.ic_nav_calculator),
+    BottomBarItem("aeko", "Chatbot", R.drawable.ic_nav_chatbot),
+    BottomBarItem("settings", "Perfil", R.drawable.ic_nav_profile)
+)
+
+@Preview(showBackground = true, backgroundColor = 0xFFF0F4F8, widthDp = 375)
+@Composable
+fun AetherBottomBarPreview() {
+    AetherTheme(darkTheme = false) {
+        Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+            AetherBottomBar(
+                items = previewItems("Relatórios"),
+                homeItem = previewHome,
+                selectedRoute = "calculator",
+                onItemClick = {}
             )
-        } else if (item.iconVector != null) {
-            Icon(
-                imageVector = item.iconVector,
-                contentDescription = item.label,
-                tint = tint,
-                modifier = modifier
+            AetherBottomBar(
+                items = previewItems("Criação"),
+                homeItem = previewHome,
+                selectedRoute = "home",
+                onItemClick = {}
             )
         }
     }
 }
 
-//      FUNCIONÁRIO
-enum class EmployeeTab { CREATION, CALCULATOR, HOME, CHATBOT, PROFILE }
-
+@Preview(showBackground = true, backgroundColor = 0xFF0B101E, widthDp = 375)
 @Composable
-fun EmployeeBottomNavigationBar(
-    currentTab: EmployeeTab,
-    onTabSelected: (EmployeeTab) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    AppBottomNavigationBar(
-        leftItems = listOf(
-            BottomNavItemData(
-                route = EmployeeTab.CREATION,
-                label = "Criação",
-                iconRes = R.drawable.ic_report_creation_bottom
-            ),
-            BottomNavItemData(
-                route = EmployeeTab.CALCULATOR,
-                label = "Calculadora",
-                iconRes = R.drawable.ic_calculator_bottom
+fun AetherBottomBarDarkPreview() {
+    AetherTheme(darkTheme = true) {
+        Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+            AetherBottomBar(
+                items = previewItems("Relatórios"),
+                homeItem = previewHome,
+                selectedRoute = "reports",
+                onItemClick = {}
             )
-        ),
-        rightItems = listOf(
-            BottomNavItemData(
-                route = EmployeeTab.CHATBOT,
-                label = "Chatbot",
-                iconRes = R.drawable.ic_chatbot
-            ),
-            BottomNavItemData(
-                route = EmployeeTab.PROFILE,
-                label = "Perfil",
-                iconRes = R.drawable.ic_profile
-            )
-        ),
-        centerItem = BottomNavItemData(
-            route = EmployeeTab.HOME,
-            label = "Home",
-            iconRes = R.drawable.ic_home
-        ),
-        currentRoute = currentTab,
-        onItemSelected = onTabSelected,
-        modifier = modifier
-    )
-}
-
-//      GERENTE
-enum class ManagerTab { REPORTS, CALCULATOR, HOME, CHATBOT, PROFILE }
-
-@Composable
-fun ManagerBottomNavigationBar(
-    currentTab: ManagerTab,
-    onTabSelected: (ManagerTab) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    AppBottomNavigationBar(
-        leftItems = listOf(
-            BottomNavItemData(
-                route = ManagerTab.REPORTS,
-                label = "Relatórios",
-                iconRes = R.drawable.ic_report_creation_bottom
-            ),
-            BottomNavItemData(
-                route = ManagerTab.CALCULATOR,
-                label = "Calculadora",
-                iconRes = R.drawable.ic_calculator_bottom
-            )
-        ),
-        rightItems = listOf(
-            BottomNavItemData(
-                route = ManagerTab.CHATBOT,
-                label = "Chatbot",
-                iconRes = R.drawable.ic_chatbot
-            ),
-            BottomNavItemData(
-                route = ManagerTab.PROFILE,
-                label = "Perfil",
-                iconRes = R.drawable.ic_profile
-            )
-        ),
-        centerItem = BottomNavItemData(
-            route = ManagerTab.HOME,
-            label = "Home",
-            iconRes = R.drawable.ic_home
-        ),
-        currentRoute = currentTab,
-        onItemSelected = onTabSelected,
-        modifier = modifier
-    )
-
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFF8FAFC)
-@Composable
-fun EmployeeBottomNavigationBarPreview() {
-    AetherTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            EmployeeBottomNavigationBar(
-                currentTab = EmployeeTab.HOME,
-                onTabSelected = {}
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFF8FAFC)
-@Composable
-fun ManagerBottomNavigationBarPreview() {
-    AetherTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            ManagerBottomNavigationBar(
-                currentTab = ManagerTab.HOME,
-                onTabSelected = {}
+            AetherBottomBar(
+                items = previewItems("Criação"),
+                homeItem = previewHome,
+                selectedRoute = null,
+                onItemClick = {}
             )
         }
     }
