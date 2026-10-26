@@ -8,16 +8,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.components.AetherTopBar
+import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.components.NotificationCard
 import com.aether.core.ui.components.NotificationStatus
 import com.aether.core.ui.theme.*
@@ -52,7 +52,7 @@ fun NotificationsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         AetherTopBar(title = "Notificações", onBackClick = onBackClicked)
 
@@ -82,7 +82,7 @@ fun NotificationsScreen(
         ) {
             sections.forEach {section ->
                 Spacer(Modifier.height(36.dp))
-                Text(section.title, style = titleLarge, color = textPrimaryLight)
+                Text(section.title, style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
                 Spacer(Modifier.height(14.dp))
                 section.items.forEachIndexed { index, item ->
                     NotificationCard(
@@ -91,8 +91,12 @@ fun NotificationsScreen(
                         reviewer = item.reviewer,
                         timestamp = item.timestamp,
                         relativeTime = item.relativeTime,
-                        modifier = Modifier.shadow(elevation = 12.dp, shape = RoundedCornerShape(18.dp), ambientColor = textTertiaryLight.copy(alpha = 0.5f), spotColor = textTertiaryLight.copy(alpha = 0.5f))
-
+                        modifier = Modifier.shadow(
+                            elevation = 12.dp,
+                            shape = RoundedCornerShape(18.dp),
+                            ambientColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                            spotColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                        )
                     )
                     if (index != section.items.lastIndex) {
                         Spacer(Modifier.height(12.dp))
@@ -114,18 +118,31 @@ private fun NotificationFilterChip(
     Box(
         modifier = Modifier
             .then(
-                if (selected) Modifier.shadow(elevation = 6.dp, shape = shape, ambientColor = purple500, spotColor = purple500)
+                if (selected) Modifier.shadow(
+                    elevation = 6.dp,
+                    shape = shape,
+                    ambientColor = MaterialTheme.colorScheme.primary,
+                    spotColor = MaterialTheme.colorScheme.primary
+                )
                 else Modifier
             )
             .clip(shape)
             .then(
                 if (selected) {
                     Modifier
-                        .background(Brush.horizontalGradient(listOf(Color(0xFFA27EF3), purple500)), shape)
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    MaterialTheme.colorScheme.inversePrimary,
+                                    MaterialTheme.colorScheme.primary
+                                )
+                            ),
+                            shape
+                        )
                 } else {
                     Modifier
-                        .background(green500.copy(alpha = 0.1f), shape)
-                        .border(1.dp, green500.copy(alpha = 0.35f), shape)
+                        .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f), shape)
+                        .border(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.35f), shape)
                 }
             )
             .clickable(onClick = onClick)
@@ -136,7 +153,7 @@ private fun NotificationFilterChip(
             style = labelLarge,
             maxLines = 1,
             softWrap = false,
-            color = if (selected) Color.White else green500
+            color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondary
         )
     }
 }

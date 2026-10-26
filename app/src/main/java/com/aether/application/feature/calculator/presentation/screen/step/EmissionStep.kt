@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -25,7 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.components.AetherTopBar
+import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.components.FormDropdownField
 import com.aether.core.ui.theme.*
 
@@ -56,20 +57,20 @@ fun EmissionStep(
         ) {
             Spacer(Modifier.height(16.dp))
 
-            Text("Emissão Atual", style = titleLarge, color = textPrimaryLight)
+            Text("Emissão Atual", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
 
             Spacer(Modifier.height(32.dp))
 
             Text(
                 text = buildAnnotatedString {
                     append("Tipo de gás poluente")
-                    withStyle(style = SpanStyle(color = lightRed)) {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                         append("*")
                     }
                 },
                 style = labelMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = textPrimaryLight
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(8.dp))
 
@@ -86,13 +87,13 @@ fun EmissionStep(
             Text(
                 text = buildAnnotatedString {
                     append("Volume emitido por mês")
-                    withStyle(style = SpanStyle(color = lightRed)) {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                         append("*")
                     }
                 },
                 style = labelMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = textPrimaryLight
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(8.dp))
 
@@ -104,7 +105,7 @@ fun EmissionStep(
                     Text(
                         text = "tCO₂e/mês",
                         style = bodyLarge,
-                        color = textSecondaryLight,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(end = 16.dp)
                     )
                 },
@@ -113,8 +114,8 @@ fun EmissionStep(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 shape = RoundedCornerShape(percent = 50),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = purple300,
-                    unfocusedBorderColor = textDisabledLight,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                     unfocusedContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent
                 )
@@ -125,13 +126,13 @@ fun EmissionStep(
             Text(
                 text = buildAnnotatedString {
                     append("Escopo")
-                    withStyle(style = SpanStyle(color = lightRed)) {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                         append("*")
                     }
                 },
                 style = labelMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = textPrimaryLight
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(8.dp))
 
@@ -161,12 +162,12 @@ fun EmissionStep(
                         modifier = Modifier
                             .width(24.dp)
                             .height(6.dp)
-                            .background(green500, RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(50))
                     )
                     Box(
                         modifier = Modifier
                             .size(6.dp)
-                            .background(textDisabledLight, RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(50))
                     )
                 }
 
@@ -177,21 +178,24 @@ fun EmissionStep(
                         .size(56.dp)
                         .background(
                             brush = Brush.linearGradient(
-                                colors = listOf(purple500, purple300)
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.primary,
+                                    MaterialTheme.colorScheme.inversePrimary
+                                )
                             ),
                             shape = RoundedCornerShape(50)
                         )
                         .shadow(
                             elevation = 10.dp,
                             shape = CircleShape,
-                            ambientColor = purple500,
-                            spotColor = purple500.copy(alpha = 0.65f)
+                            ambientColor = MaterialTheme.colorScheme.primary,
+                            spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.65f)
                         )
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = "Prosseguir",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(32.dp)
                     )
                 }

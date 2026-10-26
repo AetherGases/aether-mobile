@@ -3,6 +3,8 @@ package com.aether.application.core.di
 import com.aether.application.R
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.location.AddressGeocoder
+import com.aether.application.core.location.DeviceLocationProvider
 import com.aether.application.core.network.ServerConfigStorage
 import com.aether.application.core.network.ServerConfigStorageImpl
 import com.aether.application.core.security.AndroidEncryptor
@@ -10,6 +12,7 @@ import com.aether.application.core.security.Encryptor
 import com.aether.application.feature.auth.data.local.SessionStorageImpl
 import com.aether.application.feature.auth.data.storage.SessionManagerImpl
 import com.aether.application.feature.auth.presentation.viewmodel.SplashViewModel
+import com.aether.application.feature.chatbot.domain.repository.SavedConversationsRepository
 import com.aether.application.feature.qa.presentation.viewmodel.ServerConfigViewModel
 import com.aether.application.feature.auth.domain.usecase.ChangePasswordUseCase
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
@@ -20,6 +23,19 @@ import com.aether.application.feature.auth.presentation.viewmodel.ChangePassword
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
+import com.aether.application.feature.chatbot.presentation.viewmodel.ChatbotViewModel
+import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
+import com.aether.application.feature.proximity.domain.WorkplaceProximityChecker
+import com.aether.application.feature.proximity.presentation.viewmodel.ProximityViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.shared.ReportReviewViewModel
+import com.aether.application.feature.reports.domain.usecase.GetPendingReportsUseCase
+import com.aether.application.feature.reports.domain.usecase.GetReportsUseCase
+import com.aether.application.feature.reports.domain.usecase.GetReviewedReportsUseCase
+import com.aether.application.feature.reports.presentation.viewmodel.ReportHistoryViewModel
+import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
+import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -35,13 +51,15 @@ object AppModule {
         single<SessionStorage> {
             SessionStorageImpl(
                 dataStore = get(),
-                encryptor = get()
+                encryptor = get(),
+                profileLocalDataSource = get()
             )
         }
 
         single<SessionManager> {
             SessionManagerImpl(
-                sessionStorage = get()
+                sessionStorage = get(),
+                onLogout = { get<SavedConversationsRepository>().clear() }
             )
         }
 
@@ -99,6 +117,87 @@ object AppModule {
                 key = key,
                 changePasswordUseCase = get()
             )
+        }
+
+        viewModel {
+            HomeViewModel(
+                homeRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel { (reportId: Long) ->
+            ReportReviewViewModel(
+                reportId = reportId,
+                reportsRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel { (reportId: Long) ->
+            ReportAnalysisViewModel(
+                reportId = reportId,
+                reportsRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        single<GetReportsUseCase> {
+            GetReportsUseCase(reportsRepository = get())
+        }
+        single<GetPendingReportsUseCase> {
+            GetPendingReportsUseCase(reportsRepository = get())
+        }
+        single<GetReviewedReportsUseCase> {
+            GetReviewedReportsUseCase(reportsRepository = get())
+        }
+        viewModel {
+            ReportHistoryViewModel(
+                getReports = get(),
+                getReviewedReports = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel {
+            NewReportViewModel(newReportRepository = get())
+        }
+
+        viewModel {
+            ChatbotViewModel(
+                chatbotRepository = get(),
+                savedConversationsRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        viewModel {
+            SettingsViewModel(
+                settingsRepository = get(),
+                homeRepository = get(),
+                profileRepository = get(),
+                sessionManager = get()
+            )
+        }
+
+        single {
+            DeviceLocationProvider(context = androidContext())
+        }
+
+        single {
+            AddressGeocoder(context = androidContext())
+        }
+
+        single {
+            WorkplaceProximityChecker(
+                profileLocalDataSource = get(),
+                locationProvider = get(),
+                geocoder = get()
+            )
+        }
+
+        viewModel {
+            ProximityViewModel(proximityChecker = get())
         }
     }
 }

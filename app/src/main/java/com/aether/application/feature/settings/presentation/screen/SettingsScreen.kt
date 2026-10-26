@@ -9,13 +9,23 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import android.net.Uri
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +42,6 @@ import com.aether.core.ui.theme.*
 import coil3.compose.AsyncImage
 import com.aether.application.R
 
-private val ScreenBackground = Color.White
-private val CardBackground = Color.White
 private val CardShadowElevation = 6.dp
 private val CardShape = RoundedCornerShape(20.dp)
 private val RowVerticalPadding = 16.dp
@@ -47,9 +55,9 @@ private val HeaderShape = RoundedCornerShape(28.dp)
 @Composable
 fun SettingsScreen(
     userName: String,
-    userRole: String,
-    companyTag: String,
     avatarUrl: String?,
+    isUploadingAvatar: Boolean,
+    onAvatarPicked: (Uri) -> Unit,
     reportsCount: Int,
     entryDate: String,
     notificationsEnabled: Boolean,
@@ -65,19 +73,30 @@ fun SettingsScreen(
     onTermsOfUseClick: () -> Unit,
     onPrivacyPolicyClick: () -> Unit,
     onLogoutClick: () -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showAvatarSource by remember { mutableStateOf(false) }
+
+    if (showAvatarSource) {
+        AvatarSourceDialog(
+            onDismiss = { showAvatarSource = false },
+            onPicked = onAvatarPicked
+        )
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(ScreenBackground)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
     ) {
         ProfileHeader(
             userName = userName,
-            userRole = userRole,
-            companyTag = companyTag,
-            avatarUrl = avatarUrl
+            avatarUrl = avatarUrl,
+            isUploadingAvatar = isUploadingAvatar,
+            onAvatarClick = { showAvatarSource = true },
+            onBackClick = onBackClick
         )
 
         Column(
@@ -125,28 +144,28 @@ fun SettingsScreen(
                     icon = R.drawable.ic_chatbot_profile,
                     label = "Falar com o Aeko",
                     onClick = onTalkToAekoClick,
-                    tint = textSecondaryLight
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 RowDivider()
                 SettingsActionRow(
                     icon = R.drawable.ic_report_problem,
                     label = "Reportar problema",
                     onClick = onReportProblemClick,
-                    tint = textSecondaryLight
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 RowDivider()
                 SettingsActionRow(
                     icon = R.drawable.ic_terms,
                     label = "Termos de uso",
                     onClick = onTermsOfUseClick,
-                    tint = textSecondaryLight
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 RowDivider()
                 SettingsActionRow(
                     icon = R.drawable.ic_privacy,
                     label = "Política de privacidade",
                     onClick = onPrivacyPolicyClick,
-                    tint = textSecondaryLight
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -158,19 +177,19 @@ fun SettingsScreen(
                     .shadow(
                         elevation = CardShadowElevation,
                         shape = CardShape,
-                        ambientColor = Color.Black.copy(alpha = 0.08f),
-                        spotColor = Color.Black.copy(alpha = 0.08f)
+                        ambientColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                        spotColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.08f)
                     ),
                 shape = CardShape,
-                color = CardBackground,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 0.dp
             ) {
                 SettingsActionRow(
                     icon = R.drawable.ic_logout,
                     label = "Sair da conta",
                     onClick = onLogoutClick,
-                    tint = lightRed,
-                    labelColor = lightRed,
+                    tint = MaterialTheme.colorScheme.error,
+                    labelColor = MaterialTheme.colorScheme.error,
                     showChevron = false,
                     horizontalPadding = 20.dp
                 )
@@ -184,9 +203,10 @@ fun SettingsScreen(
 @Composable
 private fun ProfileHeader(
     userName: String,
-    userRole: String,
-    companyTag: String,
-    avatarUrl: String?
+    avatarUrl: String?,
+    isUploadingAvatar: Boolean,
+    onAvatarClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Image(
@@ -200,11 +220,26 @@ private fun ProfileHeader(
                 .shadow(
                     elevation = 20.dp,
                     shape = HeaderShape,
-                    ambientColor = purple500.copy(alpha = 0.4f),
-                    spotColor = purple500.copy(alpha = 0.4f)
+                    ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                    spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
                 )
                 .clip(HeaderShape)
         )
+
+        // Sits on the purple header, so it is white regardless of the theme
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(start = HeaderMargin + 8.dp, top = HeaderMargin + 8.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_chevron_left),
+                contentDescription = "Voltar",
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
+        }
 
         Row(
             modifier = Modifier
@@ -215,22 +250,63 @@ private fun ProfileHeader(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            AsyncImage(
-                model = avatarUrl,
-                contentDescription = "Foto de perfil",
+            Box(
                 modifier = Modifier
                     .size(AvatarSize)
-                    .clip(CircleShape)
-                    .border(width = 4.dp, color = Color.White, shape = CircleShape)
-            )
+                    .clickable(
+                        enabled = !isUploadingAvatar,
+                        onClickLabel = "Alterar foto de perfil",
+                        onClick = onAvatarClick
+                    )
+            ) {
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = "Foto de perfil",
+                    placeholder = painterResource(id = R.drawable.ic_avatar_placeholder),
+                    error = painterResource(id = R.drawable.ic_avatar_placeholder),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clip(CircleShape)
+                        .border(width = 4.dp, color = MaterialTheme.colorScheme.surface, shape = CircleShape)
+                )
+
+                if (isUploadingAvatar) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.4f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = Color.White)
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                        .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.PhotoCamera,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
         }
     }
 
     Spacer(Modifier.height(16.dp))
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-        Text(userName, style = titleLarge, color = textPrimaryLight)
-        Text(userRole, style = titleMediumMD, color = textTertiaryLight)
+        Text(userName, style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
     }
 
     Spacer(Modifier.height(20.dp))
@@ -241,15 +317,15 @@ private fun StatsCard(reportsCount: Int, entryDate: String) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp,purple500.copy(alpha = 0.2f), shape = CardShape)
+            .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), shape = CardShape)
             .shadow(
                 elevation = CardShadowElevation,
                 shape = CardShape,
-                ambientColor = Color.Black.copy(alpha = 0.08f),
-                spotColor = Color.Black.copy(alpha = 0.08f)
+                ambientColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                spotColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.08f)
             ),
         shape = CardShape,
-        color = CardBackground,
+        color = MaterialTheme.colorScheme.surface,
         shadowElevation = 0.dp
     ) {
         Row(
@@ -260,7 +336,7 @@ private fun StatsCard(reportsCount: Int, entryDate: String) {
         ) {
             StatItem(
                 icon = R.drawable.ic_reports,
-                iconTint = green500,
+                iconTint = MaterialTheme.colorScheme.secondary,
                 value = reportsCount.toString(),
                 label = "Relatórios"
             )
@@ -269,12 +345,12 @@ private fun StatsCard(reportsCount: Int, entryDate: String) {
                 modifier = Modifier
                     .width(1.dp)
                     .height(36.dp)
-                    .background(textDisabledLight)
+                    .background(MaterialTheme.colorScheme.outlineVariant)
             )
 
             StatItem(
                 icon = R.drawable.ic_calendar,
-                iconTint = green500,
+                iconTint = MaterialTheme.colorScheme.secondary,
                 value = entryDate,
                 label = "Data de entrada"
             )
@@ -298,8 +374,8 @@ private fun StatItem(
         )
         Spacer(Modifier.width(8.dp))
         Column {
-            Text(value, style = titleMediumMD, fontWeight = FontWeight.Bold, color = textPrimaryLight)
-            Text(label, style = bodyMediumMd, color = textTertiaryLight)
+            Text(value, style = titleMediumMD, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            Text(label, style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
         }
     }
 }
@@ -313,7 +389,7 @@ private fun SettingsSection(
         Text(
             title,
             style = titleMedium,
-            color = textPrimaryLight,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(start = 4.dp, bottom = 12.dp)
         )
         Surface(
@@ -322,11 +398,11 @@ private fun SettingsSection(
                 .shadow(
                     elevation = CardShadowElevation,
                     shape = CardShape,
-                    ambientColor = purple500.copy(alpha = 0.8f),
-                    spotColor = purple500.copy(alpha = 0.6f)
+                    ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                    spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
                 ),
             shape = CardShape,
-            color = CardBackground,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 0.dp
         ) {
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
@@ -338,7 +414,7 @@ private fun SettingsSection(
 
 @Composable
 private fun RowDivider() {
-    HorizontalDivider(color = textDisabledLight.copy(alpha = 0.4f))
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 }
 
 @Composable
@@ -359,18 +435,18 @@ private fun SettingsToggleRow(
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = textSecondaryLight,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(RowIconSize)
             )
             Spacer(Modifier.width(14.dp))
-            Text(label, style = bodyLargeMedium, color = textSecondaryLight)
+            Text(label, style = bodyLargeMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
             colors = SwitchDefaults.colors(
-                checkedTrackColor = green500,
-                checkedThumbColor = backgroundLightElevated
+                checkedTrackColor = MaterialTheme.colorScheme.secondary,
+                checkedThumbColor = MaterialTheme.colorScheme.surface
             )
         )
     }
@@ -395,19 +471,19 @@ private fun SettingsNavigationRow(
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
-                tint = textSecondaryLight,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(RowIconSize)
             )
             Spacer(Modifier.width(14.dp))
-            Text(label, style = bodyLargeMedium, color = textSecondaryLight)
+            Text(label, style = bodyLargeMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(value, style = bodyMediumMd, color = textTertiaryLight)
+            Text(value, style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
             Spacer(Modifier.width(4.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_right),
                 contentDescription = null,
-                tint = textTertiaryLight,
+                tint = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.size(ChevronSize)
             )
         }
@@ -419,8 +495,8 @@ private fun SettingsActionRow(
     @DrawableRes icon: Int,
     label: String,
     onClick: () -> Unit,
-    tint: Color = textTertiaryLight,
-    labelColor: Color = textPrimaryLight,
+    tint: Color = MaterialTheme.colorScheme.outline,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
     showChevron: Boolean = true,
     horizontalPadding: Dp = 0.dp
 ) {
@@ -446,7 +522,7 @@ private fun SettingsActionRow(
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_right),
                 contentDescription = null,
-                tint = textSecondaryLight,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(ChevronSize)
             )
         }
@@ -462,9 +538,9 @@ fun SettingsScreenPreview() {
     AetherTheme {
         SettingsScreen(
             userName = "Daniel Sagaz",
-            userRole = "Gerente de ESG",
-            companyTag = "JBS",
             avatarUrl = null,
+            isUploadingAvatar = false,
+            onAvatarPicked = {},
             reportsCount = 4539,
             entryDate = "24/02/23",
             notificationsEnabled = true,
@@ -479,7 +555,8 @@ fun SettingsScreenPreview() {
             onReportProblemClick = {},
             onTermsOfUseClick = {},
             onPrivacyPolicyClick = {},
-            onLogoutClick = {}
+            onLogoutClick = {},
+            onBackClick = {}
         )
     }
 }

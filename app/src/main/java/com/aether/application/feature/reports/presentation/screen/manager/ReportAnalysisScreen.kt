@@ -36,7 +36,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
-import com.aether.core.ui.components.AetherTopBar
+import com.aether.application.feature.reports.presentation.components.ReportLoadState
+import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
 import java.text.NumberFormat
 import java.util.Locale
@@ -85,11 +86,15 @@ data class AetherAnalysisUi(
     val isEmissionIncrease: Boolean,
     val scopes: List<ScopeUi>,
     val improvements: List<ImprovementPlanUi>,
-    val priority: ReplacementUi,
-    val secondary: ReplacementUi,
+    val priority: ReplacementUi?,
+    val secondary: ReplacementUi?,
     val monthlySavings: Long,
     val initialInvestment: Long
 )
+
+// Same bounds ms-inventory validates the approval/rejection message with
+private const val MIN_COMMENT_LENGTH = 2
+private const val MAX_COMMENT_LENGTH = 100
 
 private enum class ReportDecision {
     APPROVED,
@@ -98,14 +103,22 @@ private enum class ReportDecision {
 
 
 
+/**
+ * @param decision result of a submitted review: true when approved, false when rejected,
+ *  null while the report has not been reviewed on this screen yet.
+ */
 @Composable
 fun AetherAnalysisScreen(
-    analysis: AetherAnalysisUi,
+    analysis: AetherAnalysisUi?,
+    isLoading: Boolean,
+    errorMessage: String?,
+    onRetry: () -> Unit,
+    decision: Boolean?,
+    isSubmitting: Boolean,
+    submitErrorMessage: String?,
     onBackClick: () -> Unit,
-    onApproveClick: () -> Unit,
-    onRejectClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    onCommentSubmitted: (Boolean, String) -> Unit = { _, _ -> }
+    onDecisionSubmit: (approved: Boolean, comment: String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val isDarkTheme = isSystemInDarkTheme()
 
@@ -127,9 +140,9 @@ fun AetherAnalysisScreen(
         mutableStateOf("")
     }
 
-    if (completedDecision != null) {
+    if (decision != null) {
         ReportResultScreen(
-            approved = completedDecision == ReportDecision.APPROVED,
+            approved = decision,
             onBackClick = onBackClick,
             modifier = modifier
         )
@@ -143,6 +156,14 @@ fun AetherAnalysisScreen(
                 title = "Análise do Aether",
                 onBackClick = onBackClick
             )
+
+            if (analysis == null || isLoading) {
+                ReportLoadState(
+                    errorMessage = if (isLoading) null else errorMessage,
+                    onRetry = onRetry
+                )
+                return@Column
+            }
 
             Column(
                 modifier = Modifier
@@ -178,17 +199,17 @@ fun AetherAnalysisScreen(
 
                 Spacer(Modifier.height(32.dp))
 
-                ReplacementCard(
-                    item = analysis.priority
-                )
+                analysis.priority?.let {
+                    ReplacementCard(item = it)
 
-                Spacer(Modifier.height(32.dp))
+                    Spacer(Modifier.height(32.dp))
+                }
 
-                ReplacementCard(
-                    item = analysis.secondary
-                )
+                analysis.secondary?.let {
+                    ReplacementCard(item = it)
 
-                Spacer(Modifier.height(32.dp))
+                    Spacer(Modifier.height(32.dp))
+                }
 
                 FinancialCard(
                     heading = "Retorno financeiro",
@@ -429,6 +450,8 @@ private fun ReportCommentDialog(
     approved: Boolean,
     comment: String,
     onCommentChange: (String) -> Unit,
+    isSubmitting: Boolean,
+    errorMessage: String?,
     onDismiss: () -> Unit,
     onSubmit: () -> Unit
 ) {
@@ -437,7 +460,7 @@ private fun ReportCommentDialog(
     val secondaryText =
         MaterialTheme.colorScheme.onSurfaceVariant
 
-    val canSubmit = approved || comment.isNotBlank()
+    val canSubmit = !isSubmitting && comment.trim().length >= MIN_COMMENT_LENGTH
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -468,7 +491,7 @@ private fun ReportCommentDialog(
 
             Text(
                 text = if (approved) {
-                    "Deseja adicionar um comentário?"
+                    "Descreva o motivo da aprovação"
                 } else {
                     "Descreva o motivo de rejeição"
                 },
@@ -493,7 +516,7 @@ private fun ReportCommentDialog(
             ) {
                 BasicTextField(
                     value = comment,
-                    onValueChange = onCommentChange,
+                    onValueChange = { onCommentChange(it.take(MAX_COMMENT_LENGTH)) },
                     modifier = Modifier.fillMaxSize(),
                     textStyle = bodyMediumMd.copy(
                         color = onSurface
@@ -509,7 +532,7 @@ private fun ReportCommentDialog(
                             if (comment.isEmpty()) {
                                 Text(
                                     text = if (approved) {
-                                        "Escreva um comentário (opcional)"
+                                        "Descreva brevemente a motivação da aprovação do relatório"
                                     } else {
                                         "Descreva brevemente a motivação da reprovação do relatório"
                                     },
@@ -521,6 +544,25 @@ private fun ReportCommentDialog(
                             innerTextField()
                         }
                     }
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = "${comment.length}/$MAX_COMMENT_LENGTH",
+                style = labelSmall,
+                color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.align(Alignment.End)
+            )
+
+            if (errorMessage != null) {
+                Spacer(Modifier.height(12.dp))
+
+                Text(
+                    text = errorMessage,
+                    style = bodySmallMedium,
+                    color = MaterialTheme.colorScheme.error
                 )
             }
 
@@ -556,6 +598,7 @@ private fun ReportCommentDialog(
             ) {
                 Text(
                     text = "Enviar",
+                    text = if (isSubmitting) "Enviando..." else "Enviar",
                     style = titleMediumMD,
                     color = Color.White
                 )
