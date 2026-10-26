@@ -1,4 +1,5 @@
-package com.aether.application.feature.reports.presentation.screen.manager
+
+package com.aether.application.feature.analysis.presentation.screen
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
@@ -131,6 +132,10 @@ fun AetherAnalysisScreen(
         mutableStateOf<ReportDecision?>(null)
     }
 
+    var completedDecision by remember {
+        mutableStateOf<ReportDecision?>(null)
+    }
+
     var comment by remember {
         mutableStateOf("")
     }
@@ -250,25 +255,33 @@ fun AetherAnalysisScreen(
             }
         }
 
-        // The dialog stays open until the review is stored, then the result screen replaces it
-        decisionDialog?.let { pendingDecision ->
+        decisionDialog?.let { decision ->
             ReportCommentDialog(
-                approved = pendingDecision == ReportDecision.APPROVED,
+                approved = decision == ReportDecision.APPROVED,
                 comment = comment,
                 onCommentChange = { comment = it },
-                isSubmitting = isSubmitting,
-                errorMessage = submitErrorMessage,
                 onDismiss = {
-                    if (!isSubmitting) {
-                        decisionDialog = null
-                        comment = ""
-                    }
+                    decisionDialog = null
+                    comment = ""
                 },
                 onSubmit = {
-                    onDecisionSubmit(
-                        pendingDecision == ReportDecision.APPROVED,
-                        comment.trim()
+                    val isApproved =
+                        decision == ReportDecision.APPROVED
+
+                    val submittedComment = comment.trim()
+
+                    onCommentSubmitted(
+                        isApproved,
+                        submittedComment
                     )
+
+                    if (isApproved) {
+                        onApproveClick()
+                    } else {
+                        onRejectClick()
+                    }
+                    decisionDialog = null
+                    completedDecision = decision
                 }
             )
         }
@@ -584,6 +597,7 @@ private fun ReportCommentDialog(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
+                    text = "Enviar",
                     text = if (isSubmitting) "Enviando..." else "Enviar",
                     style = titleMediumMD,
                     color = Color.White
@@ -1249,14 +1263,9 @@ private fun AetherAnalysisLightPreview() {
     AetherTheme(darkTheme = false) {
         AetherAnalysisScreen(
             analysis = previewAnalysis,
-            isLoading = false,
-            errorMessage = null,
-            onRetry = {},
-            decision = null,
-            isSubmitting = false,
-            submitErrorMessage = null,
             onBackClick = {},
-            onDecisionSubmit = { _, _ -> }
+            onApproveClick = {},
+            onRejectClick = {}
         )
     }
 }
@@ -1271,14 +1280,9 @@ private fun AetherAnalysisDarkPreview() {
     AetherTheme(darkTheme = true) {
         AetherAnalysisScreen(
             analysis = previewAnalysis,
-            isLoading = false,
-            errorMessage = null,
-            onRetry = {},
-            decision = null,
-            isSubmitting = false,
-            submitErrorMessage = null,
             onBackClick = {},
-            onDecisionSubmit = { _, _ -> }
+            onApproveClick = {},
+            onRejectClick = {}
         )
     }
 }
