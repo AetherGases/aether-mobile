@@ -72,6 +72,7 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.aether.application.feature.proximity.presentation.qa.QaProximityBypass
 import com.aether.application.feature.proximity.presentation.screen.ProximityGateScreen
 import com.aether.application.feature.proximity.presentation.viewmodel.ProximityViewModel
 
@@ -86,10 +87,16 @@ fun AppNavigation(
     val isInAppGraph = backStackEntry?.destination?.hierarchy?.any { it.hasRoute<AppGraph>() } == true
     val proximityViewModel = koinViewModel<ProximityViewModel>()
     val proximityState by proximityViewModel.uiState.collectAsStateWithLifecycle()
+    val isQaBypassed by QaProximityBypass.isActive.collectAsStateWithLifecycle()
 
     // The app can only be used around the workplace: checked on entering the app and on every return to it
     LaunchedEffect(isInAppGraph) {
-        if (isInAppGraph) proximityViewModel.check() else proximityViewModel.reset()
+        if (isInAppGraph) {
+            proximityViewModel.check()
+        } else {
+            proximityViewModel.reset()
+            QaProximityBypass.reset()
+        }
     }
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         if (isInAppGraph) proximityViewModel.check()
@@ -101,7 +108,7 @@ fun AppNavigation(
             navController = navController
         )
 
-        if (isInAppGraph && (proximityState.status == null || proximityState.isBlocked)) {
+        if (isInAppGraph && !isQaBypassed && (proximityState.status == null || proximityState.isBlocked)) {
             ProximityGateScreen(
                 status = proximityState.status,
                 isChecking = proximityState.isChecking,

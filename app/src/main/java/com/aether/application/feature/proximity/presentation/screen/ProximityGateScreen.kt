@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.application.feature.proximity.domain.ProximityStatus
 import com.aether.application.feature.proximity.domain.WORKPLACE_RADIUS_METERS
+import com.aether.application.feature.proximity.presentation.qa.QaProximityBypass
 import com.aether.core.ui.theme.AetherTheme
 import com.aether.core.ui.theme.bodyMediumMd
 import com.aether.core.ui.theme.purple500
@@ -159,6 +160,9 @@ fun ProximityGateScreen(
                     onClick = onRetry
                 )
             }
+
+            // No-op outside debug builds
+            if (status is ProximityStatus.TooFar) QaProximityBypass.Button()
         }
     }
 }
