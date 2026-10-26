@@ -1,4 +1,4 @@
-package com.aether.application.ui.components
+package com.aether.application.core.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Row

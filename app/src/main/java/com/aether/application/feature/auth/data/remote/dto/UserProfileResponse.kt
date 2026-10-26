@@ -8,23 +8,21 @@ import com.aether.application.core.serialization.InstantSerializer
 import kotlinx.serialization.Serializable
 import java.time.Instant
 
-/** Response of ms-auth `GET /api/profile`. */
 @Serializable
 data class UserProfileResponse(
     val id: Long,
     val cpf: String,
     val email: String,
     val name: String,
-    val phone: String,
+    val phone: String?,
     val image: ImageDto? = null,
     val permissions: List<Permission>,
     val enterprise: EnterpriseDto? = null,
     val unit: UnitDto? = null,
     @Serializable(with = InstantSerializer::class)
-    val createdAt: Instant? = null // TODO(confirmar nome no back)
+    val createdAt: Instant? = null,
 ) {
-    val avatarUrl: String?
-        get() = image?.path
+    val avatarUrl: String? get() = image?.path
 
     fun toLocalProfile() = LocalProfile(
         id = id,
