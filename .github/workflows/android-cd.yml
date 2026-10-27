@@ -38,6 +38,7 @@ jobs:
 
       - name: Build signed APK
         env:
+          INTERNAL_AUTHENTICATION_KEY: ${{ secrets.INTERNAL_AUTHENTICATION_KEY }}
           KEYSTORE_FILE: ${{ github.workspace }}/release.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}

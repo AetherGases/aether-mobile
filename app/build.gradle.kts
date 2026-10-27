@@ -14,6 +14,8 @@ if (keystorePropertiesFile.exists()) {
 }
 
 val keystoreFileEnv: String? = System.getenv("KEYSTORE_FILE")?.takeIf { it.isNotBlank() }
+val internalAuthenticationKey: String = System.getenv("INTERNAL_AUTHENTICATION_KEY")?.takeIf { it.isNotBlank() }
+    ?: (project.findProperty("INTERNAL_AUTHENTICATION_KEY") as String?) ?: "aetherqa"
 val hasReleaseSigning = keystorePropertiesFile.exists() || keystoreFileEnv != null
 
 android {
