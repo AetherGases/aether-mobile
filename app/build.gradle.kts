@@ -41,6 +41,12 @@ android {
             .orElse("1.0.0")
             .get()
 
+        buildConfigField(
+            "String",
+            "INTERNAL_AUTHENTICATION_KEY",
+            "\"$internalAuthenticationKey\""
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

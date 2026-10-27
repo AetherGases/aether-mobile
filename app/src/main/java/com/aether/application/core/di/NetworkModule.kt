@@ -6,6 +6,7 @@ import com.aether.application.core.network.HttpErrorLoggingInterceptor
 import com.aether.application.core.network.ApiConfig
 import com.aether.application.core.network.AuthInterceptor
 import com.aether.application.core.network.BaseUrlInterceptor
+import com.aether.application.core.network.InternalAuthInterceptor
 import com.aether.application.core.network.ServerConfigCache
 import com.aether.application.core.network.TokenAuthenticator
 import com.aether.application.core.network.cloudinary.CLOUDINARY_BASE_URL
@@ -110,8 +111,16 @@ object NetworkModule {
         }
 
         single<CloudinaryApi> {
-            val retrofit: Retrofit = get()
-            retrofit.create(CloudinaryApi::class.java)
+            val client = OkHttpClient.Builder()
+                .apply {
+                    if (BuildConfig.DEBUG) {
+                        addInterceptor(get<BaseUrlInterceptor>())
+                    }
+                }
+                .addInterceptor(InternalAuthInterceptor(BuildConfig.INTERNAL_AUTHENTICATION_KEY))
+                .addInterceptor(HttpErrorLoggingInterceptor())
+                .build()
+            ApiClient.getRetrofit(okHttpClient = client).create(CloudinaryApi::class.java)
         }
 
         single<HubApi> {
