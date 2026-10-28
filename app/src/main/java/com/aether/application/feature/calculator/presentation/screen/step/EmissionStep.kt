@@ -35,6 +35,7 @@ fun EmissionStep(
     pollutingGasType: String,
     monthlyVolume: String,
     scope: String,
+    gasOptions: List<String>,
     onGasTypeChanged: (String) -> Unit,
     onVolumeChanged: (String) -> Unit,
     onScopeChanged: (String) -> Unit,
@@ -78,7 +79,7 @@ fun EmissionStep(
                 label = "",
                 placeholder = "Selecione o gás atual",
                 value = pollutingGasType,
-                options = listOf("CO₂", "N₂O", "CH₄", "SF₆"),
+                options = gasOptions,
                 onValueSelected = onGasTypeChanged
             )
 
@@ -212,6 +213,7 @@ fun EmissionStepPreview() {
             pollutingGasType = "",
             monthlyVolume = "",
             scope = "",
+            gasOptions = listOf("CO₂", "CH₄"),
             onGasTypeChanged = {},
             onVolumeChanged = {},
             onScopeChanged = {}

@@ -29,6 +29,7 @@ import com.aether.core.ui.theme.*
 @Composable
 fun GreenGasStep(
     greenGas: String,
+    gasOptions: List<String>,
     onGreenGasChanged: (String) -> Unit,
     onConsultAekoClicked: () -> Unit = {},
     onBackClicked: () -> Unit = {},
@@ -69,7 +70,7 @@ fun GreenGasStep(
                 label = "",
                 placeholder = "Selecione o gás verde",
                 value = greenGas,
-                options = listOf("Biometano", "Hidrogênio Verde", "Etanol"),
+                options = gasOptions,
                 onValueSelected = onGreenGasChanged
             )
 
@@ -156,6 +157,7 @@ fun GreenGasStepPreview() {
     AetherTheme {
         GreenGasStep(
             greenGas = "",
+            gasOptions = listOf("Dióxido de carbono biogênico (CO2(b))"),
             onGreenGasChanged = {}
         )
     }

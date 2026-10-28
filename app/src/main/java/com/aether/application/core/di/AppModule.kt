@@ -23,6 +23,9 @@ import com.aether.application.feature.auth.presentation.viewmodel.ChangePassword
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.PasswordRecoveryViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.VerificationViewModel
+import com.aether.application.feature.calculator.domain.usecase.CalculateEmissionsUseCase
+import com.aether.application.feature.calculator.domain.usecase.ValidateInputUseCase
+import com.aether.application.feature.calculator.presentation.viewmodel.CalculatorScreenViewModel
 import com.aether.application.feature.chatbot.presentation.viewmodel.ChatbotViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import com.aether.application.feature.proximity.domain.WorkplaceProximityChecker
@@ -168,6 +171,20 @@ object AppModule {
                 chatbotRepository = get(),
                 savedConversationsRepository = get(),
                 sessionManager = get()
+            )
+        }
+
+        single<CalculateEmissionsUseCase> {
+            CalculateEmissionsUseCase(calculatorRepository = get())
+        }
+        single<ValidateInputUseCase> {
+            ValidateInputUseCase()
+        }
+        viewModel {
+            CalculatorScreenViewModel(
+                calculatorRepository = get(),
+                calculateEmissions = get(),
+                validateInput = get()
             )
         }
 
