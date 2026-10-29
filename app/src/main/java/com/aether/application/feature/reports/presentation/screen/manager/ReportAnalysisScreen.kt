@@ -6,7 +6,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -119,13 +118,7 @@ fun AetherAnalysisScreen(
     onDecisionSubmit: (approved: Boolean, comment: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isDarkTheme = isSystemInDarkTheme()
-
-    val screenBackground = if (isDarkTheme) {
-        MaterialTheme.colorScheme.background
-    } else {
-        Color.White
-    }
+    val screenBackground = MaterialTheme.colorScheme.surface
 
     var decisionDialog by remember {
         mutableStateOf<ReportDecision?>(null)
@@ -290,22 +283,20 @@ private fun ReportResultScreen(
     BackHandler(onBack = onBackClick)
 
     val mainColor = if (approved) {
-        green500
+        MaterialTheme.colorScheme.secondary
     } else {
-        Color(0xFFEF8090)
+        MaterialTheme.colorScheme.error
     }
 
-    val outerColor = if (approved) {
-        Color(0xFFD5F8EA)
+    val iconColor = if (approved) {
+        MaterialTheme.colorScheme.onSecondary
     } else {
-        Color(0xFFFACAD1)
+        MaterialTheme.colorScheme.onError
     }
 
-    val background = if (isSystemInDarkTheme()) {
-        MaterialTheme.colorScheme.background
-    } else {
-        Color.White
-    }
+    val outerColor = mainColor.copy(alpha = 0.25f)
+
+    val background = MaterialTheme.colorScheme.surface
 
     Box(
         modifier = modifier
@@ -362,7 +353,7 @@ private fun ReportResultScreen(
 
                                 drawPath(
                                     path = path,
-                                    color = Color.White,
+                                    color = iconColor,
                                     style = Stroke(
                                         width = lineWidth,
                                         cap = StrokeCap.Round
@@ -370,7 +361,7 @@ private fun ReportResultScreen(
                                 )
                             } else {
                                 drawLine(
-                                    color = Color.White,
+                                    color = iconColor,
                                     start = androidx.compose.ui.geometry.Offset(
                                         size.width * 0.20f,
                                         size.height * 0.20f
@@ -384,7 +375,7 @@ private fun ReportResultScreen(
                                 )
 
                                 drawLine(
-                                    color = Color.White,
+                                    color = iconColor,
                                     start = androidx.compose.ui.geometry.Offset(
                                         size.width * 0.80f,
                                         size.height * 0.20f
@@ -586,7 +577,7 @@ private fun ReportCommentDialog(
                 Text(
                     text = if (isSubmitting) "Enviando..." else "Enviar",
                     style = titleMediumMD,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
