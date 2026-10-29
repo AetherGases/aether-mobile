@@ -18,6 +18,8 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.net.HttpURLConnection.HTTP_FORBIDDEN
 
+private const val TAG = "AuthRepositoryImpl"
+
 class AuthRepositoryImpl(
     private val api: AuthApi,
     private val profileApi: ProfileApi,
@@ -38,13 +40,22 @@ class AuthRepositoryImpl(
             return Result.failure(AuthException.Unexpected(IllegalStateException("Failed to persist session")))
         }
 
-        // Get profiles info
-        runCatchingAuth {
-            val profile = profileApi.getUserProfile()
-            // Must be stored before the session: SessionStorage reads the profile back from SQLite
-            profileLocalDataSource.saveProfile(profile.toLocalProfile())
-            profileLocalDataSource.saveAddresses(profile.toWorkplaceAddresses())
+        // Get profiles info. A failure here doesn't block the login, but leaves it without permissions
+        val profile = try {
+            profileApi.getUserProfile().also { profile ->
+                // Must be stored before the session: SessionStorage reads the profile back from SQLite
+                profileLocalDataSource.saveProfile(profile.toLocalProfile())
+                profileLocalDataSource.saveAddresses(profile.toWorkplaceAddresses())
+                Log.d(TAG, "Profile ${profile.id} stored with permissions ${profile.permissions.map { it.name }}")
+            }
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to load or store the profile, continuing without permissions", e)
+            null
+        }
 
+        if (profile != null) {
             val sessionWithPermissions = session.copy(
                 permissions = profile.permissions,
                 name = profile.name,
@@ -98,7 +109,7 @@ class AuthRepositoryImpl(
         } catch (e: kotlinx.coroutines.CancellationException) {
             throw e
         } catch (e: Exception) {
-            Log.e("AuthRepositoryImpl", e.message ?: "unexpected error", e)
+            Log.e(TAG, e.message ?: "unexpected error", e)
             Result.failure(e.toAuthException())
         }
 
