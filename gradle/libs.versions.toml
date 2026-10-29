@@ -1,6 +1,7 @@
 [versions]
 agp = "9.4.1"
 coil = "3.2.0"
+kotlinxDatetime = "0.8.0"
 navigationCompose = "2.8.0"
 coreKtx = "1.19.0"
 datastorePreferencesCore = "1.2.1"
@@ -44,6 +45,7 @@ koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 koin-compose-navigation3 = { module = "io.insert-koin:koin-compose-navigation3" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 liquid = { module = "io.github.fletchmckee.liquid:liquid", version.ref = "liquid" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }

@@ -172,6 +172,7 @@ dependencies {
     implementation(libs.haze)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.kotlinx.datetime)
 
     // =========================
     // Debug
