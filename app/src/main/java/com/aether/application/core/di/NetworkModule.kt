@@ -41,8 +41,11 @@ import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
+
+private const val REFRESH = "refresh"
 
 object NetworkModule {
 
@@ -61,7 +64,15 @@ object NetworkModule {
         }
 
         single<TokenAuthenticator> {
-            TokenAuthenticator(sessionManager = get()) { get() }
+            TokenAuthenticator(sessionManager = get()) { get(named(REFRESH)) }
+        }
+
+        // The refresh runs on its own client: see ApiClient.getRefreshOkHttpClient
+        single<AuthApi>(named(REFRESH)) {
+            val client = ApiClient.getRefreshOkHttpClient(
+                baseUrlInterceptor = if (BuildConfig.DEBUG) get() else null
+            )
+            ApiClient.getRetrofit(okHttpClient = client).create(AuthApi::class.java)
         }
 
         single<OkHttpClient> {

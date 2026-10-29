@@ -14,6 +14,9 @@ data class Session(
     val refreshToken: String,
     @Serializable(with = InstantSerializer::class)
     val expiration: Instant,
+    /** Null on sessions stored before it was added: [expiration] is used instead. */
+    @Serializable(with = InstantSerializer::class)
+    val refreshExpiration: Instant? = null,
     val permissions: List<Permission> = emptyList(),
     @Serializable(with = InstantSerializer::class)
     val createdAt: Instant? = null

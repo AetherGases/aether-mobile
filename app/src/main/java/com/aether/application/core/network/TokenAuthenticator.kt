@@ -1,6 +1,7 @@
 package com.aether.application.core.network
 
 import android.util.Log
+import com.aether.application.core.auth.jwt.jwtExpiration
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.data.remote.AuthApi
 import kotlinx.coroutines.runBlocking
@@ -22,7 +23,8 @@ class TokenAuthenticator(
     private val refreshMutex = Mutex()
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (responseCount(response) > 3) return null
+        // Already retried with a fresh token: a 401 that a refresh didn't fix won't be fixed by another
+        if (response.priorResponse != null) return null
 
         val failedAccessToken = response.request.header("Authorization")
 
@@ -39,11 +41,25 @@ class TokenAuthenticator(
                         email = session.email,
                         refreshToken = "Bearer ${session.refreshToken}"
                     )
-                    sessionManager.save(loginResponse.toDomain())
+                    // The refresh only returns tokens: keep the profile data (permissions, name, avatar)
+                    sessionManager.save(
+                        session.copy(
+                            accessToken = loginResponse.accessToken,
+                            refreshToken = loginResponse.refreshToken,
+                            expiration = loginResponse.expiration,
+                            refreshExpiration = jwtExpiration(loginResponse.refreshToken)
+                        )
+                    )
                     loginResponse.accessToken
                 } catch (e: HttpException) {
-                    Log.w(TAG, "Token refresh rejected (${e.code()}), logging out", e)
-                    sessionManager.logout()
+                    // ms-auth answers an invalid, expired or reused refresh token with 401 (400 for an
+                    // inactive user). A 5xx comes from the server/gateway and doesn't invalidate the session
+                    if (e.code() in 400..499) {
+                        Log.w(TAG, "Token refresh rejected (${e.code()}), logging out", e)
+                        sessionManager.logout()
+                    } else {
+                        Log.w(TAG, "Token refresh failed on the server (${e.code()}), keeping the session", e)
+                    }
                     null
                 } catch (e: IOException) {
                     Log.w(TAG, "Token refresh failed", e)
@@ -55,15 +71,5 @@ class TokenAuthenticator(
         return response.request.newBuilder()
             .header("Authorization", "Bearer $refreshedAccessToken")
             .build()
-    }
-
-    private fun responseCount(response: Response): Int {
-        var count = 1
-        var prior = response.priorResponse
-        while (prior != null) {
-            count++
-            prior = prior.priorResponse
-        }
-        return count
     }
 }

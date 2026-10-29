@@ -33,6 +33,22 @@ object ApiClient {
             .build()
     }
 
+    /**
+     * Client for the token refresh only: without the auth interceptor and the authenticator, a
+     * refresh answered with 401 fails instead of re-entering the authenticator, which would wait
+     * forever on the refresh it is part of.
+     */
+    fun getRefreshOkHttpClient(baseUrlInterceptor: BaseUrlInterceptor?): OkHttpClient {
+        return OkHttpClient.Builder()
+            .apply {
+                if (baseUrlInterceptor != null) {
+                    addInterceptor(baseUrlInterceptor)
+                }
+            }
+            .addInterceptor(HttpCallLoggingInterceptor())
+            .build()
+    }
+
     fun getRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(ApiConfig.BASE_URL)

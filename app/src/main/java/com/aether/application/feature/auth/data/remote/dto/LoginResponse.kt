@@ -1,5 +1,6 @@
 package com.aether.application.feature.auth.data.remote.dto
 
+import com.aether.application.core.auth.jwt.jwtExpiration
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.serialization.InstantSerializer
 import kotlinx.serialization.Serializable
@@ -21,7 +22,8 @@ data class LoginResponse(
             email = email,
             accessToken = accessToken,
             refreshToken = refreshToken,
-            expiration = expiration
+            expiration = expiration,
+            refreshExpiration = jwtExpiration(refreshToken)
         )
     }
 }

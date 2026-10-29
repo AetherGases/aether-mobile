@@ -11,6 +11,8 @@ class AuthInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val session = sessionManager.getSession()
         val request = chain.request()
+        // A request that already carries its own token (the refresh call sends the refresh token) keeps it
+        if (request.header("Authorization") != null) return chain.proceed(request)
 
         val authenticatedRequest = request.newBuilder()
             .apply {
