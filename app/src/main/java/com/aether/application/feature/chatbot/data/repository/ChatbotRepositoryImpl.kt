@@ -1,7 +1,7 @@
 package com.aether.application.feature.chatbot.data.repository
 
 import android.util.Log
-import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.database.ProfileLocalDataSource
 import com.aether.application.core.network.readErrorMessage
 import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.chatbot.data.remote.ChatbotApi
@@ -27,13 +27,12 @@ private const val HTTP_UNPROCESSABLE_ENTITY = 422
 class ChatbotRepositoryImpl(
     private val chatbotApi: ChatbotApi,
     private val profileApi: ProfileApi,
-    private val sessionManager: SessionManager,
+    private val profileLocalDataSource: ProfileLocalDataSource,
 ) : ChatbotRepository {
 
-    private class Identity(val email: String?, val userId: Long, val companyId: Long)
+    private class Identity(val userId: Long, val companyId: Long)
 
     private val identityLock = Mutex()
-    private var identity: Identity? = null
 
     override suspend fun getConversations(): List<Conversation> = call {
         val identity = identity()
@@ -71,15 +70,17 @@ class ChatbotRepositoryImpl(
     }
 
     // The hub needs the ids from the user's profile and checks them against the access token.
-    // The cache is tied to the logged-in account so a new login doesn't reuse the previous ids.
+    // Both are stored at login; sessions from before the enterprise was stored fetch it once.
     private suspend fun identity(): Identity = identityLock.withLock {
-        val email = sessionManager.getSession()?.email
-        identity?.takeIf { it.email == email } ?: run {
-            val profile = profileApi.getUserProfile()
-            val companyId = profile.enterprise?.id
-                ?: throw ChatbotException("Não foi possível identificar a empresa do usuário.")
-            Identity(email = email, userId = profile.id, companyId = companyId).also { identity = it }
-        }
+        val userId = profileLocalDataSource.getProfile()?.id
+        val companyId = profileLocalDataSource.getEnterprise()?.id
+        if (userId != null && companyId != null) return@withLock Identity(userId, companyId)
+
+        val profile = profileApi.getUserProfile()
+        val enterprise = profile.toLocalEnterprise()
+            ?: throw ChatbotException("Não foi possível identificar a empresa do usuário.")
+        profileLocalDataSource.saveEnterprise(enterprise)
+        Identity(userId = profile.id, companyId = enterprise.id)
     }
 
     private suspend fun <T> call(block: suspend () -> T): T =
