@@ -1,7 +1,7 @@
 package com.aether.application.core.database.model
 
 import com.aether.application.feature.auth.domain.model.Permission
-import java.time.Instant
+import kotlinx.datetime.LocalDate
 
 data class LocalProfile(
     val id: Long,
@@ -10,7 +10,7 @@ data class LocalProfile(
     val cpf: String,
     val phone: String?,
     val avatarUrl: String?,
-    val createdAt: Instant?,
+    val createdAt: LocalDate?,
     val permissions: List<Permission>,
 )
 
