@@ -242,9 +242,9 @@ class ReportHistoryViewModel(
             createdAt = createdAt,
             item = ReportItem(
                 id = id.toString(),
-                avatarUrl = authorImageUrl ?: session.avatar,
+                avatarUrl = authorImageUrl,
                 title = name,
-                authorName = author ?: session.name,
+                authorName = author ?: "Desconhecido",
                 reviewerName = reviewer,
                 createdAt = createdAt.format(dateFormatter),
                 status = status.toHistoryStatus(),
