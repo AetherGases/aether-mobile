@@ -18,6 +18,8 @@ class SessionManagerImpl(
     private val onLogout: suspend () -> Unit = {}
 ): SessionManager {
     private var session: Session? = null
+    // A restored session was remembered by definition
+    private var remember = true
     private val _authState = MutableStateFlow(false)
     override val authState: StateFlow<Boolean> = _authState.asStateFlow()
 
@@ -43,9 +45,10 @@ class SessionManagerImpl(
         return session?.permissions.orEmpty().any { it.name == permission.value }
     }
 
-    override suspend fun save(session: Session): Boolean {
+    override suspend fun save(session: Session, remember: Boolean?): Boolean {
         return try {
-            sessionStorage.save(session)
+            remember?.let { this.remember = it }
+            if (this.remember) sessionStorage.save(session)
             this.session = session
             _authState.value = true
             true

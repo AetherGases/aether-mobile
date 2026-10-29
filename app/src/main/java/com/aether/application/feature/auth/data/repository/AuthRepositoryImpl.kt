@@ -27,14 +27,15 @@ class AuthRepositoryImpl(
 
     override suspend fun login(
         email: String,
-        password: String
+        password: String,
+        rememberMe: Boolean
     ): Result<Session> = runCatchingAuth {
         val response = api.login(
             LoginRequest(email, password)
         )
 
         var session = response.toDomain()
-        if (!sessionManager.save(session)) {
+        if (!sessionManager.save(session, remember = rememberMe)) {
             return Result.failure(AuthException.Unexpected(IllegalStateException("Failed to persist session")))
         }
 

@@ -8,7 +8,8 @@ class LoginUseCase(
 ) {
     suspend operator fun invoke(
         email: String,
-        password: String
+        password: String,
+        rememberMe: Boolean
     ): Result<Session> {
         val trimmedEmail = email.trim()
         // Empty fields
@@ -18,6 +19,6 @@ class LoginUseCase(
         if (password.isBlank())
             return Result.failure(IllegalArgumentException("A senha é obrigatória."))
 
-        return authRepository.login(trimmedEmail, password)
+        return authRepository.login(trimmedEmail, password, rememberMe)
     }
 }
