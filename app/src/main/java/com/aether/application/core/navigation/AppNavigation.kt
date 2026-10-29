@@ -471,6 +471,7 @@ private fun AppNavHost(
                     isLoading = uiState.isLoading,
                     errorMessage = uiState.errorMessage,
                     onRetry = viewModel::load,
+                    canDecide = uiState.canDecide,
                     decision = uiState.decision,
                     isSubmitting = uiState.isSubmitting,
                     submitErrorMessage = uiState.submitErrorMessage,
