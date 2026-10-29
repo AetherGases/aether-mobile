@@ -24,13 +24,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.core.ui.theme.*
 import com.aether.application.core.ui.components.FormErrorText
+import kotlinx.coroutines.delay
+
+private const val PASSWORD_CHAR_REVEAL_MILLIS = 500L
 
 @Composable
 fun LoginScreen(
@@ -48,6 +53,14 @@ fun LoginScreen(
     onChangeServerClick: (() -> Unit)? = null
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var revealedCharIndex by remember { mutableIntStateOf(-1) }
+
+    LaunchedEffect(revealedCharIndex) {
+        if (revealedCharIndex >= 0) {
+            delay(timeMillis = PASSWORD_CHAR_REVEAL_MILLIS)
+            revealedCharIndex = -1
+        }
+    }
 
     Box(
         modifier = modifier
@@ -169,7 +182,14 @@ fun LoginScreen(
 
             OutlinedTextField(
                 value = password,
-                onValueChange = onPasswordChange,
+                onValueChange = { newPassword ->
+                    revealedCharIndex = if (newPassword.length == password.length + 1) {
+                        newPassword.indices.firstOrNull { it >= password.length || newPassword[it] != password[it] } ?: -1
+                    } else {
+                        -1
+                    }
+                    onPasswordChange(newPassword)
+                },
                 placeholder = {
                     Text(
                         text = "Senha:",
@@ -193,7 +213,7 @@ fun LoginScreen(
                 visualTransformation = if (passwordVisible) {
                     VisualTransformation.None
                 } else {
-                    PasswordVisualTransformation()
+                    RevealLastCharPasswordTransformation(revealedCharIndex)
                 },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -306,6 +326,16 @@ fun LoginScreen(
     }
 }
 
+/** Masks the password like [androidx.compose.ui.text.input.PasswordVisualTransformation], except the char at [revealedIndex]. */
+private data class RevealLastCharPasswordTransformation(
+    private val revealedIndex: Int,
+    private val mask: Char = '•'
+) : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val masked = text.text.mapIndexed { i, c -> if (i == revealedIndex) c else mask }.joinToString("")
+        return TransformedText(AnnotatedString(masked), OffsetMapping.Identity)
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
