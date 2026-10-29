@@ -1,6 +1,7 @@
 package com.aether.application.feature.auth.data.remote.dto
 
 import com.aether.application.core.database.model.AddressKind
+import com.aether.application.core.database.model.LocalEnterprise
 import com.aether.application.core.database.model.LocalProfile
 import com.aether.application.core.database.model.WorkplaceAddress
 import com.aether.application.feature.auth.domain.model.Permission
@@ -34,6 +35,10 @@ data class UserProfileResponse(
         createdAt = createdAt,
         permissions = permissions
     )
+
+    fun toLocalEnterprise() = enterprise?.let {
+        LocalEnterprise(id = it.id, name = it.name, tradeName = it.tradeName, cnpj = it.cnpj)
+    }
 
     fun toWorkplaceAddresses(): List<WorkplaceAddress> = listOfNotNull(
         enterprise?.address?.toWorkplaceAddress(AddressKind.ENTERPRISE),

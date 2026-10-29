@@ -3,9 +3,11 @@ package com.aether.application.core.database
 import android.content.ContentValues
 import android.database.Cursor
 import com.aether.application.core.database.AetherDatabase.Address
+import com.aether.application.core.database.AetherDatabase.Enterprise
 import com.aether.application.core.database.AetherDatabase.Permission as PermissionTable
 import com.aether.application.core.database.AetherDatabase.Profile
 import com.aether.application.core.database.model.AddressKind
+import com.aether.application.core.database.model.LocalEnterprise
 import com.aether.application.core.database.model.LocalProfile
 import com.aether.application.core.database.model.WorkplaceAddress
 import com.aether.application.core.security.Encryptor
@@ -93,6 +95,37 @@ class ProfileLocalDataSourceImpl(
         }
     }
 
+    override suspend fun saveEnterprise(enterprise: LocalEnterprise?) = withContext(Dispatchers.IO) {
+        val db = database.writableDatabase
+        db.beginTransaction()
+        try {
+            db.delete(Enterprise.TABLE, null, null)
+            enterprise?.let {
+                db.insertOrThrow(Enterprise.TABLE, null, ContentValues().apply {
+                    put(Enterprise.ID, it.id)
+                    put(Enterprise.NAME, it.name)
+                    put(Enterprise.TRADE_NAME, it.tradeName)
+                    put(Enterprise.CNPJ, it.cnpj)
+                })
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    override suspend fun getEnterprise(): LocalEnterprise? = withContext(Dispatchers.IO) {
+        database.readableDatabase.query(Enterprise.TABLE, null, null, null, null, null, null, "1").use { cursor ->
+            if (!cursor.moveToFirst()) return@withContext null
+            LocalEnterprise(
+                id = cursor.long(Enterprise.ID),
+                name = cursor.string(Enterprise.NAME),
+                tradeName = cursor.stringOrNull(Enterprise.TRADE_NAME),
+                cnpj = cursor.string(Enterprise.CNPJ)
+            )
+        }
+    }
+
     override suspend fun saveAddresses(addresses: List<WorkplaceAddress>) = withContext(Dispatchers.IO) {
         val db = database.writableDatabase
         db.beginTransaction()
@@ -159,6 +192,7 @@ class ProfileLocalDataSourceImpl(
             db.delete(Profile.TABLE, null, null)
             db.delete(PermissionTable.TABLE, null, null)
             db.delete(Address.TABLE, null, null)
+            db.delete(Enterprise.TABLE, null, null)
             db.setTransactionSuccessful()
         } finally {
             db.endTransaction()

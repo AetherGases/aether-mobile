@@ -6,7 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper
 
 private const val DATABASE_NAME = "aether.db"
 // v2: profile.phone became nullable
-private const val DATABASE_VERSION = 2
+// v3: enterprise table
+private const val DATABASE_VERSION = 3
 
 /** Local SQLite store for the logged user's profile data. */
 class AetherDatabase(context: Context) :
@@ -30,6 +31,14 @@ class AetherDatabase(context: Context) :
         const val DESCRIPTION = "description"
     }
 
+    object Enterprise {
+        const val TABLE = "enterprise"
+        const val ID = "id"
+        const val NAME = "name"
+        const val TRADE_NAME = "trade_name"
+        const val CNPJ = "cnpj"
+    }
+
     object Address {
         const val TABLE = "address"
         const val KIND = "kind"
@@ -46,6 +55,7 @@ class AetherDatabase(context: Context) :
 
     override fun onCreate(db: SQLiteDatabase) {
         createProfileTable(db, Profile.TABLE)
+        createEnterpriseTable(db)
         db.execSQL(
             """
             CREATE TABLE ${Permission.TABLE} (
@@ -75,6 +85,7 @@ class AetherDatabase(context: Context) :
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) relaxProfilePhone(db)
+        if (oldVersion < 3) createEnterpriseTable(db)
     }
 
     /**
@@ -93,6 +104,19 @@ class AetherDatabase(context: Context) :
         } finally {
             db.endTransaction()
         }
+    }
+
+    private fun createEnterpriseTable(db: SQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE ${Enterprise.TABLE} (
+                ${Enterprise.ID} INTEGER PRIMARY KEY,
+                ${Enterprise.NAME} TEXT NOT NULL,
+                ${Enterprise.TRADE_NAME} TEXT,
+                ${Enterprise.CNPJ} TEXT NOT NULL
+            )
+            """.trimIndent()
+        )
     }
 
     private fun createProfileTable(db: SQLiteDatabase, table: String) {
