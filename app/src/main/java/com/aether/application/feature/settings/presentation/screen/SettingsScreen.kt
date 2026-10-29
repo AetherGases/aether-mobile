@@ -64,6 +64,7 @@ fun SettingsScreen(
     emailNotificationsEnabled: Boolean,
     themeLabel: String,
     languageLabel: String,
+    canTalkToAeko: Boolean,
     onNotificationsChanged: (Boolean) -> Unit,
     onEmailNotificationsChanged: (Boolean) -> Unit,
     onThemeClick: () -> Unit,
@@ -140,13 +141,15 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(20.dp))
             SettingsSection(title = "Suporte") {
-                SettingsActionRow(
-                    icon = R.drawable.ic_chatbot_profile,
-                    label = "Falar com o Aeko",
-                    onClick = onTalkToAekoClick,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                RowDivider()
+                if (canTalkToAeko) {
+                    SettingsActionRow(
+                        icon = R.drawable.ic_chatbot_profile,
+                        label = "Falar com o Aeko",
+                        onClick = onTalkToAekoClick,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    RowDivider()
+                }
                 SettingsActionRow(
                     icon = R.drawable.ic_report_problem,
                     label = "Reportar problema",
@@ -547,6 +550,7 @@ fun SettingsScreenPreview() {
             emailNotificationsEnabled = true,
             themeLabel = "Claro",
             languageLabel = "Português (BR)",
+            canTalkToAeko = true,
             onNotificationsChanged = {},
             onEmailNotificationsChanged = {},
             onThemeClick = {},

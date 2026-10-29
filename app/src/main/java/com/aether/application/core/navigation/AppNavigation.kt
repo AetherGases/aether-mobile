@@ -538,6 +538,7 @@ private fun AppNavHost(
                     emailNotificationsEnabled = uiState.emailNotificationsEnabled,
                     themeLabel = uiState.theme.label(),
                     languageLabel = uiState.languageLabel,
+                    canTalkToAeko = uiState.canTalkToAeko,
                     onNotificationsChanged = viewModel::onNotificationsChanged,
                     onEmailNotificationsChanged = viewModel::onEmailNotificationsChanged,
                     onThemeClick = { showThemePicker = true },
