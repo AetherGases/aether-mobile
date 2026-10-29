@@ -293,11 +293,7 @@ fun ReportHistoryScreen(
                     secondaryLabel = secondaryLabel,
                     createdAt = item.createdAt,
                     status = item.status,
-                    onReviewClick = if (item.canReview) {
-                        { onReviewClick(item.id) }
-                    } else {
-                        null
-                    }
+                    onReviewClick = { onReviewClick(item.id) }
                 )
 
                 if (index != reportItems.lastIndex) {

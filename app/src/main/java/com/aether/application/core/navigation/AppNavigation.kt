@@ -505,7 +505,7 @@ private fun AppNavHost(
                     onStatusFilterToggled = viewModel::onStatusFilterToggled,
                     onDaySelected = viewModel::onDaySelected,
                     onMonthChanged = viewModel::onMonthChanged,
-                    onReviewClick = { id -> navController.navigate(ReportAnalysisRoute(id.toLong())) },
+                    onReviewClick = { id -> navController.navigate(ReportReviewRoute(id.toLong())) },
                     onBackClicked = { navController.popBackStack() }
                 )
             }
