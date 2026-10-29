@@ -59,25 +59,19 @@ class ReportAnalysisViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            if (!sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    canDecide = false,
-                    errorMessage = "Você não tem permissão para analisar relatórios."
-                ) }
-                return@launch
-            }
+            // Without the permission the analysis still shows, only the decision is hidden
+            val canReview = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
 
             try {
                 val (analysis, status) = coroutineScope {
                     val plan = async { loadImprovementPlan() }
                     val analysis = async { reportsRepository.getReportAnalysis(reportId) }
-                    val report = async { reportsRepository.getReport(reportId, asReviewer = true) }
+                    val report = async { reportsRepository.getReport(reportId, asReviewer = canReview) }
                     analysis.await().toUi(plan.await()) to report.await().status
                 }
                 _uiState.update { it.copy(
                     analysis = analysis,
-                    canDecide = status !in decidedStatuses,
+                    canDecide = canReview && status !in decidedStatuses,
                     isLoading = false
                 ) }
             } catch (e: CancellationException) {
