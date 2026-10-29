@@ -46,6 +46,7 @@ class AuthRepositoryImpl(
                 // Must be stored before the session: SessionStorage reads the profile back from SQLite
                 profileLocalDataSource.saveProfile(profile.toLocalProfile())
                 profileLocalDataSource.saveAddresses(profile.toWorkplaceAddresses())
+                profileLocalDataSource.saveEnterprise(profile.toLocalEnterprise())
                 Log.d(TAG, "Profile ${profile.id} stored with permissions ${profile.permissions.map { it.name }}")
             }
         } catch (e: kotlinx.coroutines.CancellationException) {
