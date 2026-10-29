@@ -13,6 +13,7 @@ data class SettingsUiState(
     val notificationsEnabled: Boolean = true,
     val emailNotificationsEnabled: Boolean = true,
     val theme: ThemePreference = ThemePreference.SYSTEM,
+    val canTalkToAeko: Boolean = false,
     // TODO: no translated resources yet, so the language is fixed
     val languageLabel: String = "Português (BR)",
 )

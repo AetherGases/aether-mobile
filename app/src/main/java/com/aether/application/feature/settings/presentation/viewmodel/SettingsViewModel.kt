@@ -48,7 +48,8 @@ class SettingsViewModel(
                 avatarUrl = session?.avatar?.takeIf { avatar -> avatar.isNotEmpty() },
                 entryDate = session?.createdAt
                     ?.toString()
-                    ?: NO_ENTRY_DATE
+                    ?: NO_ENTRY_DATE,
+                canTalkToAeko = sessionManager.hasPermission(AppPermission.CHATBOT)
             ) }
 
             try {
