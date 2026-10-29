@@ -23,6 +23,12 @@ import java.util.Locale
 
 private const val TAG = "ReportReviewViewModel"
 
+private val analyzableStatuses = setOf(
+    InventoryStatus.Input.UNDER_REVIEW,
+    InventoryStatus.Input.APPROVED,
+    InventoryStatus.Input.REJECTED
+)
+
 data class ReportReviewUiState(
     val report: ReportReviewUi? = null,
     val isLoading: Boolean = true,
@@ -75,7 +81,7 @@ class ReportReviewViewModel(
         description = description,
         reviewerName = reviewer?.name,
         reviewerAvatarUrl = reviewer?.avatarUrl,
-        isApproved = status == InventoryStatus.Input.APPROVED,
+        status = status,
         validationMessage = validationMessage,
         scopes = emissionsByScope.map { scope ->
             ScopeGasesUi(
@@ -89,6 +95,6 @@ class ReportReviewViewModel(
                 }
             )
         },
-        canProceedToAnalysis = reviewer == null && canReview
+        canProceedToAnalysis = canReview && status in analyzableStatuses
     )
 }
