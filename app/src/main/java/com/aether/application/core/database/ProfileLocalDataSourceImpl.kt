@@ -74,7 +74,7 @@ class ProfileLocalDataSourceImpl(
                 name = cursor.string(Profile.NAME),
                 email = encryptor.decrypt(cursor.string(Profile.EMAIL)),
                 cpf = encryptor.decrypt(cursor.string(Profile.CPF)),
-                phone = encryptor.decrypt(cursor.string(Profile.PHONE)),
+                phone = cursor.stringOrNull(Profile.PHONE)?.let(encryptor::decrypt),
                 avatarUrl = cursor.stringOrNull(Profile.AVATAR_URL),
                 createdAt = cursor.longOrNull(Profile.CREATED_AT)?.let(Instant::ofEpochMilli),
                 permissions = permissions
