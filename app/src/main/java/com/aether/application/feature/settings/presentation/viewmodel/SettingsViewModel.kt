@@ -17,8 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 private const val TAG = "SettingsViewModel"
 private const val NO_ENTRY_DATE = "—"
@@ -31,8 +29,6 @@ class SettingsViewModel(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
-
-    private val entryDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy")
 
     init {
         viewModelScope.launch {
@@ -51,9 +47,9 @@ class SettingsViewModel(
                 userName = session?.name.orEmpty(),
                 avatarUrl = session?.avatar?.takeIf { avatar -> avatar.isNotEmpty() },
                 entryDate = session?.createdAt
-                    ?.atZone(ZoneId.systemDefault())
-                    ?.format(entryDateFormatter)
-                    ?: NO_ENTRY_DATE
+                    ?.toString()
+                    ?: NO_ENTRY_DATE,
+                canTalkToAeko = sessionManager.hasPermission(AppPermission.CHATBOT)
             ) }
 
             try {

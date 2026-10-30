@@ -40,7 +40,7 @@ class SessionManagerImpl(
     }
 
     override suspend fun hasPermission(permission: AppPermission): Boolean {
-        return session?.permissions.orEmpty().any { it.name == permission.value }
+        return session?.permissions.orEmpty().any { it.name.contains(permission.value) }
     }
 
     override suspend fun save(session: Session): Boolean {

@@ -4,9 +4,8 @@ import com.aether.application.core.database.model.AddressKind
 import com.aether.application.core.database.model.LocalProfile
 import com.aether.application.core.database.model.WorkplaceAddress
 import com.aether.application.feature.auth.domain.model.Permission
-import com.aether.application.core.serialization.InstantSerializer
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
-import java.time.Instant
 
 @Serializable
 data class UserProfileResponse(
@@ -19,8 +18,8 @@ data class UserProfileResponse(
     val permissions: List<Permission>,
     val enterprise: EnterpriseDto? = null,
     val unit: UnitDto? = null,
-    @Serializable(with = InstantSerializer::class)
-    val createdAt: Instant? = null,
+    @Serializable
+    val createdAt: LocalDate? = null,
 ) {
     val avatarUrl: String? get() = image?.path
 

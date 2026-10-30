@@ -12,7 +12,10 @@ import com.aether.application.core.security.Encryptor
 import com.aether.application.feature.auth.domain.model.Permission
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /** Personal data (e-mail, CPF, phone) and permission names are stored encrypted. */
 class ProfileLocalDataSourceImpl(
@@ -20,6 +23,7 @@ class ProfileLocalDataSourceImpl(
     private val encryptor: Encryptor
 ) : ProfileLocalDataSource {
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun saveProfile(profile: LocalProfile) = withContext(Dispatchers.IO) {
         val db = database.writableDatabase
         db.beginTransaction()
@@ -34,7 +38,12 @@ class ProfileLocalDataSourceImpl(
                 put(Profile.CPF, encryptor.encrypt(profile.cpf))
                 profile.phone?.let { put(Profile.PHONE, encryptor.encrypt(it)) }
                 put(Profile.AVATAR_URL, profile.avatarUrl)
-                put(Profile.CREATED_AT, profile.createdAt?.toEpochMilli())
+                put(
+                    Profile.CREATED_AT,
+                    profile.createdAt
+                        ?.atStartOfDayIn(TimeZone.UTC)
+                        ?.toEpochMilliseconds()
+                )
             })
 
             profile.permissions.forEach { permission ->
@@ -50,6 +59,7 @@ class ProfileLocalDataSourceImpl(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun getProfile(): LocalProfile? = withContext(Dispatchers.IO) {
         val db = database.readableDatabase
 
@@ -76,7 +86,12 @@ class ProfileLocalDataSourceImpl(
                 cpf = encryptor.decrypt(cursor.string(Profile.CPF)),
                 phone = encryptor.decrypt(cursor.string(Profile.PHONE)),
                 avatarUrl = cursor.stringOrNull(Profile.AVATAR_URL),
-                createdAt = cursor.longOrNull(Profile.CREATED_AT)?.let(Instant::ofEpochMilli),
+                createdAt = cursor.longOrNull(Profile.CREATED_AT)?.let {
+                    java.time.Instant.ofEpochMilli(it)
+                        .atZone(java.time.ZoneOffset.UTC)
+                        .toLocalDate()
+                        .let { date -> kotlinx.datetime.LocalDate.parse(date.toString()) }
+                },
                 permissions = permissions
             )
         }

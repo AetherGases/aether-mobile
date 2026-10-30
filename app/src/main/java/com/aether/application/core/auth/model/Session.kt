@@ -2,6 +2,7 @@ package com.aether.application.core.auth.model
 
 import com.aether.application.core.serialization.InstantSerializer
 import com.aether.application.feature.auth.domain.model.Permission
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 import java.time.Instant
 
@@ -15,6 +16,6 @@ data class Session(
     @Serializable(with = InstantSerializer::class)
     val expiration: Instant,
     val permissions: List<Permission> = emptyList(),
-    @Serializable(with = InstantSerializer::class)
-    val createdAt: Instant? = null
+    @Serializable
+    val createdAt: LocalDate? = null
 )
