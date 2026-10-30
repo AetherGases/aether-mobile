@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -20,12 +24,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.core.ui.theme.*
 import com.aether.application.core.ui.components.FormErrorText
+import kotlinx.coroutines.delay
+
+private const val PASSWORD_CHAR_REVEAL_MILLIS = 500L
 
 @Composable
 fun LoginScreen(
@@ -42,6 +52,16 @@ fun LoginScreen(
     errorMessage: String? = null,
     onChangeServerClick: (() -> Unit)? = null
 ) {
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var revealedCharIndex by remember { mutableIntStateOf(-1) }
+
+    LaunchedEffect(revealedCharIndex) {
+        if (revealedCharIndex >= 0) {
+            delay(timeMillis = PASSWORD_CHAR_REVEAL_MILLIS)
+            revealedCharIndex = -1
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -162,7 +182,14 @@ fun LoginScreen(
 
             OutlinedTextField(
                 value = password,
-                onValueChange = onPasswordChange,
+                onValueChange = { newPassword ->
+                    revealedCharIndex = if (newPassword.length == password.length + 1) {
+                        newPassword.indices.firstOrNull { it >= password.length || newPassword[it] != password[it] } ?: -1
+                    } else {
+                        -1
+                    }
+                    onPasswordChange(newPassword)
+                },
                 placeholder = {
                     Text(
                         text = "Senha:",
@@ -183,7 +210,20 @@ fun LoginScreen(
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    RevealLastCharPasswordTransformation(revealedCharIndex)
+                },
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                            contentDescription = if (passwordVisible) "Ocultar senha" else "Mostrar senha",
+                            tint = textTertiaryLight
+                        )
+                    }
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 shape = RoundedCornerShape(50.dp),
                 isError = errorMessage != null
@@ -286,6 +326,16 @@ fun LoginScreen(
     }
 }
 
+/** Masks the password like [androidx.compose.ui.text.input.PasswordVisualTransformation], except the char at [revealedIndex]. */
+private data class RevealLastCharPasswordTransformation(
+    private val revealedIndex: Int,
+    private val mask: Char = '•'
+) : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        val masked = text.text.mapIndexed { i, c -> if (i == revealedIndex) c else mask }.joinToString("")
+        return TransformedText(AnnotatedString(masked), OffsetMapping.Identity)
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
