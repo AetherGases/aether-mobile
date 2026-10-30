@@ -56,7 +56,7 @@ class LoginViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            loginUseCase(email, password)
+            loginUseCase(email, password, rememberMe)
                 .onSuccess {
                     _events.send(LoginEvent.LoggedIn)
                 }

@@ -6,7 +6,8 @@ interface AuthRepository {
 
     suspend fun login(
         email: String,
-        password: String
+        password: String,
+        rememberMe: Boolean
     ): Result<Session>
 
     suspend fun sendRecoveryPassword(

@@ -13,7 +13,11 @@ interface SessionManager {
 
     suspend fun hasPermission(permission: AppPermission): Boolean
 
-    suspend fun save(session: Session): Boolean
+    /**
+     * [remember] says whether the session survives an app restart: false keeps the tokens only in
+     * memory. Null keeps the choice of the current session (a refresh, an avatar change).
+     */
+    suspend fun save(session: Session, remember: Boolean? = null): Boolean
 
     suspend fun restoreSession()
 

@@ -47,7 +47,12 @@ class SessionStorageImpl(
     override suspend fun get(): Session? {
         val encrypted = dataStore.data
             .map { it[Keys.SESSION] }
-            .first() ?: return null
+            .first()
+        if (encrypted == null) {
+            // A session that wasn't remembered still stored its profile in SQLite while in use
+            profileLocalDataSource.clear()
+            return null
+        }
 
         return try {
             val json = encryptor.decrypt(encrypted)
