@@ -11,10 +11,10 @@ private const val TAG = "HttpCall"
 private const val MAX_LOGGED_BODY_BYTES = 3500L
 
 /**
- * Logs the result of every request, so any call shows which endpoint answered what and how
- * long it took. Failures (including the 404s the repositories read as "nothing yet") go to
- * warn/error, successes to debug. Only the path is logged (queries may carry tokens) and the
- * body only in debug builds.
+ * Logs failed requests (including the 404s the repositories read as "nothing yet") to warn/error,
+ * so a failure always shows which endpoint answered what. Debug (QA) builds also log successful
+ * calls at debug level, with how long each call took. Only the path is logged (queries may carry
+ * tokens) and the body only in debug builds.
  * As an application interceptor it sees the final response, after the token refresh retried.
  */
 class HttpCallLoggingInterceptor : Interceptor {
@@ -32,10 +32,13 @@ class HttpCallLoggingInterceptor : Interceptor {
             throw e
         }
 
+        if (!BuildConfig.DEBUG && response.isSuccessful) return response
+
         val tookMs = (System.nanoTime() - startedAt) / 1_000_000
         val message = buildString {
-            append("$endpoint -> ${response.code} (${tookMs}ms)")
+            append("$endpoint -> ${response.code}")
             if (BuildConfig.DEBUG) {
+                append(" (${tookMs}ms)")
                 val body = response.peekBody(MAX_LOGGED_BODY_BYTES).string()
                 if (body.isNotBlank()) append(": ").append(body)
             }
