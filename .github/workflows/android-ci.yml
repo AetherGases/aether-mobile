@@ -11,10 +11,17 @@ on:
       - main
       - develop
 
+concurrency:
+  group: android-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     name: CI
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
@@ -33,12 +40,49 @@ jobs:
       - name: Run tests
         run: ./gradlew test
 
-      - name: Build
+      - name: Run lint
+        run: ./gradlew lint
+
+      - name: Build Debug APK
         run: ./gradlew assembleDebug
 
-      - name: Upload debug APK
+      - name: Upload Debug APK
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         uses: actions/upload-artifact@v4
         with:
           name: aether-debug-${{ github.run_number }}
           path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish Development Build
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - name: Download Debug APK
+        uses: actions/download-artifact@v4
+        with:
+          name: aether-debug-${{ github.run_number }}
+          path: apk
+
+      - name: Publish Development Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: dev-${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          name: "Aether Development Build #${{ github.run_number }}"
+          prerelease: true
+          generate_release_notes: false
+          body: |
+            Automated development build.
+
+            Commit: ${{ github.sha }}
+            Branch: develop
+          files: apk/*.apk
