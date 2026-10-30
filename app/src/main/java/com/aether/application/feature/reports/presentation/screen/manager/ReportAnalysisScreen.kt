@@ -822,10 +822,6 @@ private fun ImprovementPlanCard(
             )
         } else {
             plans.forEachIndexed { index, plan ->
-                var expanded by remember(plan.id) {
-                    mutableStateOf(false)
-                }
-
                 PlanDetailRow(
                     icon = R.drawable.ic_problem,
                     title = "Problema identificado",
@@ -854,9 +850,7 @@ private fun ImprovementPlanCard(
                     description = plan.reasoning,
                     iconBackground = MaterialTheme.colorScheme.primary
                         .copy(alpha = 0.12f),
-                    iconTint = MaterialTheme.colorScheme.primary,
-                    expanded = expanded,
-                    onExpand = { expanded = !expanded }
+                    iconTint = MaterialTheme.colorScheme.primary
                 )
 
                 if (index != plans.lastIndex) {
@@ -889,10 +883,12 @@ private fun PlanDetailRow(
     title: String,
     description: String,
     iconBackground: Color,
-    iconTint: Color,
-    expanded: Boolean = true,
-    onExpand: (() -> Unit)? = null
+    iconTint: Color
 ) {
+    var expanded by remember(description) { mutableStateOf(false) }
+    // Only known after the collapsed text is laid out: the toggle shows only when it is clipped
+    var hasOverflow by remember(description) { mutableStateOf(false) }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -930,18 +926,21 @@ private fun PlanDetailRow(
                 style = bodySmallMedium,
                 color = MaterialTheme.colorScheme.outline,
                 maxLines = if (expanded) Int.MAX_VALUE else 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                onTextLayout = { layout ->
+                    if (!expanded) hasOverflow = layout.hasVisualOverflow
+                }
             )
         }
 
-        if (onExpand != null) {
+        if (expanded || hasOverflow) {
             Spacer(Modifier.width(8.dp))
 
             Text(
                 text = if (expanded) "Ver menos" else "Ver tudo",
                 style = labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.clickable(onClick = onExpand)
+                modifier = Modifier.clickable { expanded = !expanded }
             )
         }
     }
