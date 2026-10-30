@@ -102,6 +102,8 @@ private enum class ReportDecision {
 
 
 /**
+ * @param canDecide shows the approve/reject buttons; false for users without the
+ *  inventory:analysis permission and for reports already approved or rejected.
  * @param decision result of a submitted review: true when approved, false when rejected,
  *  null while the report has not been reviewed on this screen yet.
  */
@@ -111,6 +113,7 @@ fun AetherAnalysisScreen(
     isLoading: Boolean,
     errorMessage: String?,
     onRetry: () -> Unit,
+    canDecide: Boolean,
     decision: Boolean?,
     isSubmitting: Boolean,
     submitErrorMessage: String?,
@@ -217,27 +220,29 @@ fun AetherAnalysisScreen(
                     isGreen = false
                 )
 
-                Spacer(Modifier.height(40.dp))
+                if (canDecide) {
+                    Spacer(Modifier.height(40.dp))
 
-                DecisionButton(
-                    text = "Aprovar relatório",
-                    filled = true,
-                    onClick = {
-                        comment = ""
-                        decisionDialog = ReportDecision.APPROVED
-                    }
-                )
+                    DecisionButton(
+                        text = "Aprovar relatório",
+                        filled = true,
+                        onClick = {
+                            comment = ""
+                            decisionDialog = ReportDecision.APPROVED
+                        }
+                    )
 
-                Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(12.dp))
 
-                DecisionButton(
-                    text = "Reprovar relatório",
-                    filled = false,
-                    onClick = {
-                        comment = ""
-                        decisionDialog = ReportDecision.REJECTED
-                    }
-                )
+                    DecisionButton(
+                        text = "Reprovar relatório",
+                        filled = false,
+                        onClick = {
+                            comment = ""
+                            decisionDialog = ReportDecision.REJECTED
+                        }
+                    )
+                }
 
                 Spacer(Modifier.height(32.dp))
             }
@@ -1242,6 +1247,7 @@ private fun AetherAnalysisLightPreview() {
             isLoading = false,
             errorMessage = null,
             onRetry = {},
+            canDecide = true,
             decision = null,
             isSubmitting = false,
             submitErrorMessage = null,
@@ -1264,6 +1270,7 @@ private fun AetherAnalysisDarkPreview() {
             isLoading = false,
             errorMessage = null,
             onRetry = {},
+            canDecide = true,
             decision = null,
             isSubmitting = false,
             submitErrorMessage = null,

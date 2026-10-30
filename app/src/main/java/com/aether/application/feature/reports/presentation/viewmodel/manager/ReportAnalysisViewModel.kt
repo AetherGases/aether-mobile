@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.domain.model.AppPermission
+import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.reports.domain.model.ImprovementPlan
 import com.aether.application.feature.reports.domain.model.Replacement
 import com.aether.application.feature.reports.domain.model.ReportAnalysis
@@ -25,10 +26,17 @@ import kotlin.math.roundToInt
 
 private const val TAG = "ReportAnalysisViewModel"
 
+private val decidedStatuses = setOf(
+    InventoryStatus.Input.APPROVED,
+    InventoryStatus.Input.REJECTED
+)
+
 data class ReportAnalysisUiState(
     val analysis: AetherAnalysisUi? = null,
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
+    /** Shows the approve/reject buttons: the user can review and the report is still open. */
+    val canDecide: Boolean = false,
     val isSubmitting: Boolean = false,
     val submitErrorMessage: String? = null,
     /** True when approved, false when rejected, null while not reviewed. */
@@ -51,21 +59,21 @@ class ReportAnalysisViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            if (!sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)) {
-                _uiState.update { it.copy(
-                    isLoading = false,
-                    errorMessage = "Você não tem permissão para analisar relatórios."
-                ) }
-                return@launch
-            }
+            // Without the permission the analysis still shows, only the decision is hidden
+            val canReview = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
 
             try {
-                val analysis = coroutineScope {
+                val (analysis, status) = coroutineScope {
                     val plan = async { loadImprovementPlan() }
                     val analysis = async { reportsRepository.getReportAnalysis(reportId) }
-                    analysis.await().toUi(plan.await())
+                    val report = async { reportsRepository.getReport(reportId, asReviewer = canReview) }
+                    analysis.await().toUi(plan.await()) to report.await().status
                 }
-                _uiState.update { it.copy(analysis = analysis, isLoading = false) }
+                _uiState.update { it.copy(
+                    analysis = analysis,
+                    canDecide = canReview && status !in decidedStatuses,
+                    isLoading = false
+                ) }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

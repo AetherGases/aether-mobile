@@ -471,6 +471,7 @@ private fun AppNavHost(
                     isLoading = uiState.isLoading,
                     errorMessage = uiState.errorMessage,
                     onRetry = viewModel::load,
+                    canDecide = uiState.canDecide,
                     decision = uiState.decision,
                     isSubmitting = uiState.isSubmitting,
                     submitErrorMessage = uiState.submitErrorMessage,
@@ -505,7 +506,7 @@ private fun AppNavHost(
                     onStatusFilterToggled = viewModel::onStatusFilterToggled,
                     onDaySelected = viewModel::onDaySelected,
                     onMonthChanged = viewModel::onMonthChanged,
-                    onReviewClick = { id -> navController.navigate(ReportAnalysisRoute(id.toLong())) },
+                    onReviewClick = { id -> navController.navigate(ReportReviewRoute(id.toLong())) },
                     onBackClicked = { navController.popBackStack() }
                 )
             }

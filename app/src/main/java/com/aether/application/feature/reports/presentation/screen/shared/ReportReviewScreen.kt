@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.aether.application.R
+import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.reports.presentation.components.ReportLoadState
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
@@ -47,14 +48,23 @@ data class ReportReviewUi(
     val unitName: String,
     val submittedAt: String,
     val description: String?,
-    /** Null while the report has not been reviewed yet. */
     val reviewerName: String?,
     val reviewerAvatarUrl: String?,
-    val isApproved: Boolean,
+    val status: InventoryStatus,
     val validationMessage: String?,
     val scopes: List<ScopeGasesUi>,
     val canProceedToAnalysis: Boolean
 )
+
+/** Emission data only exists once the report has been processed. */
+private val InventoryStatus.isProcessing: Boolean
+    get() = this == InventoryStatus.Input.PROCESSING || this == InventoryStatus.Output.REQUESTED
+
+private val InventoryStatus.processingFailed: Boolean
+    get() = this == InventoryStatus.Input.PROCESSING_FAILED || this == InventoryStatus.Output.PROCESSING_FAILED
+
+private val InventoryStatus.isReviewed: Boolean
+    get() = this == InventoryStatus.Input.APPROVED || this == InventoryStatus.Input.REJECTED
 
 data class ScopeGasesUi(
     val scope: String,
@@ -156,41 +166,44 @@ private fun ReportReviewContent(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                if (report.reviewerName != null) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        AsyncImage(
-                            model = report.reviewerAvatarUrl,
-                            contentDescription = null,
-                            placeholder = painterResource(id = R.drawable.ic_avatar_placeholder),
-                            error = painterResource(id = R.drawable.ic_avatar_placeholder),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = "Revisado por ${report.reviewerName}",
-                            style = bodyMediumMd,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                when {
+                    report.status.isReviewed -> {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            AsyncImage(
+                                model = report.reviewerAvatarUrl,
+                                contentDescription = null,
+                                placeholder = painterResource(id = R.drawable.ic_avatar_placeholder),
+                                error = painterResource(id = R.drawable.ic_avatar_placeholder),
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = report.reviewerName?.let { "Revisado por $it" } ?: "Revisor não informado",
+                                style = bodyMediumMd,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
-                } else {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_clock),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Análise pendente",
-                            style = bodyMediumMd,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+
+                    report.status.isProcessing -> StatusLabel(
+                        iconRes = R.drawable.ic_clock,
+                        text = "Processando dados"
+                    )
+
+                    report.status.processingFailed -> StatusLabel(
+                        iconRes = R.drawable.ic_rejected_circle,
+                        text = "Falha no processamento",
+                        color = MaterialTheme.colorScheme.error
+                    )
+
+                    else -> StatusLabel(
+                        iconRes = R.drawable.ic_clock,
+                        text = "Análise pendente"
+                    )
                 }
             }
 
@@ -198,7 +211,7 @@ private fun ReportReviewContent(
                 painter = painterResource(id = R.drawable.ic_clipboard_illustration),
                 contentDescription = null,
                 tint = Color.Unspecified,
-                modifier = Modifier.size(120.dp).offset(x= 8.dp, y= -10.dp)
+                modifier = Modifier.size(120.dp).offset(x = 8.dp, y = -10.dp)
             )
         }
 
@@ -215,7 +228,11 @@ private fun ReportReviewContent(
                     ambientColor = purple700.copy(alpha = 0.08f),
                     spotColor = purple700.copy(alpha = 0.08f)
                 )
-                .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f), RoundedCornerShape(24.dp))
+                .border(
+                    1.dp,
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                    RoundedCornerShape(24.dp)
+                )
         ) {
             Column(modifier = Modifier.padding(24.dp)) {
                 Row(
@@ -248,7 +265,11 @@ private fun ReportReviewContent(
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.weight(1.2f)) {
-                        Text("Planta industrial", style = bodySmallMedium, color = MaterialTheme.colorScheme.outline)
+                        Text(
+                            "Planta industrial",
+                            style = bodySmallMedium,
+                            color = MaterialTheme.colorScheme.outline
+                        )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             report.unitName,
@@ -265,7 +286,11 @@ private fun ReportReviewContent(
                     )
 
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Data de envio", style = bodySmallMedium, color = MaterialTheme.colorScheme.outline)
+                        Text(
+                            "Data de envio",
+                            style = bodySmallMedium,
+                            color = MaterialTheme.colorScheme.outline
+                        )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             report.submittedAt,
@@ -275,7 +300,7 @@ private fun ReportReviewContent(
                     }
                 }
 
-                if (!report.description.isNullOrBlank()) {
+                if (!report.description.isNullOrBlank() && !report.status.isProcessing && !report.status.processingFailed) {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
@@ -294,50 +319,53 @@ private fun ReportReviewContent(
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        if (!report.status.isProcessing && !report.status.processingFailed) {
+            Spacer(modifier = Modifier.height(32.dp))
 
-        Text(
-            text = "Gases identificados",
-            style = titleLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (report.scopes.isEmpty()) {
             Text(
-                text = "Nenhum gás identificado neste relatório.",
-                style = bodyMediumMd,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = "Gases identificados",
+                style = titleLarge,
+                color = MaterialTheme.colorScheme.onBackground
             )
-        } else {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                report.scopes.forEachIndexed { index, scope ->
-                    ScopeChip(
-                        text = scope.scope,
-                        isSelected = index == selectedScope,
-                        onClick = { selectedScope = index }
-                    )
-                }
-            }
 
-            report.scopes.getOrNull(selectedScope)?.gases?.forEach { gas ->
-                Spacer(modifier = Modifier.height(24.dp))
-                GasEmissionCard(gas = gas)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (report.scopes.isEmpty()) {
+                Text(
+                    text = "Nenhum gás identificado neste relatório.",
+                    style = bodyMediumMd,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    report.scopes.forEachIndexed { index, scope ->
+                        ScopeChip(
+                            text = scope.scope,
+                            isSelected = index == selectedScope,
+                            onClick = { selectedScope = index }
+                        )
+                    }
+                }
+
+                report.scopes.getOrNull(selectedScope)?.gases?.forEach { gas ->
+                    Spacer(modifier = Modifier.height(24.dp))
+                    GasEmissionCard(gas = gas)
+                }
             }
         }
 
-        if (report.reviewerName != null) {
+        if (report.status.isReviewed) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            val borderColor = if (report.isApproved) MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
-            val iconRes = if (report.isApproved) R.drawable.ic_approved_circle else R.drawable.ic_rejected_circle
-            val iconTint = if (report.isApproved) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error
-            val statusTitle = if (report.isApproved) "Relatório aprovado" else "Relatório reprovado"
-            val subtitle = if (report.isApproved) "Comentário" else "Motivo"
+            val isApproved = report.status == InventoryStatus.Input.APPROVED
+            val borderColor = if (isApproved) MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+            val iconRes = if (isApproved) R.drawable.ic_approved_circle else R.drawable.ic_rejected_circle
+            val iconTint = if (isApproved) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error
+            val statusTitle = if (isApproved) "Relatório aprovado" else "Relatório reprovado"
+            val subtitle = if (isApproved) "Comentário" else "Motivo"
 
             Surface(
                 shape = RoundedCornerShape(24.dp),
@@ -382,6 +410,24 @@ private fun ReportReviewContent(
             }
         }
 
+        if (report.status.processingFailed) {
+            Spacer(modifier = Modifier.height(24.dp))
+            ReportNoticeCard(
+                iconRes = R.drawable.ic_rejected_circle,
+                color = MaterialTheme.colorScheme.error,
+                title = "Falha no processamento",
+                message = "Não foi possível processar os dados deste relatório. Envie o relatório novamente."
+            )
+        } else if (report.status.isProcessing) {
+            Spacer(modifier = Modifier.height(24.dp))
+            ReportNoticeCard(
+                iconRes = R.drawable.ic_clock,
+                color = MaterialTheme.colorScheme.primary,
+                title = "Processando relatório",
+                message = "Os dados de emissões ainda estão sendo calculados. Volte em alguns instantes."
+            )
+        }
+
         if (report.canProceedToAnalysis) {
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -415,6 +461,69 @@ private fun ReportReviewContent(
         }
 
         Spacer(modifier = Modifier.height(40.dp))
+    }
+}
+
+/** Icon and text describing the report status, shown under the screen title. */
+@Composable
+private fun StatusLabel(
+    iconRes: Int,
+    text: String,
+    color: Color? = null
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            tint = color ?: MaterialTheme.colorScheme.outline,
+            modifier = Modifier.size(16.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = text,
+            style = bodyMediumMd,
+            color = color ?: MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun ReportNoticeCard(
+    iconRes: Int,
+    color: Color,
+    title: String,
+    message: String
+) {
+    Surface(
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, color.copy(alpha = 0.5f), RoundedCornerShape(24.dp))
+    ) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = title,
+                    style = titleMedium,
+                    color = color
+                )
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = message,
+                style = bodySmallMedium,
+                color = MaterialTheme.colorScheme.outline,
+                lineHeight = 16.sp
+            )
+        }
     }
 }
 
@@ -521,7 +630,7 @@ private val previewReport = ReportReviewUi(
     description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.",
     reviewerName = null,
     reviewerAvatarUrl = null,
-    isApproved = false,
+    status = InventoryStatus.Input.UNDER_REVIEW,
     validationMessage = null,
     scopes = listOf(
         ScopeGasesUi("Escopo 1", listOf(GasEmissionUi("Gás carbônico", "CO2", "1.240"))),
@@ -553,8 +662,9 @@ fun ReportReviewScreenRejectedPreview() {
         ReportReviewScreen(
             report = previewReport.copy(
                 reviewerName = "Nisflei Grandão",
+                status = InventoryStatus.Input.REJECTED,
                 validationMessage = "Relatório com informações não coerentes.",
-                canProceedToAnalysis = false
+                canProceedToAnalysis = true
             ),
             isLoading = false,
             errorMessage = null,
@@ -572,8 +682,46 @@ fun ReportReviewScreenApprovedPreview() {
         ReportReviewScreen(
             report = previewReport.copy(
                 reviewerName = "Nisflei Grandão",
-                isApproved = true,
+                status = InventoryStatus.Input.APPROVED,
                 validationMessage = "Relatório detalhado, vai ajudar muito na nossa análise.",
+                canProceedToAnalysis = true
+            ),
+            isLoading = false,
+            errorMessage = null,
+            onRetry = {},
+            onBackClick = {},
+            onProceedClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, heightDp = 1200)
+@Composable
+fun ReportReviewScreenProcessingPreview() {
+    AetherTheme {
+        ReportReviewScreen(
+            report = previewReport.copy(
+                status = InventoryStatus.Input.PROCESSING,
+                scopes = emptyList(),
+                canProceedToAnalysis = false
+            ),
+            isLoading = false,
+            errorMessage = null,
+            onRetry = {},
+            onBackClick = {},
+            onProceedClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, heightDp = 1200)
+@Composable
+fun ReportReviewScreenProcessingFailedPreview() {
+    AetherTheme {
+        ReportReviewScreen(
+            report = previewReport.copy(
+                status = InventoryStatus.Input.PROCESSING_FAILED,
+                scopes = emptyList(),
                 canProceedToAnalysis = false
             ),
             isLoading = false,

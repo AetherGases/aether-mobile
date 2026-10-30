@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -274,7 +275,7 @@ fun ReportHistoryScreen(
                         },
                         style = bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -292,11 +293,7 @@ fun ReportHistoryScreen(
                     secondaryLabel = secondaryLabel,
                     createdAt = item.createdAt,
                     status = item.status,
-                    onReviewClick = if (item.canReview) {
-                        { onReviewClick(item.id) }
-                    } else {
-                        null
-                    }
+                    onReviewClick = { onReviewClick(item.id) }
                 )
 
                 if (index != reportItems.lastIndex) {
@@ -321,7 +318,7 @@ fun ReportHistoryScreen(
                     "Não foi possível carregar mais relatórios. Toque para tentar de novo.",
                     style = bodySmall,
                     color = MaterialTheme.colorScheme.error,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp)
@@ -401,7 +398,7 @@ private fun ReportCalendarCard(
                         shownMonth.label(),
                         style = bodyMediumMd,
                         color = MaterialTheme.colorScheme.onSurface,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -423,7 +420,7 @@ private fun ReportCalendarCard(
                     letter,
                     style = bodyMediumMd,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f)
                 )
             }
