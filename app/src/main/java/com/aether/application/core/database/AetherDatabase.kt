@@ -5,7 +5,9 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 private const val DATABASE_NAME = "aether.db"
-private const val DATABASE_VERSION = 1
+// v2: profile.phone became nullable
+// v3: enterprise table
+private const val DATABASE_VERSION = 3
 
 /** Local SQLite store for the logged user's profile data. */
 class AetherDatabase(context: Context) :
@@ -29,6 +31,14 @@ class AetherDatabase(context: Context) :
         const val DESCRIPTION = "description"
     }
 
+    object Enterprise {
+        const val TABLE = "enterprise"
+        const val ID = "id"
+        const val NAME = "name"
+        const val TRADE_NAME = "trade_name"
+        const val CNPJ = "cnpj"
+    }
+
     object Address {
         const val TABLE = "address"
         const val KIND = "kind"
@@ -44,19 +54,8 @@ class AetherDatabase(context: Context) :
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(
-            """
-            CREATE TABLE ${Profile.TABLE} (
-                ${Profile.ID} INTEGER PRIMARY KEY,
-                ${Profile.NAME} TEXT NOT NULL,
-                ${Profile.EMAIL} TEXT NOT NULL,
-                ${Profile.CPF} TEXT NOT NULL,
-                ${Profile.PHONE} TEXT,
-                ${Profile.AVATAR_URL} TEXT,
-                ${Profile.CREATED_AT} INTEGER
-            )
-            """.trimIndent()
-        )
+        createProfileTable(db, Profile.TABLE)
+        createEnterpriseTable(db)
         db.execSQL(
             """
             CREATE TABLE ${Permission.TABLE} (
@@ -84,5 +83,55 @@ class AetherDatabase(context: Context) :
         )
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) = Unit
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        if (oldVersion < 2) relaxProfilePhone(db)
+        if (oldVersion < 3) createEnterpriseTable(db)
+    }
+
+    /**
+     * SQLite can't drop a NOT NULL constraint, so the profile table is rebuilt. Without this,
+     * installs created at v1 kept failing to store profiles that have no phone.
+     */
+    private fun relaxProfilePhone(db: SQLiteDatabase) {
+        val tempTable = "${Profile.TABLE}_new"
+        db.beginTransaction()
+        try {
+            createProfileTable(db, tempTable)
+            db.execSQL("INSERT INTO $tempTable SELECT * FROM ${Profile.TABLE}")
+            db.execSQL("DROP TABLE ${Profile.TABLE}")
+            db.execSQL("ALTER TABLE $tempTable RENAME TO ${Profile.TABLE}")
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    private fun createEnterpriseTable(db: SQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE ${Enterprise.TABLE} (
+                ${Enterprise.ID} INTEGER PRIMARY KEY,
+                ${Enterprise.NAME} TEXT NOT NULL,
+                ${Enterprise.TRADE_NAME} TEXT,
+                ${Enterprise.CNPJ} TEXT NOT NULL
+            )
+            """.trimIndent()
+        )
+    }
+
+    private fun createProfileTable(db: SQLiteDatabase, table: String) {
+        db.execSQL(
+            """
+            CREATE TABLE $table (
+                ${Profile.ID} INTEGER PRIMARY KEY,
+                ${Profile.NAME} TEXT NOT NULL,
+                ${Profile.EMAIL} TEXT NOT NULL,
+                ${Profile.CPF} TEXT NOT NULL,
+                ${Profile.PHONE} TEXT,
+                ${Profile.AVATAR_URL} TEXT,
+                ${Profile.CREATED_AT} INTEGER
+            )
+            """.trimIndent()
+        )
+    }
 }

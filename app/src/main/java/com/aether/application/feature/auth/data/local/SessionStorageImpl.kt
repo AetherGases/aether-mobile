@@ -57,7 +57,12 @@ class SessionStorageImpl(
         return try {
             val json = encryptor.decrypt(encrypted)
             val session = Json.decodeFromString<Session>(json)
-            val profile = profileLocalDataSource.getProfile() ?: return session
+            val profile = profileLocalDataSource.getProfile()
+            if (profile == null) {
+                Log.w(TAG, "No stored profile, restoring the session without permissions")
+                return session
+            }
+            Log.d(TAG, "Restored profile ${profile.id} with permissions ${profile.permissions.map { it.name }}")
             session.copy(
                 name = profile.name,
                 avatar = profile.avatarUrl.orEmpty(),

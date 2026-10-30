@@ -14,6 +14,13 @@ data class LocalProfile(
     val permissions: List<Permission>,
 )
 
+data class LocalEnterprise(
+    val id: Long,
+    val name: String,
+    val tradeName: String?,
+    val cnpj: String,
+)
+
 enum class AddressKind { ENTERPRISE, UNIT }
 
 data class WorkplaceAddress(
