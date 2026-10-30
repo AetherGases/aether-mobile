@@ -83,7 +83,7 @@ class SettingsViewModel(
     fun onAvatarPicked(uri: Uri) {
         if (_uiState.value.isUploadingAvatar) return
         viewModelScope.launch {
-            _uiState.update { it.copy(isUploadingAvatar = true) }
+            _uiState.update { it.copy(isUploadingAvatar = true, avatarErrorMessage = null) }
             try {
                 val avatarUrl = profileRepository.updateAvatar(uri)
                 _uiState.update { it.copy(avatarUrl = avatarUrl, isUploadingAvatar = false) }
@@ -97,10 +97,6 @@ class SettingsViewModel(
                 ) }
             }
         }
-    }
-
-    fun onAvatarErrorShown() {
-        _uiState.update { it.copy(avatarErrorMessage = null) }
     }
 
     // AppNavigation reacts to the auth state and goes back to the auth graph

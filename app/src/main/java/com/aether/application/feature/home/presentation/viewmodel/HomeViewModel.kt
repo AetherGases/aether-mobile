@@ -13,6 +13,7 @@ import com.aether.application.feature.home.presentation.components.QuickAction
 import com.aether.application.feature.home.presentation.components.QuickActionContainer
 import com.aether.application.feature.home.presentation.components.RecentReport
 import com.aether.application.feature.home.presentation.model.toReportStatus
+import com.aether.application.feature.profile.domain.repository.ProfileRepository
 import com.aether.core.ui.components.EmployeeHeroCard
 import com.aether.core.ui.components.HomeHeroCard
 import com.aether.core.ui.components.ManagerHeroCard
@@ -36,7 +37,10 @@ private const val TAG = "HomeViewModel"
 // Shown on a card while the user has no inventory yet
 private const val NO_VALUE = "—"
 
+enum class HomeLoadPhase { LOADING, READY, NO_PERMISSIONS }
+
 data class HomeUiState(
+    val phase: HomeLoadPhase = HomeLoadPhase.LOADING,
     val userName: String = "",
     val userLastName: String = "",
     val avatarUrl: String = "",
@@ -59,6 +63,7 @@ sealed interface HomeEvent {
 
 class HomeViewModel(
     private val homeRepository: HomeRepository,
+    private val profileRepository: ProfileRepository,
     private val sessionManager: SessionManager
 ): ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -70,7 +75,32 @@ class HomeViewModel(
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     init {
-        viewModelScope.launch { loadHome() }
+        loadFirstTime()
+    }
+
+    // Home only shows up once the profile and its permissions are loaded
+    fun loadFirstTime() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(phase = HomeLoadPhase.LOADING) }
+            try {
+                profileRepository.refreshProfile()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load the profile, back to login", e)
+                // AppNavigation reacts to the auth state and goes back to the auth graph
+                sessionManager.logout()
+                return@launch
+            }
+
+            if (AppPermission.entries.none { sessionManager.hasPermission(it) }) {
+                _uiState.update { it.copy(phase = HomeLoadPhase.NO_PERMISSIONS) }
+                return@launch
+            }
+
+            loadHome()
+            _uiState.update { it.copy(phase = HomeLoadPhase.READY) }
+        }
     }
 
     fun refresh() {
@@ -131,6 +161,11 @@ class HomeViewModel(
             Log.e(TAG, "Failed to load home $name", e)
             null
         }
+
+    // AppNavigation reacts to the auth state and goes back to the auth graph
+    fun onLogoutClick() {
+        viewModelScope.launch { sessionManager.logout() }
+    }
 
     fun onReportClick(recentReport: RecentReport) {
         viewModelScope.launch {

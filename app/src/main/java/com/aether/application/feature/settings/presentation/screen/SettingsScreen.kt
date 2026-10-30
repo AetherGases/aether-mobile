@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import com.aether.application.core.ui.components.FormErrorText
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
@@ -57,6 +58,7 @@ fun SettingsScreen(
     userName: String,
     avatarUrl: String?,
     isUploadingAvatar: Boolean,
+    avatarErrorMessage: String?,
     onAvatarPicked: (Uri) -> Unit,
     reportsCount: Int,
     entryDate: String,
@@ -99,6 +101,12 @@ fun SettingsScreen(
             onAvatarClick = { showAvatarSource = true },
             onBackClick = onBackClick
         )
+        if (avatarErrorMessage != null) {
+            FormErrorText(
+                message = avatarErrorMessage,
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 12.dp)
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -543,6 +551,7 @@ fun SettingsScreenPreview() {
             userName = "Daniel Sagaz",
             avatarUrl = null,
             isUploadingAvatar = false,
+            avatarErrorMessage = null,
             onAvatarPicked = {},
             reportsCount = 4539,
             entryDate = "24/02/23",

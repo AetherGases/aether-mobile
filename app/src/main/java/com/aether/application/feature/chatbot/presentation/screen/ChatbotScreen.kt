@@ -48,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.application.core.ui.components.AetherTrailingIconButton
+import com.aether.application.core.ui.components.FormErrorText
 import com.aether.core.ui.components.ChatInputBar
 import com.aether.core.ui.components.ChatMessage
 import com.aether.core.ui.components.ChatMessageBubble
@@ -78,7 +79,8 @@ fun AekoScreen(
     onConversationClick: (String) -> Unit,
     onSettingsClick: () -> Unit,
     onBackClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    errorMessage: String? = null
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -293,6 +295,13 @@ fun AekoScreen(
                             .padding(end = 20.dp, bottom = 8.dp)
                     )
                 }
+            }
+
+            if (errorMessage != null) {
+                FormErrorText(
+                    message = errorMessage,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
             }
 
             ChatInputBar(

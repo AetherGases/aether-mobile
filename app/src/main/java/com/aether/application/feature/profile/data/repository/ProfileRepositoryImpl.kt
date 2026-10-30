@@ -1,6 +1,7 @@
 package com.aether.application.feature.profile.data.repository
 
 import android.net.Uri
+import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.database.ProfileLocalDataSource
 import com.aether.application.core.network.cloudinary.CloudinaryApi
@@ -46,5 +47,23 @@ class ProfileRepositoryImpl(
             sessionManager.save(session.copy(avatar = imageUrl))
         }
         return imageUrl
+    }
+
+    override suspend fun refreshProfile(): Session {
+        val profile = profileApi.getUserProfile()
+        // Must be stored before the session: SessionStorage reads the profile back from SQLite
+        profileLocalDataSource.saveProfile(profile.toLocalProfile())
+        profileLocalDataSource.saveAddresses(profile.toWorkplaceAddresses())
+        profileLocalDataSource.saveEnterprise(profile.toLocalEnterprise())
+
+        val session = checkNotNull(sessionManager.getSession()) { "No session to update" }
+        val updated = session.copy(
+            permissions = profile.permissions,
+            name = profile.name,
+            avatar = profile.avatarUrl ?: "",
+            createdAt = profile.createdAt
+        )
+        check(sessionManager.save(updated)) { "Failed to persist the profile" }
+        return updated
     }
 }
