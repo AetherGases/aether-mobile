@@ -35,7 +35,8 @@ class SessionStorageImpl(
             email = session.email,
             accessToken = session.accessToken,
             refreshToken = session.refreshToken,
-            expiration = session.expiration
+            expiration = session.expiration,
+            refreshExpiration = session.refreshExpiration
         )
         val json = Json.encodeToString(tokensOnly)
         val encrypted = encryptor.encrypt(json)

@@ -34,7 +34,9 @@ class SessionManagerImpl(
 
     override suspend fun isAuthenticated(): Boolean {
         val currentSession = session ?: return false
-        if (currentSession.expiration.isBefore(Instant.now())) {
+        // An expired access token is refreshed on the first 401: only an expired refresh token ends the session
+        val sessionExpiration = currentSession.refreshExpiration ?: currentSession.expiration
+        if (sessionExpiration.isBefore(Instant.now())) {
             logout()
             return false
         }

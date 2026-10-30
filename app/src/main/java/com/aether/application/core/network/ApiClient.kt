@@ -26,10 +26,26 @@ object ApiClient {
                 }
             }
             .addInterceptor(authInterceptor)
-            .addInterceptor(HttpErrorLoggingInterceptor())
+            .addInterceptor(HttpCallLoggingInterceptor())
             .authenticator(tokenAuthenticator)
             // The AI hub only answers after the whole agent run, which outlasts OkHttp's 10s default
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .build()
+    }
+
+    /**
+     * Client for the token refresh only: without the auth interceptor and the authenticator, a
+     * refresh answered with 401 fails instead of re-entering the authenticator, which would wait
+     * forever on the refresh it is part of.
+     */
+    fun getRefreshOkHttpClient(baseUrlInterceptor: BaseUrlInterceptor?): OkHttpClient {
+        return OkHttpClient.Builder()
+            .apply {
+                if (baseUrlInterceptor != null) {
+                    addInterceptor(baseUrlInterceptor)
+                }
+            }
+            .addInterceptor(HttpCallLoggingInterceptor())
             .build()
     }
 
