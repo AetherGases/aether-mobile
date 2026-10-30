@@ -125,6 +125,7 @@ object AppModule {
         viewModel {
             HomeViewModel(
                 homeRepository = get(),
+                profileRepository = get(),
                 sessionManager = get()
             )
         }

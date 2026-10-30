@@ -6,7 +6,7 @@ data class SettingsUiState(
     val userName: String = "",
     val avatarUrl: String? = null,
     val isUploadingAvatar: Boolean = false,
-    /** One-shot message, cleared with SettingsViewModel.onAvatarErrorShown. */
+    /** Shown under the header until the next upload attempt. */
     val avatarErrorMessage: String? = null,
     val reportsCount: Int = 0,
     val entryDate: String = "",

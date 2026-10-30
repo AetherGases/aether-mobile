@@ -3,10 +3,13 @@ package com.aether.application.feature.calculator.presentation.screen
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.aether.application.core.ui.components.FormErrorText
 import com.aether.application.feature.calculator.presentation.screen.step.DeadlineStep
 import com.aether.application.feature.calculator.presentation.screen.step.EmissionStep
 import com.aether.application.feature.calculator.presentation.screen.step.GreenGasStep
@@ -64,6 +67,15 @@ fun CalculatorFormScreen(
                     onFinishClick = onFinishClicked
                 )
             }
+        }
+
+        uiState.errorMessage?.let { message ->
+            FormErrorText(
+                message = message,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = 24.dp, vertical = 96.dp)
+            )
         }
 
         if (uiState.isLoading) {

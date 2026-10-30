@@ -8,9 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import android.widget.Toast
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,7 +28,10 @@ import com.aether.application.feature.auth.presentation.viewmodel.ChangePassword
 import com.aether.application.feature.auth.presentation.viewmodel.ChangePasswordViewModel
 import com.aether.application.feature.auth.presentation.viewmodel.LoginEvent
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
+import com.aether.application.feature.home.presentation.screen.HomeLoadingScreen
+import com.aether.application.feature.home.presentation.screen.HomeNoPermissionsScreen
 import com.aether.application.feature.home.presentation.screen.HomeScreen
+import com.aether.application.feature.home.presentation.viewmodel.HomeLoadPhase
 import com.aether.application.feature.auth.presentation.viewmodel.SplashEvent
 import com.aether.application.feature.auth.presentation.viewmodel.SplashViewModel
 import com.aether.application.feature.auth.presentation.screen.SplashScreen
@@ -345,7 +346,13 @@ private fun AppNavHost(
                     }
                 }
 
-                HomeScreen(
+                when (uiState.phase) {
+                    HomeLoadPhase.LOADING -> HomeLoadingScreen()
+                    HomeLoadPhase.NO_PERMISSIONS -> HomeNoPermissionsScreen(
+                        onRetryClick = viewModel::loadFirstTime,
+                        onLogoutClick = viewModel::onLogoutClick
+                    )
+                    HomeLoadPhase.READY -> HomeScreen(
                     userName = uiState.userName,
                     userLastName = uiState.userLastName,
                     avatarUrl = uiState.avatarUrl,
@@ -361,7 +368,8 @@ private fun AppNavHost(
                     onSettingsClick = { navController.navigate(SettingsRoute) },
                     onSeeAllReportsClick = { navController.navigate(ReportHistoryRoute) },
                     onReportClick = viewModel::onReportClick,
-                )
+                    )
+                }
             }
 
             composable<ReportReviewRoute> { backStackEntry ->
@@ -420,7 +428,6 @@ private fun AppNavHost(
                 }
                 val viewModel = koinViewModel<NewReportViewModel>(viewModelStoreOwner = uploadEntry)
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                val context = LocalContext.current
 
                 // Covers the back button and the system back gesture alike
                 DisposableEffect(Unit) {
@@ -430,14 +437,8 @@ private fun AppNavHost(
                 LaunchedEffect(Unit) {
                     viewModel.events.collect { event ->
                         when (event) {
-                            is NewReportEvent.Created -> {
-                                Toast.makeText(
-                                    context,
-                                    "Relatório enviado! Estamos processando a planilha.",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                            is NewReportEvent.Created ->
                                 navController.popBackStack<HomeRoute>(inclusive = false)
-                            }
                         }
                     }
                 }
@@ -521,19 +522,12 @@ private fun AppNavHost(
                 val viewModel = koinViewModel<SettingsViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 var showThemePicker by remember { mutableStateOf(false) }
-                val context = LocalContext.current
-
-                LaunchedEffect(uiState.avatarErrorMessage) {
-                    uiState.avatarErrorMessage?.let { message ->
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        viewModel.onAvatarErrorShown()
-                    }
-                }
 
                 SettingsScreen(
                     userName = uiState.userName,
                     avatarUrl = uiState.avatarUrl,
                     isUploadingAvatar = uiState.isUploadingAvatar,
+                    avatarErrorMessage = uiState.avatarErrorMessage,
                     onAvatarPicked = viewModel::onAvatarPicked,
                     reportsCount = uiState.reportsCount,
                     entryDate = uiState.entryDate,
@@ -577,14 +571,6 @@ private fun AppNavHost(
             composable<CalculatorRoute> {
                 val viewModel = koinViewModel<CalculatorScreenViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                val context = LocalContext.current
-
-                LaunchedEffect(uiState.errorMessage) {
-                    uiState.errorMessage?.let {
-                        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-                        viewModel.onErrorShown()
-                    }
-                }
 
                 CalculatorFormScreen(
                     uiState = uiState,
@@ -610,14 +596,6 @@ private fun AppNavHost(
                 val viewModel = koinViewModel<ChatbotViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 val clipboard = LocalClipboardManager.current
-                val context = LocalContext.current
-
-                LaunchedEffect(uiState.errorMessage) {
-                    uiState.errorMessage?.let {
-                        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-                        viewModel.onErrorShown()
-                    }
-                }
 
                 AekoScreen(
                     screenTitle = uiState.title,
@@ -643,7 +621,8 @@ private fun AppNavHost(
                     onNewConversationClick = viewModel::onNewConversationClick,
                     onConversationClick = viewModel::onConversationClick,
                     onSettingsClick = { navController.navigate(SettingsRoute) },
-                    onBackClicked = { navController.popBackStack() }
+                    onBackClicked = { navController.popBackStack() },
+                    errorMessage = uiState.errorMessage
                 )
             }
         }

@@ -53,12 +53,16 @@ class CalculatorScreenViewModel(
         }
     }
 
-    fun onPollutingGasChanged(value: String) = _uiState.update { it.copy(pollutingGas = value) }
-    fun onMonthlyVolumeChanged(value: String) = _uiState.update { it.copy(monthlyVolume = value) }
-    fun onScopeChanged(value: String) = _uiState.update { it.copy(scope = value) }
-    fun onGreenGasChanged(value: String) = _uiState.update { it.copy(greenGas = value) }
-    fun onDeadlineChanged(value: String) = _uiState.update { it.copy(deadline = value) }
-    fun onErrorShown() = _uiState.update { it.copy(errorMessage = null) }
+    // The error stays on screen until the user changes something
+    fun onPollutingGasChanged(value: String) =
+        _uiState.update { it.copy(pollutingGas = value, errorMessage = null) }
+    fun onMonthlyVolumeChanged(value: String) =
+        _uiState.update { it.copy(monthlyVolume = value, errorMessage = null) }
+    fun onScopeChanged(value: String) = _uiState.update { it.copy(scope = value, errorMessage = null) }
+    fun onGreenGasChanged(value: String) =
+        _uiState.update { it.copy(greenGas = value, errorMessage = null) }
+    fun onDeadlineChanged(value: String) =
+        _uiState.update { it.copy(deadline = value, errorMessage = null) }
 
     fun onNextClicked() {
         val state = _uiState.value
@@ -89,7 +93,7 @@ class CalculatorScreenViewModel(
             CalculatorStep.DEADLINE -> CalculatorStep.GREEN_GAS
             CalculatorStep.RESULT -> CalculatorStep.DEADLINE
         }
-        _uiState.update { it.copy(step = previous) }
+        _uiState.update { it.copy(step = previous, errorMessage = null) }
         return true
     }
 
@@ -147,7 +151,7 @@ class CalculatorScreenViewModel(
 
     private fun goTo(step: CalculatorStep, error: String?) {
         _uiState.update {
-            if (error == null) it.copy(step = step) else it.copy(errorMessage = error)
+            if (error == null) it.copy(step = step, errorMessage = null) else it.copy(errorMessage = error)
         }
     }
 }

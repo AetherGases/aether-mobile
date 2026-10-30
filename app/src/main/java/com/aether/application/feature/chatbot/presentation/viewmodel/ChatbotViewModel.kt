@@ -63,7 +63,7 @@ class ChatbotViewModel(
     }
 
     fun onInputTextChanged(text: String) {
-        _uiState.update { it.copy(inputText = text.take(MAX_INPUT_LENGTH)) }
+        _uiState.update { it.copy(inputText = text.take(MAX_INPUT_LENGTH), errorMessage = null) }
     }
 
     fun onConversationSearchQueryChanged(query: String) {
@@ -145,10 +145,6 @@ class ChatbotViewModel(
         }
     }
 
-    fun onErrorShown() {
-        _uiState.update { it.copy(errorMessage = null) }
-    }
-
     private fun send(rawText: String) {
         val text = rawText.trim().take(MAX_INPUT_LENGTH)
         val state = _uiState.value
@@ -157,7 +153,7 @@ class ChatbotViewModel(
         val conversationId = state.activeConversationId
         val userMessage = newMessage(ChatSender.USER, text)
         _uiState.update {
-            it.copy(messages = it.messages + userMessage, inputText = "", isSending = true)
+            it.copy(messages = it.messages + userMessage, inputText = "", isSending = true, errorMessage = null)
         }
 
         viewModelScope.launch {
