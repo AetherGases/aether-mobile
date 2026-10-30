@@ -29,7 +29,6 @@ import kotlin.time.Duration.Companion.milliseconds
 class SplashViewModel(
     private val sessionManager: SessionManager,
     context: Context,
-    @RawRes videoRes: Int,
     startDelayMillis: Long = 300,
     whiteStartFraction: Float = 0.45f,
 ) : ViewModel() {
@@ -40,7 +39,7 @@ class SplashViewModel(
 
     val circleDurationMillis = 800
     val player: ExoPlayer = ExoPlayer.Builder(context).build().apply {
-        setMediaItem(MediaItem.fromUri("android.resource://${context.packageName}/${selectSplash(context)}".toUri()))
+        setMediaItem(MediaItem.fromUri("android.resource://${context.packageName}/${selectSplash()}".toUri()))
         prepare()
         playWhenReady = false
     }
@@ -122,7 +121,7 @@ class SplashViewModel(
 
 
 
-private fun selectSplash(context: Context): Int {
+private fun selectSplash(): Int {
     val decoders = MediaCodecList(MediaCodecList.REGULAR_CODECS)
         .codecInfos
         .filter { !it.isEncoder }

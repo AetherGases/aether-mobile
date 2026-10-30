@@ -1,6 +1,5 @@
 package com.aether.application.core.di
 
-import com.aether.application.R
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.location.AddressGeocoder
@@ -28,7 +27,6 @@ import com.aether.application.feature.calculator.domain.usecase.ValidateInputUse
 import com.aether.application.feature.calculator.presentation.viewmodel.CalculatorScreenViewModel
 import com.aether.application.feature.chatbot.presentation.viewmodel.ChatbotViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
-import com.aether.application.feature.notifications.presentation.viewmodel.NotificationsViewModel
 import com.aether.application.feature.proximity.domain.WorkplaceProximityChecker
 import com.aether.application.feature.proximity.presentation.viewmodel.ProximityViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
@@ -128,10 +126,6 @@ object AppModule {
                 profileRepository = get(),
                 sessionManager = get()
             )
-        }
-
-        viewModel {
-            NotificationsViewModel(notificationsRepository = get())
         }
 
         viewModel { (reportId: Long) ->
