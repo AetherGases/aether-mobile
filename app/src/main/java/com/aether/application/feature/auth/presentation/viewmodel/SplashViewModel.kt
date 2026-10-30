@@ -1,6 +1,8 @@
 package com.aether.application.feature.auth.presentation.viewmodel
 
 import android.content.Context
+import android.media.MediaCodecList
+import android.media.MediaFormat
 import android.util.Log
 import androidx.annotation.RawRes
 import androidx.core.net.toUri
@@ -10,6 +12,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.aether.application.R
 import com.aether.application.core.auth.storage.SessionManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -37,7 +40,7 @@ class SplashViewModel(
 
     val circleDurationMillis = 800
     val player: ExoPlayer = ExoPlayer.Builder(context).build().apply {
-        setMediaItem(MediaItem.fromUri("android.resource://${context.packageName}/$videoRes".toUri()))
+        setMediaItem(MediaItem.fromUri("android.resource://${context.packageName}/${selectSplash(context)}".toUri()))
         prepare()
         playWhenReady = false
     }
@@ -114,6 +117,37 @@ class SplashViewModel(
         hasNavigated = true
         val event = if (sessionManager.isAuthenticated()) SplashEvent.NavigateToHome else SplashEvent.NavigateToAuth
         _events.send(event)
+    }
+}
+
+
+
+private fun selectSplash(context: Context): Int {
+    val decoders = MediaCodecList(MediaCodecList.REGULAR_CODECS)
+        .codecInfos
+        .filter { !it.isEncoder }
+        .filter {
+            it.supportedTypes.any { type ->
+                type.equals(MediaFormat.MIMETYPE_VIDEO_AVC, ignoreCase = true)
+            }
+        }
+
+    fun supports(width: Int, height: Int, fps: Double): Boolean {
+        return decoders.any { decoder ->
+            runCatching {
+                decoder.getCapabilitiesForType(MediaFormat.MIMETYPE_VIDEO_AVC)
+                    .videoCapabilities
+                    ?.areSizeAndRateSupported(width, height, fps)
+                    ?: false
+            }.getOrDefault(false)
+        }
+    }
+
+    return when {
+        supports(2160, 2160, 30.0) -> R.raw.splash_ultra
+        supports(1080, 1080, 30.0) -> R.raw.splash_high
+        supports(720, 720, 24.0) -> R.raw.splash_medium
+        else -> R.raw.splash_low
     }
 }
 
