@@ -1,6 +1,5 @@
 package com.aether.application.core.di
 
-import com.aether.application.R
 import com.aether.application.core.auth.data.SessionStorage
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.location.AddressGeocoder
@@ -77,8 +76,7 @@ object AppModule {
         viewModel {
             SplashViewModel(
                 sessionManager = get(),
-                context = get(),
-                videoRes = R.raw.splash
+                context = get()
             )
         }
 
