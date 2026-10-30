@@ -18,6 +18,9 @@ import com.aether.application.feature.auth.data.repository.AuthRepositoryImpl
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
 import com.aether.application.feature.auth.presentation.viewmodel.LoginViewModel
+import com.aether.application.feature.calculator.data.remote.CalculatorApi
+import com.aether.application.feature.calculator.data.repository.CalculatorRepositoryImpl
+import com.aether.application.feature.calculator.domain.repository.CalculatorRepository
 import com.aether.application.feature.chatbot.data.remote.ChatbotApi
 import com.aether.application.feature.chatbot.data.repository.ChatbotRepositoryImpl
 import com.aether.application.feature.chatbot.data.repository.SavedConversationsRepositoryImpl
@@ -178,6 +181,15 @@ object NetworkModule {
 
         single<ReportsRepository> {
             ReportsRepositoryImpl(inventoryApi = get(), reportsApi = get(), hubApi = get())
+        }
+
+        single<CalculatorApi> {
+            val retrofit: Retrofit = get()
+            retrofit.create(CalculatorApi::class.java)
+        }
+
+        single<CalculatorRepository> {
+            CalculatorRepositoryImpl(calculatorApi = get())
         }
 
         single<ChatbotApi> {

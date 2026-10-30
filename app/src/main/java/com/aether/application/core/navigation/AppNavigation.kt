@@ -54,6 +54,8 @@ import com.aether.application.feature.settings.presentation.screen.label
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
 import com.aether.application.feature.chatbot.presentation.screen.AekoScreen
+import com.aether.application.feature.calculator.presentation.screen.CalculatorFormScreen
+import com.aether.application.feature.calculator.presentation.viewmodel.CalculatorScreenViewModel
 import com.aether.application.feature.chatbot.presentation.viewmodel.ChatbotViewModel
 import com.aether.application.feature.home.presentation.viewmodel.HomeViewModel
 import com.aether.application.feature.reports.presentation.screen.ReportHistoryScreen
@@ -573,7 +575,35 @@ private fun AppNavHost(
             }
 
             composable<CalculatorRoute> {
-                TODO()
+                val viewModel = koinViewModel<CalculatorScreenViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                val context = LocalContext.current
+
+                LaunchedEffect(uiState.errorMessage) {
+                    uiState.errorMessage?.let {
+                        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                        viewModel.onErrorShown()
+                    }
+                }
+
+                CalculatorFormScreen(
+                    uiState = uiState,
+                    onPollutingGasChanged = viewModel::onPollutingGasChanged,
+                    onMonthlyVolumeChanged = viewModel::onMonthlyVolumeChanged,
+                    onScopeChanged = viewModel::onScopeChanged,
+                    onGreenGasChanged = viewModel::onGreenGasChanged,
+                    onDeadlineChanged = viewModel::onDeadlineChanged,
+                    onNextClicked = viewModel::onNextClicked,
+                    onBackClicked = {
+                        if (!viewModel.onBackClicked()) navController.popBackStack()
+                    },
+                    onCalculateClicked = viewModel::onCalculateClicked,
+                    onConsultAekoClicked = { navController.navigate(ChatbotRoute) },
+                    onFinishClicked = {
+                        viewModel.onFinishClicked()
+                        navController.popBackStack()
+                    }
+                )
             }
 
             composable<ChatbotRoute> {

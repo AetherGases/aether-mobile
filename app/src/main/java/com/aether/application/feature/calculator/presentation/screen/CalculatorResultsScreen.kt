@@ -18,18 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.BaselineShift
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
 import java.text.NumberFormat
@@ -374,29 +371,56 @@ private fun ComparisonBar(
     textColor: Color
 ) {
     val shape = RoundedCornerShape(50)
+    val textStyle = bodySmallMedium
+    val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val textWidth = with(density) {
+        textMeasurer.measure(valueText, textStyle, maxLines = 1).size.width.toDp()
+    }
+    val insidePadding = 12.dp
 
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxWidth()
             .height(28.dp)
             .clip(shape)
             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(fraction)
-                .fillMaxHeight()
-                .clip(shape)
-                .background(barColor),
-            contentAlignment = Alignment.CenterStart
+        val barWidth = maxWidth * fraction
+        // A short bar can't hold its value: the text moves to the right of the bar
+        val fitsInside = textWidth + insidePadding * 2 <= barWidth
+
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                valueText,
-                style = bodySmallMedium,
-                color = textColor,
-                maxLines = 1,
-                modifier = Modifier.padding(start = 12.dp, top = 2.5.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .width(barWidth)
+                    .fillMaxHeight()
+                    .clip(shape)
+                    .background(barColor),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                if (fitsInside) {
+                    Text(
+                        valueText,
+                        style = textStyle,
+                        color = textColor,
+                        maxLines = 1,
+                        modifier = Modifier.padding(start = insidePadding)
+                    )
+                }
+            }
+            if (!fitsInside) {
+                Text(
+                    valueText,
+                    style = textStyle,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
         }
     }
 }
@@ -458,12 +482,8 @@ private fun barFraction(value: Int, ticks: List<Int>): Float {
     return (edgePadding + scaled * (1f - 2f * edgePadding)).coerceIn(0f, 1f)
 }
 
-private fun emissionUnit(prefix: String = ""): AnnotatedString = buildAnnotatedString {
-    append(prefix)
-    append("tCO")
-    withStyle(SpanStyle(baselineShift = BaselineShift.Subscript, fontSize = 0.7.em)) { append("2") }
-    append("e/mês")
-}
+// A subscript glyph instead of a baseline-shifted span: the shift grows the line box and pushes the text up
+private fun emissionUnit(prefix: String = ""): AnnotatedString = AnnotatedString("${prefix}tCO₂e/mês")
 
 private fun formatNumber(value: Int): String =
     NumberFormat.getIntegerInstance(Locale.forLanguageTag("pt-BR")).format(value)
