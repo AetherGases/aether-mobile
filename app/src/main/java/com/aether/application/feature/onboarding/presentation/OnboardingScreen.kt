@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -178,7 +179,7 @@ private fun OnboardingPageContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = if (isFirstPage) "Pular" else "Voltar",
+                text = stringResource(if (isFirstPage) R.string.onboarding_skip else R.string.common_back),
                 style = bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = MaterialTheme.colorScheme.outlineVariant,
                 modifier = Modifier
@@ -201,7 +202,7 @@ private fun OnboardingPageContent(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Começar",
+                        text = stringResource(R.string.onboarding_start),
                         style = titleMediumMD.copy(fontWeight = FontWeight.Bold),
                         color = Color.White
                     )
@@ -222,7 +223,7 @@ private fun OnboardingPageContent(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = "Próximo",
+                        contentDescription = stringResource(R.string.onboarding_next),
                         tint = Color.White,
                         modifier = Modifier.size(24.dp)
                     )
