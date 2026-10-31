@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -111,7 +112,7 @@ fun AekoSearchConversationsScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Pesquisar",
+                    contentDescription = stringResource(R.string.chatbot_search),
                     tint = MaterialTheme.colorScheme.outline
                 )
 
@@ -125,7 +126,7 @@ fun AekoSearchConversationsScreen(
                     decorationBox = { innerTextField ->
                         if (searchQuery.isEmpty()) {
                             Text(
-                                text = "Pesquisar conversa",
+                                text = stringResource(R.string.chatbot_search_conversation),
                                 style = bodyLarge,
                                 color = MaterialTheme.colorScheme.outline
                             )
@@ -163,7 +164,7 @@ fun AekoSearchConversationsScreen(
                 .clickable(onClick = onBackClicked),
             contentAlignment = Alignment.Center
         ) {
-            Text("Voltar", style = titleMediumMD, color = Color.White)
+            Text(stringResource(R.string.common_back), style = titleMediumMD, color = Color.White)
         }
     }
 }

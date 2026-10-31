@@ -43,12 +43,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.application.core.ui.components.AetherTrailingIconButton
 import com.aether.application.core.ui.components.FormErrorText
+import com.aether.application.core.utils.UiText
 import com.aether.core.ui.components.ChatInputBar
 import com.aether.core.ui.components.ChatMessage
 import com.aether.core.ui.components.ChatMessageBubble
@@ -80,7 +82,7 @@ fun AekoScreen(
     onSettingsClick: () -> Unit,
     onBackClicked: () -> Unit,
     modifier: Modifier = Modifier,
-    errorMessage: String? = null
+    errorMessage: UiText? = null
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -194,13 +196,13 @@ fun AekoScreen(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         AetherTrailingIconButton(
                             painter = rememberVectorPainter(Icons.Default.Menu),
-                            contentDescription = "Abrir conversas salvas",
+                            contentDescription = stringResource(R.string.chatbot_open_saved),
                             onClick = { coroutineScope.launch { drawerState.open() } }
                         )
                         AetherTrailingIconButton(
                             painter = painterResource(id = if (isConversationPinned) R.drawable.ic_bookmark else R.drawable.ic_bookmarkborder),
                             tint = MaterialTheme.colorScheme.secondary,
-                            contentDescription = if (isConversationPinned) "Remover dos salvos" else "Salvar conversa",
+                            contentDescription = stringResource(if (isConversationPinned) R.string.chatbot_unsave else R.string.chatbot_save),
                             onClick = onBookmarkClicked
                         )
                     }
@@ -230,7 +232,7 @@ fun AekoScreen(
                         )
                         Spacer(Modifier.height(6.dp))
                         Text(
-                            "Olá! Sou o Aeko, seu\nAssistente Virtual.",
+                            stringResource(R.string.chatbot_greeting),
                             style = titleLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -299,7 +301,7 @@ fun AekoScreen(
 
             if (errorMessage != null) {
                 FormErrorText(
-                    message = errorMessage,
+                    message = errorMessage.asString(),
                     modifier = Modifier.padding(horizontal = 24.dp)
                 )
             }
@@ -334,7 +336,7 @@ private fun ScrollToBottomButton(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_down),
-                contentDescription = "Ir para o fim da conversa",
+                contentDescription = stringResource(R.string.chatbot_scroll_to_end),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(10.dp).size(24.dp)
             )

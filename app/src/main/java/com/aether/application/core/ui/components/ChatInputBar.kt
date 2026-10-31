@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,7 @@ fun ChatInputBar(
         Box(modifier = Modifier.weight(1f)) {
             if (value.isEmpty()) {
                 Text(
-                    text = "Digite algo",
+                    text = stringResource(R.string.chat_input_placeholder),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
@@ -78,7 +79,7 @@ fun ChatInputBar(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_send),
-                contentDescription = "Enviar",
+                contentDescription = stringResource(R.string.common_send),
                 tint = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier.size(22.dp)
             )

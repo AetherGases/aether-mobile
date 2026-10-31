@@ -1,5 +1,9 @@
 package com.aether.application.feature.chatbot.domain.model
 
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.UserFacingException
+
+
 /** A stored chat session with the assistant. */
 data class Conversation(
     val id: String,
@@ -20,4 +24,4 @@ data class ChatReply(
 )
 
 /** A failure with a message that is safe to show to the user. */
-class ChatbotException(message: String, cause: Throwable? = null) : Exception(message, cause)
+class ChatbotException(uiText: UiText, cause: Throwable? = null) : UserFacingException(uiText, cause)

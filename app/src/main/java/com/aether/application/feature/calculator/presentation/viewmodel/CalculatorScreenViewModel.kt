@@ -3,6 +3,9 @@ package com.aether.application.feature.calculator.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.application.core.utils.userMessage
 import com.aether.application.feature.calculator.domain.model.ReductionForecast
 import com.aether.application.feature.calculator.domain.model.ReductionForecastParams
@@ -69,10 +72,10 @@ class CalculatorScreenViewModel(
         when (state.step) {
             CalculatorStep.EMISSION -> {
                 val error = when {
-                    state.pollutingGas.isBlank() -> "Selecione o gás poluente."
+                    state.pollutingGas.isBlank() -> uiText(R.string.calculator_error_select_polluting_gas)
                     validateInput.parseVolume(state.monthlyVolume) == null ->
-                        "Informe um volume de emissão válido."
-                    validateInput.parseScope(state.scope) == null -> "Selecione o escopo."
+                        uiText(R.string.calculator_error_invalid_volume)
+                    validateInput.parseScope(state.scope) == null -> uiText(R.string.calculator_error_select_scope)
                     else -> null
                 }
                 goTo(CalculatorStep.GREEN_GAS, error)
@@ -80,7 +83,7 @@ class CalculatorScreenViewModel(
             CalculatorStep.GREEN_GAS ->
                 goTo(
                     CalculatorStep.DEADLINE,
-                    if (state.greenGas.isBlank()) "Selecione o gás verde." else null
+                    if (state.greenGas.isBlank()) uiText(R.string.calculator_error_select_green_gas) else null
                 )
             else -> Unit
         }
@@ -108,11 +111,11 @@ class CalculatorScreenViewModel(
         val greenGas = state.gases.firstOrNull { it.isGreen && it.label == state.greenGas }
 
         if (years == null) {
-            _uiState.update { it.copy(errorMessage = "Informe um prazo de pelo menos 1 ano.") }
+            _uiState.update { it.copy(errorMessage = uiText(R.string.calculator_error_invalid_deadline)) }
             return
         }
         if (monthlyVolume == null || scope == null || currentGas == null || greenGas == null) {
-            _uiState.update { it.copy(errorMessage = "Revise os dados informados.") }
+            _uiState.update { it.copy(errorMessage = uiText(R.string.calculator_error_review_data)) }
             return
         }
 
@@ -149,7 +152,7 @@ class CalculatorScreenViewModel(
         _uiState.update { CalculatorUiState(gases = it.gases) }
     }
 
-    private fun goTo(step: CalculatorStep, error: String?) {
+    private fun goTo(step: CalculatorStep, error: UiText?) {
         _uiState.update {
             if (error == null) it.copy(step = step, errorMessage = null) else it.copy(errorMessage = error)
         }

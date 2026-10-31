@@ -1,6 +1,7 @@
 package com.aether.application
 
 import android.app.Application
+import com.aether.application.core.utils.AppLocale
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.di.AppModule
 import com.aether.application.core.di.NetworkModule
@@ -17,6 +18,7 @@ class AetherApplication : Application(), KoinComponent {
 
     override fun onCreate() {
         super.onCreate()
+        AppLocale.init(this)
         createNotificationChannel(this)
 
         startKoin {

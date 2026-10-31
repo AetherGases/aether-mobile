@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -48,7 +49,7 @@ fun AppHeader(
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Seja bem-vindo,",
+                text = stringResource(R.string.header_welcome),
                 style = bodySmallMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -63,7 +64,7 @@ fun AppHeader(
             IconButton(onClick = onNotificationsClick) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_bell),
-                    contentDescription = "Notificações",
+                    contentDescription = stringResource(R.string.common_notifications),
                     tint = MaterialTheme.colorScheme.outline
                 )
             }
@@ -82,7 +83,7 @@ fun AppHeader(
         IconButton(onClick = onSettingsClick) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_settings),
-                contentDescription = "Configurações",
+                contentDescription = stringResource(R.string.common_settings),
                 tint = MaterialTheme.colorScheme.outline
             )
         }

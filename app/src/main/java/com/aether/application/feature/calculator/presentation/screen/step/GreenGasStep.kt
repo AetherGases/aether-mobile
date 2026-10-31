@@ -16,12 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.aether.application.R
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.components.FormDropdownField
 import com.aether.core.ui.theme.*
@@ -40,7 +42,7 @@ fun GreenGasStep(
         modifier = modifier.fillMaxSize()
     ) {
         AetherTopBar(
-            title = "Inserir dados",
+            title = stringResource(R.string.calculator_enter_data),
             onBackClick = onBackClicked
         )
 
@@ -50,12 +52,12 @@ fun GreenGasStep(
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(Modifier.height(16.dp))
-            Text("Gás Verde", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.calculator_green_gas_title), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(32.dp))
 
             Text(
                 text = buildAnnotatedString {
-                    append("Gás verde que deseja simular")
+                    append(stringResource(R.string.calculator_green_gas_label))
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                         append("*")
                     }
@@ -68,7 +70,7 @@ fun GreenGasStep(
 
             FormDropdownField(
                 label = "",
-                placeholder = "Selecione o gás verde",
+                placeholder = stringResource(R.string.calculator_green_gas_placeholder),
                 value = greenGas,
                 options = gasOptions,
                 onValueSelected = onGreenGasChanged
@@ -79,10 +81,10 @@ fun GreenGasStep(
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.outline)) {
-                        append("Não sabe qual escolher? ")
+                        append(stringResource(R.string.common_ask_aeko_help))
                     }
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)) {
-                        append("Consulte o Aeko")
+                        append(stringResource(R.string.common_ask_aeko_link))
                     }
                 },
                 style = bodyMediumMd,
@@ -141,7 +143,7 @@ fun GreenGasStep(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Prosseguir",
+                        contentDescription = stringResource(R.string.calculator_proceed),
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(32.dp)
                     )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
+import androidx.compose.ui.res.stringResource
 import com.aether.application.R
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.aether.application.core.utils.UiText
 import com.aether.core.ui.components.GlassIconButton
 import com.aether.core.ui.theme.*
 import com.aether.application.core.ui.components.FormErrorText
@@ -39,7 +41,7 @@ fun VerificationScreen(
     isLoading: Boolean = false,
     isResending: Boolean = false,
     resendCooldownSeconds: Int = 0,
-    errorMessage: String? = null
+    errorMessage: UiText? = null
 ){
     val canResend = !isLoading && !isResending && resendCooldownSeconds == 0
 
@@ -127,11 +129,11 @@ fun VerificationScreen(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_chevron_left),
-                        contentDescription = "Voltar",
+                        contentDescription = stringResource(R.string.common_back),
                         tint = textPrimaryLight
                     )                }
                 Text(
-                    text = "Verificação",
+                    text = stringResource(R.string.auth_verification_title),
                     style = titleMedium,
                     color = textPrimaryLight,
                     modifier = Modifier.align(Alignment.Center)
@@ -141,7 +143,7 @@ fun VerificationScreen(
             Spacer(Modifier.height(64.dp))
 
             Text(
-                text = "Coloque o código recebido",
+                text = stringResource(R.string.auth_verification_enter_code),
                 style = displayMedium,
                 color = textPrimaryLight
             )
@@ -177,28 +179,28 @@ fun VerificationScreen(
 
             if (errorMessage != null) {
                 Spacer(Modifier.height(16.dp))
-                FormErrorText(errorMessage)
+                FormErrorText(errorMessage.asString())
             }
 
             Spacer(Modifier.height(24.dp))
 
             Text(
-                text = "Digite o código de 6 digitos enviado\npara o seu e-mail '$email'."
+                text = stringResource(R.string.auth_verification_code_sent, email)
             )
             Spacer(Modifier.height(16.dp))
 
             Row{
                 Text(
-                    text = "Não recebeu o código?",
+                    text = stringResource(R.string.auth_verification_no_code),
                     style = bodyLargeMedium,
                     color = textPrimaryLight
                 )
                 Spacer(Modifier.width(4.dp))
                 Text(
                     text = if (resendCooldownSeconds > 0) {
-                        "Reenviar em %d:%02d".format(resendCooldownSeconds / 60, resendCooldownSeconds % 60)
+                        stringResource(R.string.auth_verification_resend_in, resendCooldownSeconds / 60, resendCooldownSeconds % 60)
                     } else {
-                        "Reenviar"
+                        stringResource(R.string.auth_verification_resend)
                     },
                     style = bodyLargeMedium,
                     color = if (canResend) purple500 else textSecondaryLight,
@@ -233,7 +235,7 @@ fun VerificationScreen(
                             strokeWidth = 2.dp
                         )
                     } else {
-                        Text(text = "Verificar", style = titleMedium, color = textPrimaryDark)
+                        Text(text = stringResource(R.string.auth_verification_verify), style = titleMedium, color = textPrimaryDark)
                     }
                 }
             }

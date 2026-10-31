@@ -34,17 +34,17 @@ object AppRoute {
     val bottomBarRoutes = setOf(HOME, REPORTS, CALCULATOR, PROFILE)
 }
 
-private val homeItem = BottomBarItem(AppRoute.HOME, "Início", R.drawable.ic_nav_home)
+private val homeItem = BottomBarItem(AppRoute.HOME, R.string.nav_home, R.drawable.ic_nav_home)
 
 private fun bottomBarItems(isManager: Boolean) = listOf(
     BottomBarItem(
         route = AppRoute.REPORTS,
-        label = if (isManager) "Relatórios" else "Criação",
+        labelRes = if (isManager) R.string.nav_reports_manager else R.string.nav_reports_employee,
         iconRes = R.drawable.ic_nav_reports
     ),
-    BottomBarItem(AppRoute.CALCULATOR, "Calculadora", R.drawable.ic_nav_calculator),
-    BottomBarItem(AppRoute.CHATBOT, "Chatbot", R.drawable.ic_nav_chatbot),
-    BottomBarItem(AppRoute.PROFILE, "Perfil", R.drawable.ic_nav_profile)
+    BottomBarItem(AppRoute.CALCULATOR, R.string.nav_calculator, R.drawable.ic_nav_calculator),
+    BottomBarItem(AppRoute.CHATBOT, R.string.nav_chatbot, R.drawable.ic_nav_chatbot),
+    BottomBarItem(AppRoute.PROFILE, R.string.nav_profile, R.drawable.ic_nav_profile)
 )
 
 @Composable

@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,7 +80,7 @@ fun AekoSidebar(
             Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = "Aeko",
+                text = stringResource(R.string.chatbot_aeko_name),
                 style = titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.SemiBold
@@ -102,7 +103,7 @@ fun AekoSidebar(
                     tint = MaterialTheme.colorScheme.outline
                 )
             },
-            text = "Nova conversa",
+            text = stringResource(R.string.chatbot_new_conversation),
             onClick = onNewConversationClick
         )
 
@@ -114,14 +115,14 @@ fun AekoSidebar(
                     tint = MaterialTheme.colorScheme.outline
                 )
             },
-            text = "Pesquisar conversa",
+            text = stringResource(R.string.chatbot_search_conversation),
             onClick = onSearchClick
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Conversas salvas",
+            text = stringResource(R.string.chatbot_saved_conversations),
             style = titleMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -148,7 +149,7 @@ fun AekoSidebar(
         ) {
             AsyncImage(
                 model = avatarUrl,
-                contentDescription = "Avatar de $userName",
+                contentDescription = stringResource(R.string.common_avatar_description, userName),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(48.dp)
@@ -175,7 +176,7 @@ fun AekoSidebar(
             IconButton(onClick = onSettingsClick) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings),
-                    contentDescription = "Configurações",
+                    contentDescription = stringResource(R.string.common_settings),
                     tint = MaterialTheme.colorScheme.outline
                 )
             }

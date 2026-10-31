@@ -1,5 +1,6 @@
 package com.aether.core.ui.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,18 +18,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.aether.application.R
 import com.aether.core.ui.theme.*
 
-enum class ReportStatus(val label: String) {
-    EM_ANALISE("Em análise"),
-    APROVADO("Aprovado"),
-    REJEITADO("Rejeitado"),
-    EMITIDO("Emitido"),
-    SOLICITADO("Solicitado")
+enum class ReportStatus(@StringRes val labelRes: Int) {
+    EM_ANALISE(R.string.reportstatus_in_review),
+    APROVADO(R.string.reportstatus_approved),
+    REJEITADO(R.string.reportstatus_rejected),
+    EMITIDO(R.string.reportstatus_issued),
+    SOLICITADO(R.string.reportstatus_requested)
 }
 
 @Composable
@@ -83,7 +85,7 @@ fun ReportCard(
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(Modifier.width(8.dp))
-                    StatusBadge(text = status.label, color = statusColor(status))
+                    StatusBadge(text = stringResource(status.labelRes), color = statusColor(status))
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(secondaryLabel, style = bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -106,7 +108,7 @@ fun ReportCard(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    "Data de criação: $createdAt",
+                    stringResource(R.string.reportcard_created_at, createdAt),
                     style = bodySmallMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -128,7 +130,7 @@ fun ReportCard(
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Revisar", style = bodyMediumMd, color = MaterialTheme.colorScheme.onPrimary)
+                    Text(stringResource(R.string.reportcard_review), style = bodyMediumMd, color = MaterialTheme.colorScheme.onPrimary)
                     Spacer(Modifier.width(4.dp))
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,

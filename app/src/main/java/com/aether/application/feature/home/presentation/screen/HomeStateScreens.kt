@@ -12,8 +12,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.aether.application.R
 import com.aether.core.ui.theme.bodyMediumMd
 import com.aether.core.ui.theme.titleLarge
 import com.aether.core.ui.theme.titleMediumMD
@@ -48,23 +50,23 @@ fun HomeNoPermissionsScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Você ainda não tem permissões",
+            text = stringResource(R.string.home_no_permissions_title),
             style = titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
         Text(
-            text = "Sua conta não tem nenhuma permissão no momento. Fale com os responsáveis da sua empresa para liberar o seu acesso.",
+            text = stringResource(R.string.home_no_permissions_message),
             style = bodyMediumMd,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 12.dp)
         )
         TextButton(onClick = onRetryClick, modifier = Modifier.padding(top = 16.dp)) {
-            Text("Verificar novamente", style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.home_check_again), style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
         }
         TextButton(onClick = onLogoutClick) {
-            Text("Sair", style = titleMediumMD, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(R.string.home_sign_out), style = titleMediumMD, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

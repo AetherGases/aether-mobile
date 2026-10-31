@@ -1,8 +1,13 @@
 package com.aether.application.feature.notifications.presentation.viewmodel
 
 import android.util.Log
+import com.aether.application.core.utils.AppLocale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiPlural
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.notifications.domain.model.Notification
 import com.aether.application.feature.notifications.domain.repository.NotificationsRepository
@@ -32,7 +37,6 @@ class NotificationsViewModel(
     val uiState: StateFlow<NotificationsUiState> = _uiState.asStateFlow()
 
     private var notifications: List<Notification> = emptyList()
-    private val timestampFormatter = DateTimeFormatter.ofPattern("dd/MM HH:mm")
 
     init {
         load()
@@ -52,7 +56,8 @@ class NotificationsViewModel(
             _uiState.update {
                 it.copy(
                     sections = if (changed) buildSections(it.selectedFilter) else it.sections,
-                    isRefreshing = false
+                    isRefreshing = false,
+                    failed = fetched == null
                 )
             }
         }
@@ -102,11 +107,11 @@ class NotificationsViewModel(
             }
     }
 
-    private fun sectionTitle(date: LocalDate, today: LocalDate): String = when {
-        date == today -> "Hoje"
-        !date.isAfter(today) && date.isAfter(today.minusDays(7)) -> "Essa semana"
-        date.year == today.year && date.month == today.month -> "Esse mês"
-        else -> "Anteriores"
+    private fun sectionTitle(date: LocalDate, today: LocalDate): UiText = when {
+        date == today -> uiText(R.string.notifications_section_today)
+        !date.isAfter(today) && date.isAfter(today.minusDays(7)) -> uiText(R.string.notifications_section_this_week)
+        date.year == today.year && date.month == today.month -> uiText(R.string.notifications_section_this_month)
+        else -> uiText(R.string.notifications_section_earlier)
     }
 
     private fun Notification.toItem(zone: ZoneId, now: Instant) = NotificationItem(
@@ -114,7 +119,7 @@ class NotificationsViewModel(
         status = status.toNotificationStatus(),
         title = title,
         reviewer = description,
-        timestamp = timestampFormatter.format(timestamp.atZone(zone)),
+        timestamp = AppLocale.dayMonthTimeFormatter().format(timestamp.atZone(zone)),
         relativeTime = relativeTime(timestamp, now)
     )
 
@@ -124,13 +129,13 @@ class NotificationsViewModel(
         else -> NotificationStatus.PENDENTE
     }
 
-    private fun relativeTime(timestamp: Instant, now: Instant): String {
+    private fun relativeTime(timestamp: Instant, now: Instant): UiText {
         val elapsed = Duration.between(timestamp, now)
         return when {
-            elapsed.toMinutes() < 1 -> "Agora"
-            elapsed.toHours() < 1 -> "Há ${elapsed.toMinutes()} min"
-            elapsed.toDays() < 1 -> "Há ${elapsed.toHours()} ${if (elapsed.toHours() == 1L) "hora" else "horas"}"
-            else -> "Há ${elapsed.toDays()} ${if (elapsed.toDays() == 1L) "dia" else "dias"}"
+            elapsed.toMinutes() < 1 -> uiText(R.string.notifications_time_now)
+            elapsed.toHours() < 1 -> uiText(R.string.notifications_time_minutes_ago, elapsed.toMinutes())
+            elapsed.toDays() < 1 -> uiPlural(R.plurals.notifications_time_hours_ago, elapsed.toHours().toInt())
+            else -> uiPlural(R.plurals.notifications_time_days_ago, elapsed.toDays().toInt())
         }
     }
 }

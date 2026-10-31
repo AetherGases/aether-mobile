@@ -3,13 +3,15 @@ package com.aether.application.feature.chatbot.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.R
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.chatbot.domain.model.ChatbotException
 import com.aether.application.feature.chatbot.domain.repository.ChatbotRepository
 import com.aether.application.feature.chatbot.domain.repository.SavedConversationsRepository
 import com.aether.application.feature.chatbot.presentation.state.ChatbotUiState
-import com.aether.application.feature.chatbot.presentation.state.NEW_CONVERSATION_TITLE
 import com.aether.core.ui.components.ChatMessage
 import com.aether.core.ui.components.ChatSender
 import kotlinx.coroutines.CancellationException
@@ -25,10 +27,10 @@ private const val TAG = "ChatbotViewModel"
 private const val MAX_INPUT_LENGTH = 8192
 
 private val SUGGESTIONS = listOf(
-    "Como funciona o Aether?",
-    "O que é o Selo Paraná?",
-    "Como reduzir minhas emissões?",
-    "Como criar um relatório?",
+    R.string.chatbot_suggestion_how_it_works,
+    R.string.chatbot_suggestion_seal,
+    R.string.chatbot_suggestion_reduce,
+    R.string.chatbot_suggestion_create_report,
 )
 
 class ChatbotViewModel(
@@ -37,7 +39,7 @@ class ChatbotViewModel(
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ChatbotUiState(suggestions = SUGGESTIONS))
+    private val _uiState = MutableStateFlow(ChatbotUiState(suggestionRes = SUGGESTIONS))
     val uiState: StateFlow<ChatbotUiState> = _uiState.asStateFlow()
 
     private var nextMessageId = 0L
@@ -46,9 +48,9 @@ class ChatbotViewModel(
         viewModelScope.launch {
             val session = sessionManager.getSession()
             val role = if (sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)) {
-                "Gerente"
+                uiText(R.string.chatbot_role_manager)
             } else {
-                "Funcionário"
+                uiText(R.string.chatbot_role_employee)
             }
             _uiState.update {
                 it.copy(
@@ -78,7 +80,7 @@ class ChatbotViewModel(
         if (_uiState.value.isSending) return
         _uiState.update {
             it.copy(
-                title = NEW_CONVERSATION_TITLE,
+                title = uiText(R.string.chatbot_new_conversation),
                 messages = emptyList(),
                 activeConversationId = null,
                 inputText = ""
@@ -98,7 +100,7 @@ class ChatbotViewModel(
                 val turns = chatbotRepository.getMessages(conversationId)
                 _uiState.update {
                     it.copy(
-                        title = conversation.name,
+                        title = uiText(conversation.name),
                         activeConversationId = conversationId,
                         messages = turns.flatMap { turn ->
                             listOf(
@@ -124,7 +126,7 @@ class ChatbotViewModel(
         val state = _uiState.value
         val conversationId = state.activeConversationId
         if (conversationId == null) {
-            _uiState.update { it.copy(errorMessage = "Envie uma mensagem para poder salvar a conversa.") }
+            _uiState.update { it.copy(errorMessage = uiText(R.string.chatbot_error_save_needs_message)) }
             return
         }
 
@@ -140,7 +142,7 @@ class ChatbotViewModel(
                 throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to update pinned conversation $conversationId", e)
-                _uiState.update { it.copy(errorMessage = "Não foi possível atualizar a conversa salva.") }
+                _uiState.update { it.copy(errorMessage = uiText(R.string.chatbot_error_update_saved)) }
             }
         }
     }
@@ -163,7 +165,7 @@ class ChatbotViewModel(
                     it.copy(
                         messages = it.messages + newMessage(ChatSender.AEKO, reply.turn.output),
                         activeConversationId = reply.conversationId,
-                        title = reply.conversationName,
+                        title = uiText(reply.conversationName),
                         isSending = false
                     )
                 }
@@ -191,7 +193,7 @@ class ChatbotViewModel(
             val conversations = chatbotRepository.getConversations()
             _uiState.update { state ->
                 val activeName = conversations.firstOrNull { it.id == state.activeConversationId }?.name
-                state.copy(conversations = conversations, title = activeName ?: state.title)
+                state.copy(conversations = conversations, title = activeName?.let(::uiText) ?: state.title)
             }
         } catch (e: CancellationException) {
             throw e
@@ -214,6 +216,6 @@ class ChatbotViewModel(
     private fun newMessage(sender: ChatSender, text: String) =
         ChatMessage(id = "${nextMessageId++}", sender = sender, text = text)
 
-    private fun Exception.userMessage(): String =
-        (this as? ChatbotException)?.message ?: "Algo deu errado. Tente novamente."
+    private fun Exception.userMessage(): UiText =
+        (this as? ChatbotException)?.uiText ?: uiText(R.string.common_something_went_wrong)
 }
