@@ -125,7 +125,6 @@ data class GetImprovementPlanResponse(
     @SerialName("solving_method")
     val solvingMethod: String,
     val reasoning: String,
-    // TODO: field names of the recommended gases are assumed, not agreed on with the hub yet
     @SerialName("recommended_gases")
     val recommendedGases: List<RecommendedGasDto> = emptyList(),
 ) {
