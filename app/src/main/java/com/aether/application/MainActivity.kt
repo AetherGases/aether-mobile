@@ -1,6 +1,8 @@
 package com.aether.application
 
 import com.aether.application.core.navigation.AppNavigation
+import android.content.Context
+import com.aether.application.core.utils.AppLocale
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -26,6 +28,10 @@ import org.koin.android.ext.android.inject
 class MainActivity : ComponentActivity() {
     private val settingsRepository: SettingsRepository by inject()
     private var pendingReportId by mutableStateOf<Long?>(null)
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
