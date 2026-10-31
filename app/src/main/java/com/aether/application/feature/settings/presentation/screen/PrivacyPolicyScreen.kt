@@ -8,11 +8,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.aether.application.R
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
 
@@ -27,7 +29,7 @@ fun PrivacyPolicyScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         AetherTopBar(
-            title = "Política de Privacidade",
+            title = stringResource(R.string.privacy_title),
             onBackClick = onBackClick
         )
 
@@ -39,61 +41,61 @@ fun PrivacyPolicyScreen(
                 .padding(top = 16.dp, bottom = 40.dp)
         ) {
             Text(
-                text = "Atualizado em 01/01/2026",
+                text = stringResource(R.string.legal_updated_on),
                 style = bodyLargeMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(Modifier.height(32.dp))
 
-            SectionTitle("1. Introdução")
-            Paragraph("O Aether respeita sua privacidade e está comprometido com a proteção dos seus dados pessoais, em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei 13.709/2018).")
+            SectionTitle(stringResource(R.string.privacy_section1_title))
+            Paragraph(stringResource(R.string.privacy_section1_paragraph))
 
-            SectionTitle("2. Quais dados coletamos")
-            Bullet("Dados de cadastro: nome, e-mail, cargo, empresa")
-            Bullet("Dados de uso: relatórios enviados, simulações realizadas, histórico de acesso")
-            Bullet("Dados técnicos: tipo de dispositivo, versão do app, logs de erro")
-
-            Spacer(Modifier.height(12.dp))
-
-            SectionTitle("3. Como usamos seus dados")
-            Bullet("Personalizar a experiência do usuário no app")
-            Bullet("Gerar análises e recomendações de gases verdes")
-            Bullet("Enviar notificações sobre relatórios e atualizações")
-            Bullet("Cumprir obrigações legais e regulatórias")
+            SectionTitle(stringResource(R.string.privacy_section2_title))
+            Bullet(stringResource(R.string.privacy_section2_bullet1))
+            Bullet(stringResource(R.string.privacy_section2_bullet2))
+            Bullet(stringResource(R.string.privacy_section2_bullet3))
 
             Spacer(Modifier.height(12.dp))
 
-            SectionTitle("4. Compartilhamento de dados")
-            Bullet("Os dados não são vendidos a terceiros")
-            Bullet("Podem ser compartilhados com gerentes, analistas e administradores autorizados da empresa cadastrada")
-            Bullet("Podem ser compartilhados com autoridades reguladoras quando exigido por lei")
+            SectionTitle(stringResource(R.string.privacy_section3_title))
+            Bullet(stringResource(R.string.privacy_section3_bullet1))
+            Bullet(stringResource(R.string.privacy_section3_bullet2))
+            Bullet(stringResource(R.string.privacy_section3_bullet3))
+            Bullet(stringResource(R.string.privacy_section3_bullet4))
 
             Spacer(Modifier.height(12.dp))
 
-            SectionTitle("5. Seus direitos (LGPD)")
-            Bullet("Acessar seus dados pessoais")
-            Bullet("Corrigir dados incorretos")
-            Bullet("Solicitar exclusão dos dados")
-            Bullet("Revogar consentimento a qualquer momento")
-            Bullet("Solicitar portabilidade dos dados")
+            SectionTitle(stringResource(R.string.privacy_section4_title))
+            Bullet(stringResource(R.string.privacy_section4_bullet1))
+            Bullet(stringResource(R.string.privacy_section4_bullet2))
+            Bullet(stringResource(R.string.privacy_section4_bullet3))
 
             Spacer(Modifier.height(12.dp))
 
-            SectionTitle("6. Cookie e rastreamento")
-            Bullet("O app não utiliza cookies de terceiros")
-            Bullet("Dados de uso são coletados apenas para melhoria da plataforma")
+            SectionTitle(stringResource(R.string.privacy_section5_title))
+            Bullet(stringResource(R.string.privacy_section5_bullet1))
+            Bullet(stringResource(R.string.privacy_section5_bullet2))
+            Bullet(stringResource(R.string.privacy_section5_bullet3))
+            Bullet(stringResource(R.string.privacy_section5_bullet4))
+            Bullet(stringResource(R.string.privacy_section5_bullet5))
 
             Spacer(Modifier.height(12.dp))
 
-            SectionTitle("7. Contato")
+            SectionTitle(stringResource(R.string.privacy_section6_title))
+            Bullet(stringResource(R.string.privacy_section6_bullet1))
+            Bullet(stringResource(R.string.privacy_section6_bullet2))
+
+            Spacer(Modifier.height(12.dp))
+
+            SectionTitle(stringResource(R.string.privacy_section7_title))
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurfaceVariant)) {
-                        append("E-mail: ")
+                        append(stringResource(R.string.legal_email_label))
                     }
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
-                        append("grupoaetherjef@gmail.com")
+                        append(stringResource(R.string.legal_contact_email))
                     }
                 },
                 style = bodyLarge,

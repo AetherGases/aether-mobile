@@ -4,7 +4,9 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.R
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.repository.HomeRepository
 import com.aether.application.feature.profile.domain.repository.ProfileRepository
@@ -93,7 +95,7 @@ class SettingsViewModel(
                 Log.e(TAG, "Failed to update avatar", e)
                 _uiState.update { it.copy(
                     isUploadingAvatar = false,
-                    avatarErrorMessage = "Não foi possível atualizar a foto de perfil."
+                    avatarErrorMessage = uiText(R.string.settings_error_avatar)
                 ) }
             }
         }

@@ -12,16 +12,21 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.aether.application.R
 import com.aether.application.feature.settings.domain.model.ThemePreference
 import androidx.compose.foundation.layout.Column
 
-fun ThemePreference.label(): String = when (this) {
-    ThemePreference.SYSTEM -> "Sistema"
-    ThemePreference.LIGHT -> "Claro"
-    ThemePreference.DARK -> "Escuro"
-}
+@Composable
+fun ThemePreference.label(): String = stringResource(
+    when (this) {
+        ThemePreference.SYSTEM -> R.string.settings_theme_system
+        ThemePreference.LIGHT -> R.string.settings_theme_light
+        ThemePreference.DARK -> R.string.settings_theme_dark
+    }
+)
 
 @Composable
 fun ThemePickerDialog(
@@ -31,7 +36,7 @@ fun ThemePickerDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Tema") },
+        title = { Text(stringResource(R.string.settings_theme)) },
         text = {
             Column(modifier = Modifier.selectableGroup()) {
                 ThemePreference.entries.forEach { theme ->
@@ -54,7 +59,7 @@ fun ThemePickerDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Fechar") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.common_close)) }
         }
     )
 }

@@ -1,6 +1,8 @@
 package com.aether.application.core.navigation
 
 import androidx.core.content.ContextCompat
+import com.aether.application.feature.settings.presentation.screen.LanguagePickerDialog
+import com.aether.application.core.utils.AppLocale
 import androidx.compose.ui.platform.LocalContext
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -17,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -553,6 +556,7 @@ private fun AppNavHost(
 
                 NotificationsScreen(
                     sections = uiState.sections,
+                    loadFailed = uiState.failed,
                     selectedFilter = uiState.selectedFilter,
                     onFilterSelected = viewModel::onFilterSelected,
                     onBackClicked = { navController.popBackStack() },
@@ -564,6 +568,8 @@ private fun AppNavHost(
                 val viewModel = koinViewModel<SettingsViewModel>()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                 var showThemePicker by remember { mutableStateOf(false) }
+                var showLanguagePicker by remember { mutableStateOf(false) }
+                val languageContext = LocalContext.current
 
                 SettingsScreen(
                     userName = uiState.userName,
@@ -576,12 +582,12 @@ private fun AppNavHost(
                     notificationsEnabled = uiState.notificationsEnabled,
                     emailNotificationsEnabled = uiState.emailNotificationsEnabled,
                     themeLabel = uiState.theme.label(),
-                    languageLabel = uiState.languageLabel,
+                    languageLabel = AppLocale.language.label(),
                     canTalkToAeko = uiState.canTalkToAeko,
                     onNotificationsChanged = viewModel::onNotificationsChanged,
                     onEmailNotificationsChanged = viewModel::onEmailNotificationsChanged,
                     onThemeClick = { showThemePicker = true },
-                    onLanguageClick = { /* TODO: no translated resources yet */ },
+                    onLanguageClick = { showLanguagePicker = true },
                     onTalkToAekoClick = { navController.navigate(ChatbotRoute) },
                     onReportProblemClick = { /* TODO: ReportProblem route */ },
                     onTermsOfUseClick = { navController.navigate(TermsOfUseRoute) },
@@ -589,6 +595,17 @@ private fun AppNavHost(
                     onLogoutClick = viewModel::onLogoutClick,
                     onBackClick = { navController.popBackStack() }
                 )
+
+                if (showLanguagePicker) {
+                    LanguagePickerDialog(
+                        selected = AppLocale.language,
+                        onSelect = {
+                            showLanguagePicker = false
+                            AppLocale.setLanguage(languageContext, it)
+                        },
+                        onDismiss = { showLanguagePicker = false }
+                    )
+                }
 
                 if (showThemePicker) {
                     ThemePickerDialog(
@@ -640,15 +657,15 @@ private fun AppNavHost(
                 val clipboard = LocalClipboardManager.current
 
                 AekoScreen(
-                    screenTitle = uiState.title,
+                    screenTitle = uiState.title.asString(),
                     messages = uiState.displayMessages,
-                    suggestions = uiState.suggestions,
+                    suggestions = uiState.suggestionRes.map { stringResource(it) },
                     inputText = uiState.inputText,
                     isConversationPinned = uiState.isConversationPinned,
                     conversations = uiState.visibleConversations,
                     conversationSearchQuery = uiState.conversationSearchQuery,
                     userName = uiState.userName,
-                    userRole = uiState.userRole,
+                    userRole = uiState.userRole.asString(),
                     avatarUrl = uiState.avatarUrl,
                     onInputTextChanged = viewModel::onInputTextChanged,
                     onSuggestionClicked = viewModel::onSuggestionClicked,

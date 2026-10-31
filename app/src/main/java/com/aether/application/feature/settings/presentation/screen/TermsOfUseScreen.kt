@@ -8,11 +8,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.aether.application.R
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
 
@@ -27,7 +29,7 @@ fun TermsOfUseScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         AetherTopBar(
-            title = "Termos de uso",
+            title = stringResource(R.string.terms_title),
             onBackClick = onBackClick
         )
 
@@ -39,48 +41,48 @@ fun TermsOfUseScreen(
                 .padding(top = 16.dp, bottom = 40.dp)
         ) {
             Text(
-                text = "Atualizado em 01/01/2026",
+                text = stringResource(R.string.legal_updated_on),
                 style = bodyLargeMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(Modifier.height(32.dp))
 
-            SectionTitle("1. Aceitação dos termos")
-            Paragraph("Ao utilizar o aplicativo Aether, você concorda com os termos e condições descritos neste documento. Caso não concorde, recomendamos que encerre o uso do aplicativo.")
+            SectionTitle(stringResource(R.string.terms_section1_title))
+            Paragraph(stringResource(R.string.terms_section1_paragraph))
 
-            SectionTitle("2. Sobre o Aether")
-            Paragraph("O Aether é uma plataforma de gestão de emissões de gases de efeito estufa voltada para empresas do setor corporativo. Oferece ferramentas de análise, calculadora de CO₂ e orientações sobre gases verdes para substituição.")
+            SectionTitle(stringResource(R.string.terms_section2_title))
+            Paragraph(stringResource(R.string.terms_section2_paragraph))
 
-            SectionTitle("3. Uso da plataforma")
-            Bullet("O usuário é responsável pela veracidade dos dados inseridos nos relatórios")
-            Bullet("É proibido inserir dados falsos ou manipulados")
-            Bullet("O acesso é pessoal e intransferível")
-            Bullet("O compartilhamento de login é proibido")
-
-            Spacer(Modifier.height(12.dp))
-
-            SectionTitle("4. Responsabilidades do Aether")
-            Bullet("Os resultados da calculadora são estimativas baseadas em dados científicos, não substituem laudos técnicos")
-            Bullet("O Aether não se responsabiliza por decisões tomadas exclusivamente com base nas análises geradas pelo app")
-            Bullet("A plataforma pode ficar indisponível para manutenção com aviso prévio")
+            SectionTitle(stringResource(R.string.terms_section3_title))
+            Bullet(stringResource(R.string.terms_section3_bullet1))
+            Bullet(stringResource(R.string.terms_section3_bullet2))
+            Bullet(stringResource(R.string.terms_section3_bullet3))
+            Bullet(stringResource(R.string.terms_section3_bullet4))
 
             Spacer(Modifier.height(12.dp))
 
-            SectionTitle("5. Alterações nos termos")
-            Bullet("O Aether pode atualizar estes termos com aviso prévio de 15 dias")
-            Bullet("O uso continuado após a atualização indica aceitação")
+            SectionTitle(stringResource(R.string.terms_section4_title))
+            Bullet(stringResource(R.string.terms_section4_bullet1))
+            Bullet(stringResource(R.string.terms_section4_bullet2))
+            Bullet(stringResource(R.string.terms_section4_bullet3))
 
             Spacer(Modifier.height(12.dp))
 
-            SectionTitle("6. Contato")
+            SectionTitle(stringResource(R.string.terms_section5_title))
+            Bullet(stringResource(R.string.terms_section5_bullet1))
+            Bullet(stringResource(R.string.terms_section5_bullet2))
+
+            Spacer(Modifier.height(12.dp))
+
+            SectionTitle(stringResource(R.string.terms_section6_title))
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurfaceVariant)) {
-                        append("E-mail: ")
+                        append(stringResource(R.string.legal_email_label))
                     }
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onBackground)) {
-                        append("grupoaetherjef@gmail.com")
+                        append(stringResource(R.string.legal_contact_email))
                     }
                 },
                 style = bodyLarge,

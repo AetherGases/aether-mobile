@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.res.stringResource
 import com.aether.application.core.ui.components.FormErrorText
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -39,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.annotation.DrawableRes
+import com.aether.application.core.utils.UiText
 import com.aether.core.ui.theme.*
 import coil3.compose.AsyncImage
 import com.aether.application.R
@@ -58,7 +60,7 @@ fun SettingsScreen(
     userName: String,
     avatarUrl: String?,
     isUploadingAvatar: Boolean,
-    avatarErrorMessage: String?,
+    avatarErrorMessage: UiText?,
     onAvatarPicked: (Uri) -> Unit,
     reportsCount: Int,
     entryDate: String,
@@ -103,7 +105,7 @@ fun SettingsScreen(
         )
         if (avatarErrorMessage != null) {
             FormErrorText(
-                message = avatarErrorMessage,
+                message = avatarErrorMessage.asString(),
                 modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 12.dp)
             )
         }
@@ -117,42 +119,42 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            SettingsSection(title = "Preferências") {
+            SettingsSection(title = stringResource(R.string.settings_section_preferences)) {
                 SettingsToggleRow(
                     icon = R.drawable.ic_notification,
-                    label = "Notificação",
+                    label = stringResource(R.string.settings_notification),
                     checked = notificationsEnabled,
                     onCheckedChange = onNotificationsChanged
                 )
                 RowDivider()
                 SettingsToggleRow(
                     icon = R.drawable.ic_email,
-                    label = "Notificação por e-mail",
+                    label = stringResource(R.string.settings_email_notification),
                     checked = emailNotificationsEnabled,
                     onCheckedChange = onEmailNotificationsChanged
                 )
                 RowDivider()
                 SettingsNavigationRow(
                     icon = R.drawable.ic_theme,
-                    label = "Tema",
+                    label = stringResource(R.string.settings_theme),
                     value = themeLabel,
                     onClick = onThemeClick
                 )
                 RowDivider()
                 SettingsNavigationRow(
                     icon = R.drawable.ic_language,
-                    label = "Idioma",
+                    label = stringResource(R.string.settings_language),
                     value = languageLabel,
                     onClick = onLanguageClick
                 )
             }
 
             Spacer(Modifier.height(20.dp))
-            SettingsSection(title = "Suporte") {
+            SettingsSection(title = stringResource(R.string.settings_section_support)) {
                 if (canTalkToAeko) {
                     SettingsActionRow(
                         icon = R.drawable.ic_chatbot_profile,
-                        label = "Falar com o Aeko",
+                        label = stringResource(R.string.settings_talk_to_aeko),
                         onClick = onTalkToAekoClick,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -160,21 +162,21 @@ fun SettingsScreen(
                 }
                 SettingsActionRow(
                     icon = R.drawable.ic_report_problem,
-                    label = "Reportar problema",
+                    label = stringResource(R.string.settings_report_problem),
                     onClick = onReportProblemClick,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 RowDivider()
                 SettingsActionRow(
                     icon = R.drawable.ic_terms,
-                    label = "Termos de uso",
+                    label = stringResource(R.string.settings_terms_of_use),
                     onClick = onTermsOfUseClick,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 RowDivider()
                 SettingsActionRow(
                     icon = R.drawable.ic_privacy,
-                    label = "Política de privacidade",
+                    label = stringResource(R.string.settings_privacy_policy),
                     onClick = onPrivacyPolicyClick,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -197,7 +199,7 @@ fun SettingsScreen(
             ) {
                 SettingsActionRow(
                     icon = R.drawable.ic_logout,
-                    label = "Sair da conta",
+                    label = stringResource(R.string.settings_sign_out),
                     onClick = onLogoutClick,
                     tint = MaterialTheme.colorScheme.error,
                     labelColor = MaterialTheme.colorScheme.error,
@@ -246,7 +248,7 @@ private fun ProfileHeader(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_left),
-                contentDescription = "Voltar",
+                contentDescription = stringResource(R.string.common_back),
                 tint = Color.White,
                 modifier = Modifier.size(16.dp)
             )
@@ -266,13 +268,13 @@ private fun ProfileHeader(
                     .size(AvatarSize)
                     .clickable(
                         enabled = !isUploadingAvatar,
-                        onClickLabel = "Alterar foto de perfil",
+                        onClickLabel = stringResource(R.string.settings_change_avatar),
                         onClick = onAvatarClick
                     )
             ) {
                 AsyncImage(
                     model = avatarUrl,
-                    contentDescription = "Foto de perfil",
+                    contentDescription = stringResource(R.string.settings_profile_photo),
                     placeholder = painterResource(id = R.drawable.ic_avatar_placeholder),
                     error = painterResource(id = R.drawable.ic_avatar_placeholder),
                     contentScale = ContentScale.Crop,
@@ -349,7 +351,7 @@ private fun StatsCard(reportsCount: Int, entryDate: String) {
                 icon = R.drawable.ic_reports,
                 iconTint = MaterialTheme.colorScheme.secondary,
                 value = reportsCount.toString(),
-                label = "Relatórios"
+                label = stringResource(R.string.settings_stat_reports)
             )
 
             Box(
@@ -363,7 +365,7 @@ private fun StatsCard(reportsCount: Int, entryDate: String) {
                 icon = R.drawable.ic_calendar,
                 iconTint = MaterialTheme.colorScheme.secondary,
                 value = entryDate,
-                label = "Data de entrada"
+                label = stringResource(R.string.settings_stat_entry_date)
             )
         }
     }

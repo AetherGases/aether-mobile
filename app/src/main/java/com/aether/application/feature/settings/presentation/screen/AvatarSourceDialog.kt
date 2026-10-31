@@ -30,8 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import com.aether.application.R
 import com.aether.core.ui.theme.bodyLargeMedium
 import com.aether.core.ui.theme.titleLarge
 import com.aether.core.ui.theme.titleMediumMD
@@ -66,12 +68,12 @@ fun AvatarSourceDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Foto de perfil", style = titleLarge) },
+        title = { Text(stringResource(R.string.settings_profile_photo), style = titleLarge) },
         text = {
             Column {
                 AvatarSourceOption(
                     icon = Icons.Outlined.PhotoCamera,
-                    label = "Tirar foto",
+                    label = stringResource(R.string.settings_avatar_take_photo),
                     onClick = {
                         val uri = newCameraUri(context)
                         cameraUri = uri
@@ -80,7 +82,7 @@ fun AvatarSourceDialog(
                 )
                 AvatarSourceOption(
                     icon = Icons.Outlined.PhotoLibrary,
-                    label = "Escolher da galeria",
+                    label = stringResource(R.string.settings_avatar_choose_gallery),
                     onClick = {
                         galleryLauncher.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -92,7 +94,7 @@ fun AvatarSourceDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar", style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.settings_cancel), style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
             }
         }
     )
