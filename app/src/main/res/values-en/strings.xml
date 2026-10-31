@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- app -->
+    <string name="app_name">Aether</string>
+    <string name="notification_channel_name">Notifications</string>
+
+    <!-- common -->
+    <string name="common_back">Back</string>
+    <string name="common_copy">Copy</string>
+    <string name="common_send">Send</string>
+    <string name="common_settings">Settings</string>
+    <string name="common_notifications">Notifications</string>
+    <string name="common_requirement_met">met</string>
+    <string name="common_requirement_pending">pending</string>
+    <string name="common_dropdown_icon">back</string>
+    <string name="common_unexpected_error">An unexpected error occurred. Please try again later.</string>
+    <string name="common_unknown_user">Unknown</string>
+    <string name="common_avatar_description">%1$s\'s avatar</string>
+    <string name="common_something_went_wrong">Something went wrong. Please try again.</string>
+    <string name="common_error_server_unreachable">Could not connect to the server.</string>
+    <string name="common_error_no_connection_retry">No connection to the server. Please try again.</string>
+    <string name="common_emission_unit_per_month">tCO₂e/month</string>
+    <string name="common_ask_aeko_help">Not sure which one to choose? </string>
+    <string name="common_ask_aeko_link">Ask Aeko</string>
+    <string name="common_try_again">Try again</string>
+    <string name="common_close">Close</string>
+
+    <!-- chat -->
+    <string name="chat_input_placeholder">Type something</string>
+
+    <!-- chatbot -->
+    <string name="chatbot_aeko_name">Aeko</string>
+    <string name="chatbot_new_conversation">New conversation</string>
+    <string name="chatbot_search_conversation">Search conversation</string>
+    <string name="chatbot_saved_conversations">Saved conversations</string>
+    <string name="chatbot_error_company_not_found">Could not identify the user\'s company.</string>
+    <string name="chatbot_error_no_answer">Aeko could not answer. Try rephrasing the question.</string>
+    <string name="chatbot_error_bad_message">Could not send the message. Check the text and try again.</string>
+    <string name="chatbot_error_generic">Could not reach Aeko. Please try again.</string>
+    <string name="chatbot_suggestion_how_it_works">How does Aether work?</string>
+    <string name="chatbot_suggestion_seal">What is the Paraná Seal?</string>
+    <string name="chatbot_suggestion_reduce">How can I reduce my emissions?</string>
+    <string name="chatbot_suggestion_create_report">How do I create a report?</string>
+    <string name="chatbot_role_manager">Manager</string>
+    <string name="chatbot_role_employee">Employee</string>
+    <string name="chatbot_error_save_needs_message">Send a message before saving the conversation.</string>
+    <string name="chatbot_error_update_saved">Could not update the saved conversation.</string>
+    <string name="chatbot_open_saved">Open saved conversations</string>
+    <string name="chatbot_unsave">Remove from saved</string>
+    <string name="chatbot_save">Save conversation</string>
+    <string name="chatbot_greeting">Hi! I\'m Aeko, your\nVirtual Assistant.</string>
+    <string name="chatbot_scroll_to_end">Go to the end of the conversation</string>
+    <string name="chatbot_search">Search</string>
+    <string name="chatbot_profile_photo">Profile photo</string>
+    <string name="chatbot_saved_conversation">Saved conversation</string>
+
+    <!-- reportstatus -->
+    <string name="reportstatus_in_review">Under review</string>
+    <string name="reportstatus_approved">Approved</string>
+    <string name="reportstatus_rejected">Rejected</string>
+    <string name="reportstatus_issued">Issued</string>
+    <string name="reportstatus_requested">Requested</string>
+    <string name="reportstatus_refused">Refused</string>
+
+    <!-- reportcard -->
+    <string name="reportcard_created_at">Created on: %1$s</string>
+    <string name="reportcard_review">Review</string>
+
+    <!-- lastreport -->
+    <string name="lastreport_title">Last report</string>
+    <string name="lastreport_sent_on">Sent on %1$s</string>
+    <string name="lastreport_period">Report period</string>
+
+    <!-- herocard -->
+    <string name="herocard_last_sent_on">Last sent on %1$s</string>
+    <string name="herocard_this_month">This month</string>
+    <string name="herocard_view_history">View history</string>
+    <string name="herocard_unit_emissions">Unit emissions</string>
+    <string name="herocard_seal_title">Clima Paraná Seal</string>
+    <string name="herocard_level">Level</string>
+
+    <!-- managerhero -->
+    <string name="managerhero_total_mapped">Total mapped emissions</string>
+    <string name="managerhero_last_sent_on">Last submission on %1$s</string>
+    <string name="managerhero_total_tco2e">Total (in tCO₂e)</string>
+    <string name="managerhero_reduction">Reduction achieved</string>
+
+    <!-- header -->
+    <string name="header_welcome">Welcome,</string>
+
+    <!-- auth -->
+    <string name="auth_error_invalid_credentials">Invalid username and/or password.</string>
+    <string name="auth_error_email_required">Please enter an email address.</string>
+    <string name="auth_error_password_required">The password is required.</string>
+    <string name="auth_error_email_invalid">The email address format is invalid.</string>
+    <string name="auth_error_passwords_mismatch">The passwords do not match.</string>
+    <string name="auth_error_password_requirements">The password does not meet the requirements.</string>
+    <string name="auth_password_rule_length">8-28 characters</string>
+    <string name="auth_password_rule_uppercase">At least one uppercase letter</string>
+    <string name="auth_password_rule_lowercase">At least one lowercase letter</string>
+    <string name="auth_password_rule_number">At least one number</string>
+    <string name="auth_verification_title">Verification</string>
+    <string name="auth_verification_enter_code">Enter the code you received</string>
+    <string name="auth_verification_code_sent">Enter the 6-digit code sent\nto your email \'%1$s\'.</string>
+    <string name="auth_verification_no_code">Didn\'t receive the code?</string>
+    <string name="auth_verification_resend_in">Resend in %1$d:%2$02d</string>
+    <string name="auth_verification_resend">Resend</string>
+    <string name="auth_verification_verify">Verify</string>
+    <string name="auth_recovery_title">Password recovery</string>
+    <string name="auth_recovery_enter_email">Tell us your email</string>
+    <string name="auth_email_label">Email:</string>
+    <string name="auth_recovery_send_code">Send recovery code</string>
+    <string name="auth_recovery_back_to_login">Back to login</string>
+    <string name="auth_change_password_prompt">Enter the new \npassword</string>
+    <string name="auth_new_password_label">New password:</string>
+    <string name="auth_confirm_password_label">Confirm password:</string>
+    <string name="auth_password_must_contain">Your password must contain</string>
+    <string name="auth_change_password_change">Change</string>
+    <string name="auth_change_password_confirm">Confirm</string>
+    <string name="auth_login_title">Login</string>
+    <string name="auth_password_label">Password:</string>
+    <string name="auth_login_hide_password">Hide password</string>
+    <string name="auth_login_show_password">Show password</string>
+    <string name="auth_login_remember_me">Remember me</string>
+    <string name="auth_login_forgot_password">Forgot your password?</string>
+    <string name="auth_login_start">Get started</string>
+    <string name="auth_login_change_server">Change server (QA)</string>
+
+    <!-- calculator -->
+    <string name="calculator_error_no_connection">No connection to the server. Check your internet and try again.</string>
+    <string name="calculator_error_invalid_data">The data provided is invalid.</string>
+    <string name="calculator_error_session_expired">Your session has expired. Sign in again to use the calculator.</string>
+    <string name="calculator_error_forbidden">You do not have permission to use the calculator.</string>
+    <string name="calculator_error_generic">Could not calculate right now. Please try again later.</string>
+    <string name="calculator_enter_data">Enter data</string>
+    <string name="calculator_proceed">Next</string>
+    <string name="calculator_deadline_title">Deadline</string>
+    <string name="calculator_deadline_label">Deadline you want to neutralize within</string>
+    <string name="calculator_deadline_placeholder">E.g. 5</string>
+    <string name="calculator_deadline_unit">years</string>
+    <string name="calculator_calculate">Calculate</string>
+    <string name="calculator_emission_title">Current emission</string>
+    <string name="calculator_polluting_gas_label">Polluting gas type</string>
+    <string name="calculator_polluting_gas_placeholder">Select the current gas</string>
+    <string name="calculator_volume_label">Volume emitted per month</string>
+    <string name="calculator_volume_placeholder">E.g. 1,700</string>
+    <string name="calculator_scope_label">Scope</string>
+    <string name="calculator_scope_placeholder">Emission scope</string>
+    <string name="calculator_scope_option">Scope %1$d</string>
+    <string name="calculator_green_gas_title">Green gas</string>
+    <string name="calculator_green_gas_label">Green gas you want to simulate</string>
+    <string name="calculator_green_gas_placeholder">Select the green gas</string>
+    <string name="calculator_error_select_polluting_gas">Select the polluting gas.</string>
+    <string name="calculator_error_invalid_volume">Enter a valid emission volume.</string>
+    <string name="calculator_error_select_scope">Select the scope.</string>
+    <string name="calculator_error_select_green_gas">Select the green gas.</string>
+    <string name="calculator_error_invalid_deadline">Enter a deadline of at least 1 year.</string>
+    <string name="calculator_error_review_data">Review the data provided.</string>
+    <string name="calculator_results_title">Results</string>
+    <string name="calculator_results_finish">Finish</string>
+    <string name="calculator_results_main">Main result</string>
+    <string name="calculator_results_estimated">Estimated emissions after the replacement</string>
+    <string name="calculator_results_percent_of_total">%1$d%% of total emitted</string>
+    <string name="calculator_results_impact">Replacement impact</string>
+    <string name="calculator_results_neutralized">Amount neutralized</string>
+    <string name="calculator_results_before">Before</string>
+    <string name="calculator_results_after">After</string>
+    <string name="calculator_results_simulation_data">Simulation data</string>
+    <string name="calculator_results_gas_used">Gas used: %1$s</string>
+
+    <!-- reports -->
+    <string name="reports_error_upload_failed">Could not upload the file. Please try again.</string>
+    <string name="reports_error_create_failed">Could not create the report. Please try again.</string>
+    <string name="reports_name_too_short">The name must have at least %1$d letters.</string>
+    <string name="reports_name_too_long">The name can have at most %1$d characters.</string>
+    <string name="reports_name_invalid_characters">Use only letters and spaces, without numbers or symbols.</string>
+    <string name="reports_approach_equity_share">Equity share</string>
+    <string name="reports_approach_financial_control">Financial control</string>
+    <string name="reports_approach_operational_control">Operational control</string>
+    <string name="reports_new_title">Create report</string>
+    <string name="reports_new_error_not_xlsx">Select a spreadsheet in .xlsx format.</string>
+    <string name="reports_new_error_upload_first">Upload the spreadsheet before creating the report.</string>
+    <string name="reports_new_attach_title">Attach your spreadsheet</string>
+    <string name="reports_new_attach_description">Upload the Excel (.xlsx) file with your report data.</string>
+    <string name="reports_new_submit">Submit</string>
+    <string name="reports_new_select_file">Select file</string>
+    <string name="reports_new_accepted_files">We accept .xlsx files</string>
+    <string name="reports_new_remove_file">Remove file</string>
+    <string name="reports_new_name_title">Report name</string>
+    <string name="reports_new_name_placeholder">E.g. July emissions report</string>
+    <string name="reports_approach_title">Consolidation approach</string>
+    <string name="reports_approach_description">This choice defines which emissions from your operations are included in the report.</string>
+    <string name="reports_approach_equity_share_subtitle">Accounts for emissions based on ownership share.</string>
+    <string name="reports_approach_financial_control_subtitle">100% of emissions under financial control.</string>
+    <string name="reports_approach_operational_control_subtitle">100% of emissions under operational management.</string>
+    <string name="reports_performed_by">Created by %1$s</string>
+    <string name="reports_reviewed_by">Reviewed by %1$s</string>
+    <string name="reports_reviewer_unknown">Reviewer not informed</string>
+    <string name="reports_review_title">Review report</string>
+    <string name="reports_review_heading">Report\nreview</string>
+    <string name="reports_review_status_processing">Processing data</string>
+    <string name="reports_review_status_failed">Processing failed</string>
+    <string name="reports_review_status_pending">Analysis pending</string>
+    <string name="reports_review_identification">Identification</string>
+    <string name="reports_review_plant">Industrial plant</string>
+    <string name="reports_review_submitted_on">Submission date</string>
+    <string name="reports_review_description">Description</string>
+    <string name="reports_review_gases">Identified gases</string>
+    <string name="reports_review_no_gases">No gases identified in this report.</string>
+    <string name="reports_review_approved">Report approved</string>
+    <string name="reports_review_rejected">Report rejected</string>
+    <string name="reports_review_comment">Comment</string>
+    <string name="reports_review_reason">Reason</string>
+    <string name="reports_review_failed_title">Processing failed</string>
+    <string name="reports_review_failed_message">The data in this report could not be processed. Submit the report again.</string>
+    <string name="reports_review_processing_title">Processing report</string>
+    <string name="reports_review_processing_message">The emissions data is still being calculated. Come back in a few moments.</string>
+    <string name="reports_review_proceed">Proceed to analysis</string>
+    <string name="reports_review_error_load">Could not load the report.</string>
+    <string name="reports_history_filter_newest">Newest</string>
+    <string name="reports_history_filter_oldest">Oldest</string>
+    <string name="reports_history_status_in_review">Under review</string>
+    <string name="reports_history_status_approved">Approved</string>
+    <string name="reports_history_status_rejected">Rejected</string>
+    <string name="reports_history_status_issued">Issued</string>
+    <string name="reports_history_status_requested">Requested</string>
+    <string name="reports_history_title">Report management</string>
+    <string name="reports_history_heading_department">Department reports</string>
+    <string name="reports_history_heading_employee">History</string>
+    <string name="reports_history_search_placeholder">Search report</string>
+    <string name="reports_history_filter_description">Filter</string>
+    <string name="reports_history_load_failed">Could not load the reports. Pull down to try again.</string>
+    <string name="reports_history_empty">No reports found.</string>
+    <string name="reports_history_load_more_failed">Could not load more reports. Tap to try again.</string>
+    <string name="reports_history_this_month">This month</string>
+    <string name="reports_history_this_week">This week</string>
+    <string name="reports_history_see_less">See less</string>
+    <string name="reports_history_see_more">See more</string>
+    <string name="reports_history_previous_month">Previous month</string>
+    <string name="reports_history_next_month">Next month</string>
+    <string name="reports_history_filter_by_time">Filter by time</string>
+    <string name="reports_history_filter_by_category">Filter by category</string>
+    <string name="reports_review_emission_unit">tCO2e/month</string>
+    <string name="reports_analysis_title">Aether analysis</string>
+    <string name="reports_analysis_overview">Overview</string>
+    <string name="reports_analysis_financial_return">Financial return</string>
+    <string name="reports_analysis_monthly_savings">Estimated monthly savings</string>
+    <string name="reports_analysis_per_month">/month</string>
+    <string name="reports_analysis_initial_investment">Initial investment required</string>
+    <string name="reports_analysis_approve">Approve report</string>
+    <string name="reports_analysis_reject">Reject report</string>
+    <string name="reports_analysis_decision_approved">Report Approved</string>
+    <string name="reports_analysis_decision_rejected">Report Rejected</string>
+    <string name="reports_analysis_comments">Comments</string>
+    <string name="reports_analysis_comment_prompt_approve">Describe the reason for approval</string>
+    <string name="reports_analysis_comment_prompt_reject">Describe the reason for rejection</string>
+    <string name="reports_analysis_comment_hint_approve">Briefly describe the reason for approving the report</string>
+    <string name="reports_analysis_comment_hint_reject">Briefly describe the reason for rejecting the report</string>
+    <string name="reports_analysis_sending">Sending...</string>
+    <string name="reports_analysis_send">Submit</string>
+    <string name="reports_analysis_mapped_emissions">Mapped emissions</string>
+    <string name="reports_analysis_total_mapped">Total mapped</string>
+    <string name="reports_analysis_emissions_increase">Emissions increase</string>
+    <string name="reports_analysis_emissions_decrease">Emissions decrease</string>
+    <string name="reports_analysis_scope_split">Split by scope</string>
+    <string name="reports_analysis_improvement_plan">Improvement plan</string>
+    <string name="reports_analysis_no_plan">No improvement plan available.</string>
+    <string name="reports_analysis_problem">Identified problem</string>
+    <string name="reports_analysis_method">Recommended method</string>
+    <string name="reports_analysis_reasoning">Technical justification</string>
+    <string name="reports_analysis_see_all">See all</string>
+    <string name="reports_analysis_reduction_amount">Reduction in numbers</string>
+    <string name="reports_analysis_reduction">Reduction</string>
+    <string name="reports_analysis_priority_replacement">Priority replacement</string>
+    <string name="reports_analysis_secondary_replacement">Secondary replacement</string>
+    <string name="reports_analysis_error_load">Could not load the report analysis.</string>
+    <string name="reports_analysis_error_submit">Could not submit the analysis. Please try again.</string>
+    <string name="reports_analysis_currency">R$ %1$s</string>
+
+    <!-- home -->
+    <string name="home_no_permissions_title">You don\'t have any permissions yet</string>
+    <string name="home_no_permissions_message">Your account has no permissions at the moment. Talk to the people in charge at your company to get access.</string>
+    <string name="home_check_again">Check again</string>
+    <string name="home_sign_out">Sign out</string>
+    <string name="home_overview">Overview</string>
+    <string name="home_overview_load_failed">Could not load the overview. Pull down to try again.</string>
+    <string name="home_card_position">Card %1$d of %2$d</string>
+    <string name="home_quick_actions">Quick Actions</string>
+    <string name="home_quick_actions_load_failed">Could not load the quick actions. Pull down to try again.</string>
+    <string name="home_recent_reports">Recent Reports</string>
+    <string name="home_see_all">See all</string>
+    <string name="home_no_recent_reports">No recent reports</string>
+    <string name="home_report_performed_by">Created by %1$s</string>
+    <string name="home_action_history">History</string>
+    <string name="home_action_create_report">Create report</string>
+    <string name="home_action_calculate">Calculate CO2</string>
+    <string name="home_action_chatbot">Chatbot</string>
+    <string name="home_period_unknown">Period not informed</string>
+    <string name="home_reports_analyzed">Reports analyzed</string>
+    <string name="home_reports_done">Reports completed</string>
+    <string name="home_unit_change">%1$s%% ↗ compared to the previous period</string>
+    <string name="home_seal_criteria">%1$s of %2$s criteria met</string>
+
+    <!-- nav -->
+    <string name="nav_home">Home</string>
+    <string name="nav_reports_manager">Reports</string>
+    <string name="nav_reports_employee">Create</string>
+    <string name="nav_calculator">Calculator</string>
+    <string name="nav_chatbot">Chatbot</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- terms -->
+    <string name="terms_section1_title">1. Acceptance of the terms</string>
+    <string name="terms_section1_paragraph">By using the Aether app, you agree to the terms and conditions described in this document. If you do not agree, we recommend that you stop using the app.</string>
+    <string name="terms_section2_title">2. About Aether</string>
+    <string name="terms_section2_paragraph">Aether is a greenhouse gas emissions management platform for corporate companies. It offers analysis tools, a CO₂ calculator and guidance on green gases for replacement.</string>
+    <string name="terms_section3_title">3. Use of the platform</string>
+    <string name="terms_section3_bullet1">The user is responsible for the accuracy of the data entered in the reports</string>
+    <string name="terms_section3_bullet2">Entering false or manipulated data is prohibited</string>
+    <string name="terms_section3_bullet3">Access is personal and non-transferable</string>
+    <string name="terms_section3_bullet4">Sharing logins is prohibited</string>
+    <string name="terms_section4_title">4. Aether\'s responsibilities</string>
+    <string name="terms_section4_bullet1">The calculator results are estimates based on scientific data and do not replace technical reports</string>
+    <string name="terms_section4_bullet2">Aether is not responsible for decisions made solely based on the analyses generated by the app</string>
+    <string name="terms_section4_bullet3">The platform may be unavailable for maintenance with prior notice</string>
+    <string name="terms_section5_title">5. Changes to the terms</string>
+    <string name="terms_section5_bullet1">Aether may update these terms with 15 days\' prior notice</string>
+    <string name="terms_section5_bullet2">Continued use after the update indicates acceptance</string>
+    <string name="terms_section6_title">6. Contact</string>
+    <string name="terms_title">Terms of use</string>
+
+    <!-- privacy -->
+    <string name="privacy_section1_title">1. Introduction</string>
+    <string name="privacy_section1_paragraph">Aether respects your privacy and is committed to protecting your personal data, in compliance with the Brazilian General Data Protection Law (LGPD — Law 13.709/2018).</string>
+    <string name="privacy_section2_title">2. What data we collect</string>
+    <string name="privacy_section2_bullet1">Registration data: name, email, job title, company</string>
+    <string name="privacy_section2_bullet2">Usage data: submitted reports, simulations performed, access history</string>
+    <string name="privacy_section2_bullet3">Technical data: device type, app version, error logs</string>
+    <string name="privacy_section3_title">3. How we use your data</string>
+    <string name="privacy_section3_bullet1">Personalize the user experience in the app</string>
+    <string name="privacy_section3_bullet2">Generate analyses and green gas recommendations</string>
+    <string name="privacy_section3_bullet3">Send notifications about reports and updates</string>
+    <string name="privacy_section3_bullet4">Comply with legal and regulatory obligations</string>
+    <string name="privacy_section4_title">4. Data sharing</string>
+    <string name="privacy_section4_bullet1">Data is not sold to third parties</string>
+    <string name="privacy_section4_bullet2">It may be shared with authorized managers, analysts and administrators of the registered company</string>
+    <string name="privacy_section4_bullet3">It may be shared with regulatory authorities when required by law</string>
+    <string name="privacy_section5_title">5. Your rights (LGPD)</string>
+    <string name="privacy_section5_bullet1">Access your personal data</string>
+    <string name="privacy_section5_bullet2">Correct incorrect data</string>
+    <string name="privacy_section5_bullet3">Request deletion of your data</string>
+    <string name="privacy_section5_bullet4">Revoke consent at any time</string>
+    <string name="privacy_section5_bullet5">Request data portability</string>
+    <string name="privacy_section6_title">6. Cookies and tracking</string>
+    <string name="privacy_section6_bullet1">The app does not use third-party cookies</string>
+    <string name="privacy_section6_bullet2">Usage data is collected only to improve the platform</string>
+    <string name="privacy_section7_title">7. Contact</string>
+    <string name="privacy_title">Privacy Policy</string>
+
+    <!-- legal -->
+    <string name="legal_updated_on">Updated on 01/01/2026</string>
+    <string name="legal_email_label">Email: </string>
+    <string name="legal_contact_email">grupoaetherjef@gmail.com</string>
+
+    <!-- settings -->
+    <string name="settings_section_preferences">Preferences</string>
+    <string name="settings_notification">Notification</string>
+    <string name="settings_email_notification">Email notification</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_system">System</string>
+    <string name="settings_language_pt_br">Português (BR)</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_section_support">Support</string>
+    <string name="settings_talk_to_aeko">Talk to Aeko</string>
+    <string name="settings_report_problem">Report a problem</string>
+    <string name="settings_terms_of_use">Terms of use</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_sign_out">Sign out</string>
+    <string name="settings_change_avatar">Change profile photo</string>
+    <string name="settings_profile_photo">Profile photo</string>
+    <string name="settings_stat_reports">Reports</string>
+    <string name="settings_stat_entry_date">Joined on</string>
+    <string name="settings_error_avatar">Could not update the profile photo.</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_avatar_take_photo">Take photo</string>
+    <string name="settings_avatar_choose_gallery">Choose from gallery</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_problem_title">Report a problem</string>
+    <string name="settings_problem_category_label">Problem category*</string>
+    <string name="settings_problem_category_placeholder">Select the category</string>
+    <string name="settings_problem_category_app_error">App error</string>
+    <string name="settings_problem_category_wrong_data">Incorrect data</string>
+    <string name="settings_problem_category_slowness">Slowness</string>
+    <string name="settings_problem_category_other">Other</string>
+    <string name="settings_problem_description_label">Problem description</string>
+    <string name="settings_problem_description_placeholder">Describe in detail what happened</string>
+    <string name="settings_problem_attach">Attach screenshot </string>
+    <string name="settings_problem_optional">(Optional)</string>
+    <string name="settings_problem_submit">Submit</string>
+    <string name="settings_problem_select_file">Select a file</string>
+    <string name="settings_problem_file_types">PNG, JPG, JPEG</string>
+
+    <!-- notifications -->
+    <string name="notifications_filter_recent">Most recent</string>
+    <string name="notifications_filter_oldest">Oldest</string>
+
+    <!-- proximity -->
+    <string name="proximity_permission_title">Allow location access</string>
+    <string name="proximity_permission_message">Aether can only be used near your company. We need your location to confirm this.</string>
+    <string name="proximity_disabled_title">Turn on location</string>
+    <string name="proximity_disabled_message">Your device\'s location is turned off. Turn it on so we can confirm you are at your company.</string>
+    <string name="proximity_unavailable_title">Could not get your location</string>
+    <string name="proximity_unavailable_message">Check your GPS signal or connection and try again.</string>
+    <string name="proximity_too_far_title">You are far from your company</string>
+    <string name="proximity_too_far_message">Aether can only be used within %1$s km of your company. You are about %2$s km away.</string>
+    <string name="proximity_allow_location">Allow location</string>
+    <string name="proximity_open_settings">Open settings</string>
+    <string name="proximity_enable_location">Turn on location</string>
+    <string name="proximity_checking">Checking...</string>
+
+    <!-- onboarding -->
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_start">Get started</string>
+    <string name="onboarding_next">Next</string>
+
+    <!-- qa -->
+    <string name="qa_server_title">QA server</string>
+    <string name="qa_server_domain">Domain</string>
+    <string name="qa_server_save">Save and use</string>
+
+    <plurals name="calculator_results_chosen_period">
+        <item quantity="one">Chosen deadline: %1$d year</item>
+        <item quantity="other">Chosen deadline: %1$d years</item>
+    </plurals>
+
+    <!-- notifications (new) -->
+    <string name="notifications_load_error">Could not load notifications.</string>
+    <string name="notifications_empty">No notifications right now</string>
+    <string name="notifications_empty_icon_description">Sad bell</string>
+    <string name="notifications_section_today">Today</string>
+    <string name="notifications_section_this_week">This week</string>
+    <string name="notifications_section_this_month">This month</string>
+    <string name="notifications_section_earlier">Earlier</string>
+    <string name="notifications_time_now">Just now</string>
+    <string name="notifications_time_minutes_ago">%1$d min ago</string>
+    <plurals name="notifications_time_hours_ago">
+        <item quantity="one">%1$d hour ago</item>
+        <item quantity="other">%1$d hours ago</item>
+    </plurals>
+    <plurals name="notifications_time_days_ago">
+        <item quantity="one">%1$d day ago</item>
+        <item quantity="other">%1$d days ago</item>
+    </plurals>
+</resources>
