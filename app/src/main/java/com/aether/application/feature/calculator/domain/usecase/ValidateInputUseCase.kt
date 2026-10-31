@@ -12,6 +12,7 @@ class ValidateInputUseCase {
 
     fun parseYears(raw: String): Int? = raw.trim().toIntOrNull()?.takeIf { it >= 1 }
 
-    fun parseScope(label: String): Int? = label.trim().removePrefix("Escopo").trim().toIntOrNull()
+    // The label is localized ("Escopo 1", "Scope 1"), so only its trailing number matters
+    fun parseScope(label: String): Int? = label.trim().takeLastWhile { it.isDigit() }.toIntOrNull()
         ?.takeIf { it in 1..3 }
 }

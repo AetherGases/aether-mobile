@@ -1,5 +1,9 @@
 package com.aether.application.feature.calculator.data.repository
 
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.UserFacingException
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.calculator.data.remote.CalculatorApi
 import com.aether.application.feature.calculator.data.remote.dto.EmissionDto
 import com.aether.application.feature.calculator.data.remote.dto.ReductionForecastRequest
@@ -41,15 +45,15 @@ class CalculatorRepositoryImpl(
         try {
             block()
         } catch (e: HttpException) {
-            throw Exception(e.toUserMessage(), e)
+            throw UserFacingException(e.toUserMessage(), e)
         } catch (e: IOException) {
-            throw Exception("Sem conexão com o servidor. Verifique sua internet e tente novamente.", e)
+            throw UserFacingException(uiText(R.string.calculator_error_no_connection), e)
         }
 
-    private fun HttpException.toUserMessage(): String = when (code()) {
-        HTTP_BAD_REQUEST -> readErrorMessage() ?: "Os dados informados são inválidos."
-        HTTP_UNAUTHORIZED -> "Sua sessão expirou. Entre novamente para usar a calculadora."
-        HTTP_FORBIDDEN -> "Você não tem permissão para usar a calculadora."
-        else -> "Não foi possível calcular agora. Tente novamente mais tarde."
+    private fun HttpException.toUserMessage(): UiText = when (code()) {
+        HTTP_BAD_REQUEST -> readErrorMessage()?.let(::uiText) ?: uiText(R.string.calculator_error_invalid_data)
+        HTTP_UNAUTHORIZED -> uiText(R.string.calculator_error_session_expired)
+        HTTP_FORBIDDEN -> uiText(R.string.calculator_error_forbidden)
+        else -> uiText(R.string.calculator_error_generic)
     }
 }

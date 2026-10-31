@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.aether.application.R
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.application.core.ui.components.FormDropdownField
 import com.aether.application.core.ui.theme.*
@@ -48,7 +50,7 @@ fun EmissionStep(
         modifier = modifier.fillMaxSize().imePadding()
     ) {
         AetherTopBar(
-            title = "Inserir dados",
+            title = stringResource(R.string.calculator_enter_data),
             onBackClick = onBackClicked
         )
 
@@ -59,13 +61,13 @@ fun EmissionStep(
         ) {
             Spacer(Modifier.height(16.dp))
 
-            Text("Emissão Atual", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.calculator_emission_title), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
 
             Spacer(Modifier.height(32.dp))
 
             Text(
                 text = buildAnnotatedString {
-                    append("Tipo de gás poluente")
+                    append(stringResource(R.string.calculator_polluting_gas_label))
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                         append("*")
                     }
@@ -78,7 +80,7 @@ fun EmissionStep(
 
             FormDropdownField(
                 label = "",
-                placeholder = "Selecione o gás atual",
+                placeholder = stringResource(R.string.calculator_polluting_gas_placeholder),
                 value = pollutingGasType,
                 options = gasOptions,
                 onValueSelected = onGasTypeChanged
@@ -88,7 +90,7 @@ fun EmissionStep(
 
             Text(
                 text = buildAnnotatedString {
-                    append("Volume emitido por mês")
+                    append(stringResource(R.string.calculator_volume_label))
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                         append("*")
                     }
@@ -102,10 +104,10 @@ fun EmissionStep(
             OutlinedTextField(
                 value = monthlyVolume,
                 onValueChange = onVolumeChanged,
-                placeholder = { Text("Ex: 1.700") },
+                placeholder = { Text(stringResource(R.string.calculator_volume_placeholder)) },
                 trailingIcon = {
                     Text(
-                        text = "tCO₂e/mês",
+                        text = stringResource(R.string.common_emission_unit_per_month),
                         style = bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(end = 16.dp)
@@ -127,7 +129,7 @@ fun EmissionStep(
 
             Text(
                 text = buildAnnotatedString {
-                    append("Escopo")
+                    append(stringResource(R.string.calculator_scope_label))
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                         append("*")
                     }
@@ -140,9 +142,9 @@ fun EmissionStep(
 
             FormDropdownField(
                 label = "",
-                placeholder = "Escopo de emissão",
+                placeholder = stringResource(R.string.calculator_scope_placeholder),
                 value = scope,
-                options = listOf("Escopo 1", "Escopo 2", "Escopo 3"),
+                options = (1..3).map { stringResource(R.string.calculator_scope_option, it) },
                 onValueSelected = onScopeChanged
             )
 
@@ -196,7 +198,7 @@ fun EmissionStep(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Prosseguir",
+                        contentDescription = stringResource(R.string.calculator_proceed),
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(32.dp)
                     )
