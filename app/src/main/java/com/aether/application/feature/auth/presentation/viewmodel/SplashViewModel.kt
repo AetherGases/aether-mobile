@@ -38,8 +38,11 @@ class SplashViewModel(
     val events: Flow<SplashEvent> = _events.receiveAsFlow()
 
     val circleDurationMillis = 800
+    private val packageName = context.packageName
+    private var remainingFallbacks = splashFallbacks(selectSplash())
+
     val player: ExoPlayer = ExoPlayer.Builder(context).build().apply {
-        setMediaItem(MediaItem.fromUri("android.resource://${context.packageName}/${selectSplash()}".toUri()))
+        setMediaItem(mediaItemFor(selectSplash()))
         prepare()
         playWhenReady = false
     }
@@ -68,7 +71,14 @@ class SplashViewModel(
             }
             override fun onPlayerError(error: PlaybackException) {
                 Log.e("SplashViewModel", "Splash video failed to play", error)
-                markVideoFinished()
+                val next = remainingFallbacks.firstOrNull()
+                if (next != null && !playbackStarted) {
+                    remainingFallbacks = remainingFallbacks.drop(1)
+                    player.setMediaItem(mediaItemFor(next))
+                    player.prepare()
+                } else {
+                    markVideoFinished()
+                }
             }
         })
         // autenticação termina -> tenta mudar de página
@@ -98,6 +108,9 @@ class SplashViewModel(
         player.release()
     }
 
+    private fun mediaItemFor(@RawRes res: Int) =
+        MediaItem.fromUri("android.resource://$packageName/$res".toUri())
+
     private fun markVideoFinished() {
         viewModelScope.launch {
             videoFinished = true
@@ -120,6 +133,16 @@ class SplashViewModel(
 }
 
 
+
+private val splashQualities = listOf(
+    R.raw.splash_ultra,
+    R.raw.splash_high,
+    R.raw.splash_medium,
+    R.raw.splash_low,
+)
+
+private fun splashFallbacks(@RawRes selected: Int): List<Int> =
+    splashQualities.dropWhile { it != selected }.drop(1)
 
 private fun selectSplash(): Int {
     val decoders = MediaCodecList(MediaCodecList.REGULAR_CODECS)
