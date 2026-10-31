@@ -271,6 +271,8 @@
     <string name="reports_analysis_see_all">See all</string>
     <string name="reports_analysis_reduction_amount">Reduction in numbers</string>
     <string name="reports_analysis_reduction">Reduction</string>
+    <string name="reports_analysis_carbon_savings">Carbon savings</string>
+    <string name="reports_analysis_carbon_savings_caption">Carbon credits estimated from the inventory</string>
     <string name="reports_analysis_priority_replacement">Priority replacement</string>
     <string name="reports_analysis_secondary_replacement">Secondary replacement</string>
     <string name="reports_analysis_error_load">Could not load the report analysis.</string>

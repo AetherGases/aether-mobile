@@ -1,5 +1,6 @@
 package com.aether.application.feature.reports.presentation.screen
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
@@ -53,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,25 +73,26 @@ import java.time.YearMonth
 
 enum class ReportViewerRole { GERENTE, FUNCIONARIO }
 
-enum class ReportTimeFilter(val label: String) {
-    MAIS_RECENTES("Mais Recentes"),
-    MAIS_ANTIGOS("Mais Antigos")
+enum class ReportTimeFilter(@StringRes val labelRes: Int) {
+    MAIS_RECENTES(R.string.reports_history_filter_newest),
+    MAIS_ANTIGOS(R.string.reports_history_filter_oldest)
 }
 
-private val ReportStatus.filterLabel: String
+@get:StringRes
+private val ReportStatus.filterLabelRes: Int
     get() = when (this) {
-        ReportStatus.EM_ANALISE -> "Em análise"
-        ReportStatus.APROVADO -> "Aprovados"
-        ReportStatus.REJEITADO -> "Rejeitados"
-        ReportStatus.EMITIDO -> "Emitidos"
-        ReportStatus.SOLICITADO -> "Solicitados"
+        ReportStatus.EM_ANALISE -> R.string.reports_history_status_in_review
+        ReportStatus.APROVADO -> R.string.reports_history_status_approved
+        ReportStatus.REJEITADO -> R.string.reports_history_status_rejected
+        ReportStatus.EMITIDO -> R.string.reports_history_status_issued
+        ReportStatus.SOLICITADO -> R.string.reports_history_status_requested
     }
 
 data class ReportItem(
     val id: String,
     val avatarUrl: String?,
     val title: String,
-    val authorName: String,
+    val authorName: String?,
     val reviewerName: String?,
     val createdAt: String,
     val status: ReportStatus,
@@ -150,7 +153,7 @@ fun ReportHistoryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        AetherTopBar(title = "Gerenciamento de relatórios", onBackClick = onBackClicked)
+        AetherTopBar(title = stringResource(R.string.reports_history_title), onBackClick = onBackClicked)
 
         PullToRefreshBox(
             isRefreshing = isRefreshing,
@@ -167,8 +170,8 @@ fun ReportHistoryScreen(
 
             // Reviewers browse the whole department, not a history of their own
             val heading = when (viewerRole) {
-                ReportViewerRole.GERENTE -> "Relatórios do departamento"
-                ReportViewerRole.FUNCIONARIO -> "Histórico"
+                ReportViewerRole.GERENTE -> stringResource(R.string.reports_history_heading_department)
+                ReportViewerRole.FUNCIONARIO -> stringResource(R.string.reports_history_heading_employee)
             }
             Text(heading, style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
 
@@ -190,7 +193,7 @@ fun ReportHistoryScreen(
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = onSearchQueryChanged,
-                        placeholder = { Text("Procurar relatório") },
+                        placeholder = { Text(stringResource(R.string.reports_history_search_placeholder)) },
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(R.drawable.ic_search),
@@ -231,7 +234,7 @@ fun ReportHistoryScreen(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_tune),
-                            contentDescription = "Filtrar",
+                            contentDescription = stringResource(R.string.reports_history_filter_description),
                             tint = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier.size(20.dp)
                         )
@@ -269,9 +272,9 @@ fun ReportHistoryScreen(
                     Spacer(Modifier.height(12.dp))
                     Text(
                         text = if (loadFailed) {
-                            "Não foi possível carregar os relatórios. Puxe para baixo para tentar de novo."
+                            stringResource(R.string.reports_history_load_failed)
                         } else {
-                            "Nenhum relatório encontrado."
+                            stringResource(R.string.reports_history_empty)
                         },
                         style = bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -282,9 +285,13 @@ fun ReportHistoryScreen(
 
             reportItems.forEachIndexed { index, item ->
                 val secondaryLabel = when (viewerRole) {
-                    ReportViewerRole.GERENTE -> "Realizado por ${item.authorName}"
+                    ReportViewerRole.GERENTE -> stringResource(
+                        R.string.reports_performed_by,
+                        item.authorName ?: stringResource(R.string.common_unknown_user)
+                    )
                     ReportViewerRole.FUNCIONARIO ->
-                        item.reviewerName?.let { "Revisado por $it" } ?: "Revisor não informado"
+                        item.reviewerName?.let { stringResource(R.string.reports_reviewed_by, it) }
+                            ?: stringResource(R.string.reports_reviewer_unknown)
                 }
 
                 ReportCard(
@@ -315,7 +322,7 @@ fun ReportHistoryScreen(
                 }
             } else if (loadMoreFailed) {
                 Text(
-                    "Não foi possível carregar mais relatórios. Toque para tentar de novo.",
+                    stringResource(R.string.reports_history_load_more_failed),
                     style = bodySmall,
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,
@@ -363,12 +370,12 @@ private fun ReportCalendarCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                if (isExpanded) "Esse mês" else "Essa semana",
+                stringResource(if (isExpanded) R.string.reports_history_this_month else R.string.reports_history_this_week),
                 style = bodyLargeMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                if (isExpanded) "Ver menos" else "Ver mais",
+                stringResource(if (isExpanded) R.string.reports_history_see_less else R.string.reports_history_see_more),
                 style = bodyMediumMd,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable { isExpanded = !isExpanded }
@@ -384,7 +391,7 @@ private fun ReportCalendarCard(
                 IconButton(onClick = { onMonthChanged(-1) }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                        contentDescription = "Mês anterior",
+                        contentDescription = stringResource(R.string.reports_history_previous_month),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -405,7 +412,7 @@ private fun ReportCalendarCard(
                 IconButton(onClick = { onMonthChanged(1) }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Próximo mês",
+                        contentDescription = stringResource(R.string.reports_history_next_month),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -560,7 +567,7 @@ private fun ReportFilterPanel(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                "Filtrar por tempo",
+                stringResource(R.string.reports_history_filter_by_time),
                 style = bodySmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.outline
@@ -568,7 +575,7 @@ private fun ReportFilterPanel(
             Spacer(Modifier.height(8.dp))
             ReportTimeFilter.values().forEach { filter ->
                 FilterCheckboxRow(
-                    label = filter.label,
+                    label = stringResource(filter.labelRes),
                     checked = filter in selectedTimeFilters,
                     onCheckedChange = { onTimeFilterToggled(filter) }
                 )
@@ -579,7 +586,7 @@ private fun ReportFilterPanel(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                "Filtrar por categoria",
+                stringResource(R.string.reports_history_filter_by_category),
                 style = bodySmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.outline
@@ -587,7 +594,7 @@ private fun ReportFilterPanel(
             Spacer(Modifier.height(8.dp))
             ReportStatus.values().forEach { status ->
                 FilterCheckboxRow(
-                    label = status.filterLabel,
+                    label = stringResource(status.filterLabelRes),
                     checked = status in selectedStatusFilters,
                     onCheckedChange = { onStatusFilterToggled(status) }
                 )

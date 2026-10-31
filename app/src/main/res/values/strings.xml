@@ -271,6 +271,8 @@
     <string name="reports_analysis_see_all">Ver tudo</string>
     <string name="reports_analysis_reduction_amount">Redução em número</string>
     <string name="reports_analysis_reduction">Redução</string>
+    <string name="reports_analysis_carbon_savings">Economia de Carbono</string>
+    <string name="reports_analysis_carbon_savings_caption">Créditos de carbono estimados a partir do inventário</string>
     <string name="reports_analysis_priority_replacement">Substituição prioritária</string>
     <string name="reports_analysis_secondary_replacement">Substituição secundária</string>
     <string name="reports_analysis_error_load">Não foi possível carregar a análise do relatório.</string>

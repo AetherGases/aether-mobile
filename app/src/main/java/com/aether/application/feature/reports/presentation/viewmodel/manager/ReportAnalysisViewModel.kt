@@ -1,9 +1,13 @@
 package com.aether.application.feature.reports.presentation.viewmodel.manager
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.R
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.reports.domain.model.ImprovementPlan
@@ -36,11 +40,11 @@ private val decidedStatuses = setOf(
 data class ReportAnalysisUiState(
     val analysis: AetherAnalysisUi? = null,
     val isLoading: Boolean = true,
-    val errorMessage: String? = null,
+    val errorMessage: UiText? = null,
     /** Shows the approve/reject buttons: the user can review and the report is still open. */
     val canDecide: Boolean = false,
     val isSubmitting: Boolean = false,
-    val submitErrorMessage: String? = null,
+    val submitErrorMessage: UiText? = null,
     /** True when approved, false when rejected, null while not reviewed. */
     val decision: Boolean? = null,
 )
@@ -83,7 +87,7 @@ class ReportAnalysisViewModel(
                 Log.e(TAG, "Failed to load analysis of report $reportId", e)
                 _uiState.update { it.copy(
                     isLoading = false,
-                    errorMessage = "Não foi possível carregar a análise do relatório."
+                    errorMessage = uiText(R.string.reports_analysis_error_load)
                 ) }
             }
         }
@@ -121,7 +125,7 @@ class ReportAnalysisViewModel(
                 Log.e(TAG, "Failed to submit review of report $reportId", e)
                 _uiState.update { it.copy(
                     isSubmitting = false,
-                    submitErrorMessage = "Não foi possível enviar a análise. Tente novamente."
+                    submitErrorMessage = uiText(R.string.reports_analysis_error_submit)
                 ) }
             }
         }
@@ -143,8 +147,8 @@ class ReportAnalysisViewModel(
             }
         ),
         // The hub already sends the gases ordered by priority
-        priority = plan?.recommendedGases?.getOrNull(0)?.toUi("Substituição prioritária"),
-        secondary = plan?.recommendedGases?.getOrNull(1)?.toUi("Substituição secundária"),
+        priority = plan?.recommendedGases?.getOrNull(0)?.toUi(R.string.reports_analysis_priority_replacement),
+        secondary = plan?.recommendedGases?.getOrNull(1)?.toUi(R.string.reports_analysis_secondary_replacement),
         monthlySavings = monthlySavings
     )
 
@@ -156,11 +160,11 @@ class ReportAnalysisViewModel(
         return totals.map { (name, total) -> ScopeUi(name = name, percent = (total / sum * 100).roundToInt()) }
     }
 
-    private fun RecommendedGas.toUi(title: String) = ReplacementUi(
-        title = title,
+    private fun RecommendedGas.toUi(@StringRes titleRes: Int) = ReplacementUi(
+        titleRes = titleRes,
         reduction = emission,
         percent = reductionPercentage,
         technology = name,
-        scope = "Escopo $scope"
+        scope = scope
     )
 }

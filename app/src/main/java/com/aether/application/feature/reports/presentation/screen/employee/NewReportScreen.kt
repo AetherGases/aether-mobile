@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -41,6 +42,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.aether.application.core.ui.components.FormErrorText
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.application.core.ui.theme.*
+import com.aether.application.core.utils.UiText
 import com.aether.application.R
 
 private val spreadsheetMimeTypes = arrayOf(
@@ -53,8 +55,8 @@ fun CreateReportUploadScreen(
     selectedFileName: String?,
     uploadProgress: Float?,
     reportName: String,
-    reportNameError: String?,
-    errorMessage: String?,
+    reportNameError: UiText?,
+    errorMessage: UiText?,
     onReportNameChanged: (String) -> Unit,
     onFileSelected: (Uri) -> Unit,
     onRemoveFileClicked: () -> Unit,
@@ -79,7 +81,7 @@ fun CreateReportUploadScreen(
             .imePadding()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        AetherTopBar(title = "Criar relatório", onBackClick = onBackClicked)
+        AetherTopBar(title = stringResource(R.string.reports_new_title), onBackClick = onBackClicked)
 
         Column(
             modifier = Modifier
@@ -88,10 +90,10 @@ fun CreateReportUploadScreen(
         ) {
             Spacer(Modifier.height(16.dp))
 
-            Text("Anexe sua planilha", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.reports_new_attach_title), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(8.dp))
             Text(
-                "Envie o arquivo Excel (.xlsx) com os dados do seu relatório.",
+                stringResource(R.string.reports_new_attach_description),
                 style = bodyMediumMd,
                 color = MaterialTheme.colorScheme.outline
             )
@@ -104,7 +106,7 @@ fun CreateReportUploadScreen(
 
             if (errorMessage != null) {
                 Spacer(Modifier.height(12.dp))
-                FormErrorText(errorMessage)
+                FormErrorText(errorMessage.asString())
             }
 
             Spacer(Modifier.weight(1f))
@@ -137,7 +139,7 @@ fun CreateReportUploadScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "Enviar",
+                    stringResource(R.string.reports_new_submit),
                     style = titleMedium,
                     color = if (isFileReady) {
                         MaterialTheme.colorScheme.onPrimary
@@ -192,8 +194,8 @@ private fun SelectFileRow(onClick: () -> Unit) {
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text("Selecionar arquivo", style = titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text("Aceitamos arquivos .xlsx", style = bodyMediumMd, color = MaterialTheme.colorScheme.secondary)
+            Text(stringResource(R.string.reports_new_select_file), style = titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(R.string.reports_new_accepted_files), style = bodyMediumMd, color = MaterialTheme.colorScheme.secondary)
         }
 
         Icon(
@@ -265,7 +267,7 @@ private fun FileUploadProgressRow(
         IconButton(onClick = onCancelClick, modifier = Modifier.size(24.dp)) {
             Icon(
                 imageVector = Icons.Default.Close,
-                contentDescription = "Remover arquivo",
+                contentDescription = stringResource(R.string.reports_new_remove_file),
                 tint = MaterialTheme.colorScheme.outline
             )
         }
@@ -275,7 +277,7 @@ private fun FileUploadProgressRow(
 @Composable
 private fun ReportNameDialog(
     reportName: String,
-    reportNameError: String?,
+    reportNameError: UiText?,
     onReportNameChanged: (String) -> Unit,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
@@ -298,14 +300,14 @@ private fun ReportNameDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Nome do relatório",
+                        stringResource(R.string.reports_new_name_title),
                         style = titleSmall,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     IconButton(onClick = onDismiss, modifier = Modifier.size(24.dp)) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Fechar",
+                            contentDescription = stringResource(R.string.common_close),
                             tint = MaterialTheme.colorScheme.outline
                         )
                     }
@@ -316,9 +318,9 @@ private fun ReportNameDialog(
                 OutlinedTextField(
                     value = reportName,
                     onValueChange = onReportNameChanged,
-                    placeholder = { Text("Ex: Relatório de emissões de julho") },
+                    placeholder = { Text(stringResource(R.string.reports_new_name_placeholder)) },
                     isError = reportNameError != null,
-                    supportingText = reportNameError?.let { error -> { Text(error) } },
+                    supportingText = reportNameError?.let { error -> { Text(error.asString()) } },
                     singleLine = true,
                     shape = RoundedCornerShape(percent = 50),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -352,7 +354,7 @@ private fun ReportNameDialog(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        "Criar relatório",
+                        stringResource(R.string.reports_new_title),
                         style = titleMediumMD,
                         color = if (canConfirm) {
                             MaterialTheme.colorScheme.onPrimary
