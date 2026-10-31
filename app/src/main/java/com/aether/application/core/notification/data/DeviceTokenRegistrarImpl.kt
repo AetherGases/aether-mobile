@@ -9,9 +9,11 @@ import com.aether.application.feature.profile.data.remote.dto.UpdateProfileReque
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
 
 private const val TAG = "DeviceTokenRegistrar"
+private const val TOKEN_FETCH_TIMEOUT_MS = 5_000L
 
 class DeviceTokenRegistrarImpl(
     private val tokenStorage: FcmTokenStorage,
@@ -20,7 +22,7 @@ class DeviceTokenRegistrarImpl(
 ): DeviceTokenRegistrar {
 
     override suspend fun registerCurrent() {
-        val token = tokenStorage.getToken() ?: fetchToken()?.also { tokenStorage.saveToken(it) }
+        val token = tokenStorage.getToken() ?: withTimeoutOrNull(TOKEN_FETCH_TIMEOUT_MS) { fetchToken() }?.also { tokenStorage.saveToken(it) }
         if (token == null) {
             Log.w(TAG, "No FCM token available, skipping device registration")
             return

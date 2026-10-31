@@ -32,7 +32,7 @@ enum class NotificationFilter(val label: String) {
 }
 
 data class NotificationItem(
-    val reportId: Long,
+    val reportId: Long?,
     val status: NotificationStatus,
     val title: String,
     val reviewer: String,
@@ -114,7 +114,7 @@ fun NotificationsScreen(
                             description = item.reviewer,
                             timestamp = item.timestamp,
                             relativeTime = item.relativeTime,
-                            onClick = { onNotificationClick(item.reportId) },
+                            onClick = item.reportId?.let { id -> { onNotificationClick(id) } },
                             modifier = Modifier.shadow(
                                 elevation = 12.dp,
                                 shape = RoundedCornerShape(18.dp),
@@ -192,24 +192,24 @@ fun NotificationsScreenPreview() {
                 NotificationSection(
                     title = "Hoje",
                     items = listOf(
-                        NotificationItem(0, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(0, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas")
+                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
+                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas")
                     )
                 ),
                 NotificationSection(
                     title = "Essa semana",
                     items = listOf(
-                        NotificationItem(0, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(0, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(0, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas")
+                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
+                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
+                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas")
                     )
                 ),
                 NotificationSection(
                     title = "Esse mês",
                     items = listOf(
-                        NotificationItem(0, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(0, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(0, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas")
+                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
+                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
+                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas")
                     )
                 )
             ),

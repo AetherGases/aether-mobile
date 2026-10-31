@@ -8,7 +8,7 @@ import java.time.Instant
 
 @Serializable
 data class NotificationResponse(
-    val id: Long,
+    val id: Long? = null,
     val title: String,
     val description: String,
     val status: String,
