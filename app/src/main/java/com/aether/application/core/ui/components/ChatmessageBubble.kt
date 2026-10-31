@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.core.ui.theme.*
@@ -109,7 +110,7 @@ fun ChatMessageBubble(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_copy),
-                                contentDescription = "Copiar",
+                                contentDescription = stringResource(R.string.common_copy),
                                 tint = MaterialTheme.colorScheme.outline,
                                 modifier = Modifier.size(20.dp)
                             )

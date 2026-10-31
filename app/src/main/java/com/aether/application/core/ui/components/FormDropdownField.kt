@@ -2,6 +2,7 @@ package com.aether.core.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.res.stringResource
 import com.aether.application.R
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -41,7 +42,7 @@ fun FormDropdownField(
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.arrow_dropdown),
-                        contentDescription = "retorno",
+                        contentDescription = stringResource(R.string.common_dropdown_icon),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },

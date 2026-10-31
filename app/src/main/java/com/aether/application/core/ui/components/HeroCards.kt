@@ -11,10 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
+import com.aether.application.core.utils.UiText
 import com.aether.core.ui.theme.*
 
 @Composable
@@ -40,7 +42,7 @@ fun ReportsSummaryCard(
             Column(modifier = Modifier.semantics(mergeDescendants = true) {}) {
                 Text(title, style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
                 Text(
-                    "Último enviado em $lastSubmittedLabel",
+                    stringResource(R.string.herocard_last_sent_on, lastSubmittedLabel),
                     style = bodySmallMedium,
                     color = MaterialTheme.colorScheme.outline
                 )
@@ -53,7 +55,7 @@ fun ReportsSummaryCard(
                 Text(count, style = displayLargeBold, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    "Este mês",
+                    stringResource(R.string.herocard_this_month),
                     style = bodyLargeMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.offset(y = (-24).dp)
@@ -66,7 +68,7 @@ fun ReportsSummaryCard(
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
             ) {
-                Text("Ver histórico", style = titleSmall, color = MaterialTheme.colorScheme.onSecondary)
+                Text(stringResource(R.string.herocard_view_history), style = titleSmall, color = MaterialTheme.colorScheme.onSecondary)
             }
         }
 
@@ -102,7 +104,7 @@ fun UnitEmissionsCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Emissões da unidade", style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.herocard_unit_emissions), style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
             }
 
             Spacer(Modifier.height(12.dp))
@@ -155,12 +157,12 @@ fun SealProgressCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Selo Clima Paraná", style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.herocard_seal_title), style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
             }
 
             Spacer(Modifier.height(12.dp))
 
-            Text("Nível", style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
+            Text(stringResource(R.string.herocard_level), style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
             Text(levelPercent, style = displayLargeBold, color = MaterialTheme.colorScheme.onSurface)
 
             Spacer(Modifier.height(12.dp))
@@ -187,30 +189,30 @@ fun SealProgressCard(
 }
 
 data class ReportsSummaryHomeCard(
-    val title: String,
+    val title: UiText,
     val lastSubmittedLabel: String,
     val count: String,
     val onViewHistoryClick: () -> Unit,
 ) : HomeHeroCard {
     @Composable
-    override fun Render() = ReportsSummaryCard(title, lastSubmittedLabel, count, onViewHistoryClick)
+    override fun Render() = ReportsSummaryCard(title.asString(), lastSubmittedLabel, count, onViewHistoryClick)
 }
 
 data class UnitEmissionsHomeCard(
     val value: String,
-    val unitLabel: String,
-    val changeLabel: String,
+    val unitLabel: UiText,
+    val changeLabel: UiText,
 ) : HomeHeroCard {
     @Composable
-    override fun Render() = UnitEmissionsCard(value, unitLabel, changeLabel)
+    override fun Render() = UnitEmissionsCard(value, unitLabel.asString(), changeLabel.asString())
 }
 
 data class SealProgressHomeCard(
     val levelPercent: String,
-    val criteriaLabel: String,
+    val criteriaLabel: UiText,
 ) : HomeHeroCard {
     @Composable
-    override fun Render() = SealProgressCard(levelPercent, criteriaLabel)
+    override fun Render() = SealProgressCard(levelPercent, criteriaLabel.asString())
 }
 
 @Preview(showBackground = true)

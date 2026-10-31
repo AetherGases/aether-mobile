@@ -1,6 +1,7 @@
 package com.aether.core.ui.components
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +38,7 @@ import com.aether.core.ui.theme.*
 
 data class BottomBarItem(
     val route: String,
-    val label: String,
+    @StringRes val labelRes: Int,
     @DrawableRes val iconRes: Int
 )
 
@@ -131,7 +133,7 @@ private fun BottomBarTab(
             modifier = Modifier.size(24.dp)
         )
         Text(
-            text = item.label,
+            text = stringResource(item.labelRes),
             style = bodySmallMedium,
             color = color,
             maxLines = 1
@@ -166,20 +168,20 @@ private fun HomeButton(
     ) {
         Icon(
             painter = painterResource(id = item.iconRes),
-            contentDescription = item.label,
+            contentDescription = stringResource(item.labelRes),
             tint = onSecondary,
             modifier = Modifier.size(28.dp)
         )
     }
 }
 
-private val previewHome = BottomBarItem("home", "Início", R.drawable.ic_nav_home)
+private val previewHome = BottomBarItem("home", R.string.nav_home, R.drawable.ic_nav_home)
 
-private fun previewItems(firstLabel: String) = listOf(
+private fun previewItems(@StringRes firstLabel: Int) = listOf(
     BottomBarItem("reports", firstLabel, R.drawable.ic_nav_reports),
-    BottomBarItem("calculator", "Calculadora", R.drawable.ic_nav_calculator),
-    BottomBarItem("aeko", "Chatbot", R.drawable.ic_nav_chatbot),
-    BottomBarItem("settings", "Perfil", R.drawable.ic_nav_profile)
+    BottomBarItem("calculator", R.string.nav_calculator, R.drawable.ic_nav_calculator),
+    BottomBarItem("aeko", R.string.nav_chatbot, R.drawable.ic_nav_chatbot),
+    BottomBarItem("settings", R.string.nav_profile, R.drawable.ic_nav_profile)
 )
 
 @Preview(showBackground = true, backgroundColor = 0xFFF0F4F8, widthDp = 375)
@@ -188,13 +190,13 @@ fun AetherBottomBarPreview() {
     AetherTheme(darkTheme = false) {
         Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
             AetherBottomBar(
-                items = previewItems("Relatórios"),
+                items = previewItems(R.string.nav_reports_manager),
                 homeItem = previewHome,
                 selectedRoute = "calculator",
                 onItemClick = {}
             )
             AetherBottomBar(
-                items = previewItems("Criação"),
+                items = previewItems(R.string.nav_reports_employee),
                 homeItem = previewHome,
                 selectedRoute = "home",
                 onItemClick = {}
@@ -209,13 +211,13 @@ fun AetherBottomBarDarkPreview() {
     AetherTheme(darkTheme = true) {
         Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
             AetherBottomBar(
-                items = previewItems("Relatórios"),
+                items = previewItems(R.string.nav_reports_manager),
                 homeItem = previewHome,
                 selectedRoute = "reports",
                 onItemClick = {}
             )
             AetherBottomBar(
-                items = previewItems("Criação"),
+                items = previewItems(R.string.nav_reports_employee),
                 homeItem = previewHome,
                 selectedRoute = null,
                 onItemClick = {}
