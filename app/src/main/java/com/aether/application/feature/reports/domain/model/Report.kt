@@ -40,23 +40,7 @@ data class ReportAnalysis(
     val totalEmissions: Double,
     /** Change against the previous period; positive means emissions went up. */
     val changePercent: Double,
-    val scopes: List<ScopeShare>,
-    val priorityReplacement: Replacement?,
-    val secondaryReplacement: Replacement?,
     val monthlySavings: Long,
-    val initialInvestment: Long,
-)
-
-data class ScopeShare(
-    val name: String,
-    val percent: Int,
-)
-
-data class Replacement(
-    val reduction: Double,
-    val percent: Int,
-    val technology: String,
-    val scope: String,
 )
 
 /** Textual plan produced by Aeko for an inventory. */
@@ -64,4 +48,16 @@ data class ImprovementPlan(
     val definedProblem: String,
     val solvingMethod: String,
     val reasoning: String,
+    /** Gases to replace, highest priority first. */
+    val recommendedGases: List<RecommendedGas>,
+)
+
+data class RecommendedGas(
+    /** 1, 2 or 3. */
+    val scope: Int,
+    /** In tCO2e/month. */
+    val emission: Int,
+    /** 1-100. */
+    val reductionPercentage: Int,
+    val name: String,
 )
