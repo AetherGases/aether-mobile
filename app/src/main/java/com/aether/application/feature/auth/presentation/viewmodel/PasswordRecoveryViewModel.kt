@@ -2,6 +2,7 @@ package com.aether.application.feature.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.core.utils.UiText
 import com.aether.application.core.utils.userMessage
 import com.aether.application.feature.auth.domain.usecase.RequestPasswordRecoveryUseCase
 import kotlinx.coroutines.channels.Channel
@@ -54,7 +55,7 @@ class PasswordRecoveryViewModel(
 data class RecoveryUiState(
     val email: String = "",
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: UiText? = null
 )
 
 sealed interface SendCodeEvent {

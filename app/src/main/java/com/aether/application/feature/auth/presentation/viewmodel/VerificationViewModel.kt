@@ -2,6 +2,7 @@ package com.aether.application.feature.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.core.utils.UiText
 import com.aether.application.core.utils.userMessage
 import com.aether.application.feature.auth.domain.usecase.ResendRecoveryCodeUseCase
 import com.aether.application.feature.auth.domain.usecase.VerifyCodeUseCase
@@ -95,7 +96,7 @@ data class VerificationUiState(
     val isLoading: Boolean = false,
     val isResending: Boolean = false,
     val resendCooldownSeconds: Int = 60,
-    val errorMessage: String? = null
+    val errorMessage: UiText? = null
 )
 
 sealed interface VerificationEvent {

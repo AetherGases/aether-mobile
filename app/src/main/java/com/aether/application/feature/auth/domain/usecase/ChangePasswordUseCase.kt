@@ -1,6 +1,8 @@
 package com.aether.application.feature.auth.domain.usecase
 
-import com.aether.application.feature.auth.domain.model.PASSWORD_REQUIREMENTS_MESSAGE
+import com.aether.application.R
+import com.aether.application.core.utils.UserFacingException
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.auth.domain.model.meetsPasswordRules
 import com.aether.application.feature.auth.domain.repository.AuthRepository
 
@@ -14,10 +16,10 @@ class ChangePasswordUseCase(
         confirmPassword: String
     ): Result<Unit> {
         if (!password.meetsPasswordRules())
-            return Result.failure(IllegalArgumentException(PASSWORD_REQUIREMENTS_MESSAGE))
+            return Result.failure(UserFacingException(uiText(R.string.auth_error_password_requirements)))
 
         if (password != confirmPassword)
-            return Result.failure(IllegalArgumentException("As senhas não coincidem."))
+            return Result.failure(UserFacingException(uiText(R.string.auth_error_passwords_mismatch)))
 
         return authRepository.changePassword(email, password, key)
     }
