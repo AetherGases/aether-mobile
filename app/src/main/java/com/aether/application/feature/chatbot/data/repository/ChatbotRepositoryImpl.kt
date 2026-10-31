@@ -1,8 +1,11 @@
 package com.aether.application.feature.chatbot.data.repository
 
 import android.util.Log
+import com.aether.application.R
 import com.aether.application.core.database.ProfileLocalDataSource
 import com.aether.application.core.network.readErrorMessage
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.chatbot.data.remote.ChatbotApi
 import com.aether.application.feature.chatbot.data.remote.dto.SendMessageRequest
@@ -78,7 +81,7 @@ class ChatbotRepositoryImpl(
 
         val profile = profileApi.getUserProfile()
         val enterprise = profile.toLocalEnterprise()
-            ?: throw ChatbotException("Não foi possível identificar a empresa do usuário.")
+            ?: throw ChatbotException(uiText(R.string.chatbot_error_company_not_found))
         profileLocalDataSource.saveEnterprise(enterprise)
         Identity(userId = profile.id, companyId = enterprise.id)
     }
@@ -93,14 +96,14 @@ class ChatbotRepositoryImpl(
             throw ChatbotException(e.userMessage(), e)
         } catch (e: IOException) {
             Log.e(TAG, "Hub unreachable", e)
-            throw ChatbotException("Sem conexão com o servidor. Tente novamente.", e)
+            throw ChatbotException(uiText(R.string.common_error_no_connection_retry), e)
         }
 
     // The hub's `detail` texts are in English, so these statuses get their own messages
-    private fun HttpException.userMessage(): String = when (code()) {
+    private fun HttpException.userMessage(): UiText = when (code()) {
         HTTP_BAD_GATEWAY, HTTP_UNPROCESSABLE_ENTITY ->
-            "A Aeko não conseguiu responder. Tente reformular a pergunta."
-        HTTP_BAD_REQUEST -> "Não foi possível enviar a mensagem. Verifique o texto e tente novamente."
-        else -> readErrorMessage() ?: "Não foi possível falar com a Aeko. Tente novamente."
+            uiText(R.string.chatbot_error_no_answer)
+        HTTP_BAD_REQUEST -> uiText(R.string.chatbot_error_bad_message)
+        else -> readErrorMessage()?.let(::uiText) ?: uiText(R.string.chatbot_error_generic)
     }
 }
