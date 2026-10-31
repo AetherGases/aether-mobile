@@ -2,8 +2,10 @@ package com.aether.application.feature.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.application.core.utils.userMessage
-import com.aether.application.feature.auth.domain.model.PASSWORD_REQUIREMENTS_MESSAGE
 import com.aether.application.feature.auth.domain.model.meetsPasswordRules
 import com.aether.application.feature.auth.domain.usecase.ChangePasswordUseCase
 import kotlinx.coroutines.channels.Channel
@@ -50,7 +52,7 @@ class ChangePasswordViewModel(
         val password = _uiState.value.password
 
         if (!password.meetsPasswordRules()) {
-            _uiState.update { it.copy(errorMessage = PASSWORD_REQUIREMENTS_MESSAGE) }
+            _uiState.update { it.copy(errorMessage = uiText(R.string.auth_error_password_requirements)) }
             return
         }
 
@@ -83,7 +85,7 @@ data class ChangePasswordUiState(
     val confirmPassword: String = "",
     val isConfirmStep: Boolean = false,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: UiText? = null
 )
 
 sealed interface ChangePasswordEvent {

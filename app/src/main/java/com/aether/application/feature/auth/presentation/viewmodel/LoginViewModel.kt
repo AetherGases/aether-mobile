@@ -2,6 +2,7 @@ package com.aether.application.feature.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.core.utils.UiText
 import com.aether.application.core.utils.userMessage
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +19,7 @@ data class LoginUiState(
     val password: String = "",
     val rememberMe: Boolean = false,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: UiText? = null
 )
 
 sealed interface LoginEvent {

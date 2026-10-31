@@ -1,5 +1,6 @@
 package com.aether.application.feature.auth.presentation.screen
 
+import androidx.compose.ui.res.stringResource
 import com.aether.application.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.aether.application.core.utils.UiText
 import com.aether.core.ui.theme.*
 import com.aether.application.core.ui.components.FormErrorText
 import kotlinx.coroutines.delay
@@ -49,7 +51,7 @@ fun LoginScreen(
     onForgotPasswordClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    errorMessage: String? = null,
+    errorMessage: UiText? = null,
     onChangeServerClick: (() -> Unit)? = null
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
@@ -144,7 +146,7 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Login",
+                text = stringResource(R.string.auth_login_title),
                 style = displayMedium,
                 color = textPrimaryLight
             )
@@ -155,7 +157,7 @@ fun LoginScreen(
                 onValueChange = onEmailChange,
                 placeholder = {
                     Text(
-                        text = "Email:",
+                        text = stringResource(R.string.auth_email_label),
                         style = bodyLarge,
                         color = textPrimaryLight
                     )
@@ -192,7 +194,7 @@ fun LoginScreen(
                 },
                 placeholder = {
                     Text(
-                        text = "Senha:",
+                        text = stringResource(R.string.auth_password_label),
                         style = bodyLarge,
                         color = textPrimaryLight
                     )
@@ -219,7 +221,7 @@ fun LoginScreen(
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             imageVector = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                            contentDescription = if (passwordVisible) "Ocultar senha" else "Mostrar senha",
+                            contentDescription = stringResource(if (passwordVisible) R.string.auth_login_hide_password else R.string.auth_login_show_password),
                             tint = textTertiaryLight
                         )
                     }
@@ -256,14 +258,14 @@ fun LoginScreen(
                     }
                     Spacer(Modifier.width(6.dp))
                     Text(
-                        text = "Lembrar-se de mim",
+                        text = stringResource(R.string.auth_login_remember_me),
                         style = labelMedium,
                         color = textTertiaryLight
                     )
                 }
                 TextButton(onClick = onForgotPasswordClick) {
                     Text(
-                        text = "Esqueceu sua senha?",
+                        text = stringResource(R.string.auth_login_forgot_password),
                         style = labelMedium,
                         color = purple500
                     )
@@ -272,7 +274,7 @@ fun LoginScreen(
 
             if (errorMessage != null) {
                 Spacer(Modifier.height(16.dp))
-                FormErrorText(errorMessage)
+                FormErrorText(errorMessage.asString())
             }
 
             Spacer(Modifier.height(24.dp))
@@ -302,7 +304,7 @@ fun LoginScreen(
                             strokeWidth = 2.dp
                         )
                     } else {
-                        Text(text = "Começar", style = titleMedium, color = textPrimaryDark)
+                        Text(text = stringResource(R.string.auth_login_start), style = titleMedium, color = textPrimaryDark)
                     }
                 }
             }
@@ -315,7 +317,7 @@ fun LoginScreen(
                 ) {
                     TextButton(onClick = onChangeServerClick) {
                         Text(
-                            text = "Trocar servidor (QA)",
+                            text = stringResource(R.string.auth_login_change_server),
                             style = labelMedium,
                             color = textTertiaryLight
                         )
