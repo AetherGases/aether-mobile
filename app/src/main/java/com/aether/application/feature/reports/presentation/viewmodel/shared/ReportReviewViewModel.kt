@@ -1,9 +1,13 @@
 package com.aether.application.feature.reports.presentation.viewmodel.shared
 
 import android.util.Log
+import com.aether.application.core.utils.AppLocale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.R
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.reports.domain.model.ReportDetails
@@ -32,7 +36,7 @@ private val analyzableStatuses = setOf(
 data class ReportReviewUiState(
     val report: ReportReviewUi? = null,
     val isLoading: Boolean = true,
-    val errorMessage: String? = null,
+    val errorMessage: UiText? = null,
 )
 
 class ReportReviewViewModel(
@@ -43,11 +47,6 @@ class ReportReviewViewModel(
     private val _uiState = MutableStateFlow(ReportReviewUiState())
     val uiState: StateFlow<ReportReviewUiState> = _uiState.asStateFlow()
 
-    private val locale = Locale.forLanguageTag("pt-BR")
-    private val dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", locale)
-    private val numberFormat = NumberFormat.getNumberInstance(locale).apply {
-        maximumFractionDigits = 1
-    }
 
     init {
         load()
@@ -66,7 +65,7 @@ class ReportReviewViewModel(
                 Log.e(TAG, "Failed to load report $reportId", e)
                 _uiState.update { it.copy(
                     isLoading = false,
-                    errorMessage = "Não foi possível carregar o relatório."
+                    errorMessage = uiText(R.string.reports_review_error_load)
                 ) }
             }
         }
@@ -77,7 +76,7 @@ class ReportReviewViewModel(
         sector = sector,
         unitName = unitName ?: "—",
         // pt-BR month abbreviations come with a trailing dot ("jul.")
-        submittedAt = createdAt.format(dateFormatter).replace(".", ""),
+        submittedAt = createdAt.format(AppLocale.mediumDateFormatter()).replace(".", ""),
         description = description,
         reviewerName = reviewer?.name,
         reviewerAvatarUrl = reviewer?.avatarUrl,
@@ -90,7 +89,7 @@ class ReportReviewViewModel(
                     GasEmissionUi(
                         name = gas.name,
                         formula = gas.formula,
-                        quantity = numberFormat.format(gas.quantityCo2e)
+                        quantity = AppLocale.decimalFormat(1).format(gas.quantityCo2e)
                     )
                 }
             )

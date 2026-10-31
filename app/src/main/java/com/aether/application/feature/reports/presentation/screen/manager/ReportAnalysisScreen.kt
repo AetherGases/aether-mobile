@@ -1,7 +1,9 @@
 package com.aether.application.feature.reports.presentation.screen.manager
 
 import android.content.res.Configuration
+import com.aether.application.core.utils.AppLocale
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,10 +32,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
+import com.aether.application.core.utils.UiText
 import com.aether.application.feature.reports.presentation.components.ReportLoadState
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
@@ -71,7 +75,7 @@ data class ScopeUi(
 )
 
 data class ReplacementUi(
-    val title: String,
+    @StringRes val titleRes: Int,
     val reduction: Int,
     val percent: Int,
     val technology: String,
@@ -111,12 +115,12 @@ private enum class ReportDecision {
 fun AetherAnalysisScreen(
     analysis: AetherAnalysisUi?,
     isLoading: Boolean,
-    errorMessage: String?,
+    errorMessage: UiText?,
     onRetry: () -> Unit,
     canDecide: Boolean,
     decision: Boolean?,
     isSubmitting: Boolean,
-    submitErrorMessage: String?,
+    submitErrorMessage: UiText?,
     onBackClick: () -> Unit,
     onDecisionSubmit: (approved: Boolean, comment: String) -> Unit,
     modifier: Modifier = Modifier
@@ -144,7 +148,7 @@ fun AetherAnalysisScreen(
                 .background(screenBackground)
         ) {
             AetherTopBar(
-                title = "Análise do Aether",
+                title = stringResource(R.string.reports_analysis_title),
                 onBackClick = onBackClick
             )
 
@@ -165,7 +169,7 @@ fun AetherAnalysisScreen(
                 Spacer(Modifier.height(16.dp))
 
                 Text(
-                    text = "Visão Geral",
+                    text = stringResource(R.string.reports_analysis_overview),
                     style = titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -203,17 +207,17 @@ fun AetherAnalysisScreen(
                 }
 
                 FinancialCard(
-                    heading = "Retorno financeiro",
-                    caption = "Economia mensal estimada",
+                    heading = stringResource(R.string.reports_analysis_financial_return),
+                    caption = stringResource(R.string.reports_analysis_monthly_savings),
                     amount = analysis.monthlySavings,
-                    suffix = "/mês",
+                    suffix = stringResource(R.string.reports_analysis_per_month),
                     isGreen = true
                 )
 
                 Spacer(Modifier.height(32.dp))
 
                 FinancialCard(
-                    heading = "Investimento inicial necessário",
+                    heading = stringResource(R.string.reports_analysis_initial_investment),
                     caption = null,
                     amount = analysis.initialInvestment,
                     suffix = null,
@@ -224,7 +228,7 @@ fun AetherAnalysisScreen(
                     Spacer(Modifier.height(40.dp))
 
                     DecisionButton(
-                        text = "Aprovar relatório",
+                        text = stringResource(R.string.reports_analysis_approve),
                         filled = true,
                         onClick = {
                             comment = ""
@@ -235,7 +239,7 @@ fun AetherAnalysisScreen(
                     Spacer(Modifier.height(12.dp))
 
                     DecisionButton(
-                        text = "Reprovar relatório",
+                        text = stringResource(R.string.reports_analysis_reject),
                         filled = false,
                         onClick = {
                             comment = ""
@@ -400,11 +404,10 @@ private fun ReportResultScreen(
                 Spacer(Modifier.height(44.dp))
 
                 Text(
-                    text = if (approved) {
-                        "Relatório Aprovado"
-                    } else {
-                        "Relatório Reprovado"
-                    },
+                    text = stringResource(
+                        if (approved) R.string.reports_analysis_decision_approved
+                        else R.string.reports_analysis_decision_rejected
+                    ),
                     style = titleLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
@@ -419,7 +422,7 @@ private fun ReportResultScreen(
                 .padding(bottom = 48.dp)
         ) {
             Text(
-                text = "Voltar",
+                text = stringResource(R.string.common_back),
                 style = titleMediumMD,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -434,7 +437,7 @@ private fun ReportCommentDialog(
     comment: String,
     onCommentChange: (String) -> Unit,
     isSubmitting: Boolean,
-    errorMessage: String?,
+    errorMessage: UiText?,
     onDismiss: () -> Unit,
     onSubmit: () -> Unit
 ) {
@@ -465,7 +468,7 @@ private fun ReportCommentDialog(
                 )
         ) {
             Text(
-                text = "Comentários",
+                text = stringResource(R.string.reports_analysis_comments),
                 style = titleLarge,
                 color = onSurface
             )
@@ -473,11 +476,10 @@ private fun ReportCommentDialog(
             Spacer(Modifier.height(28.dp))
 
             Text(
-                text = if (approved) {
-                    "Descreva o motivo da aprovação"
-                } else {
-                    "Descreva o motivo de rejeição"
-                },
+                text = stringResource(
+                    if (approved) R.string.reports_analysis_comment_prompt_approve
+                    else R.string.reports_analysis_comment_prompt_reject
+                ),
                 style = bodyLargeMedium,
                 color = secondaryText
             )
@@ -514,11 +516,10 @@ private fun ReportCommentDialog(
                         ) {
                             if (comment.isEmpty()) {
                                 Text(
-                                    text = if (approved) {
-                                        "Descreva brevemente a motivação da aprovação do relatório"
-                                    } else {
-                                        "Descreva brevemente a motivação da reprovação do relatório"
-                                    },
+                                    text = stringResource(
+                                        if (approved) R.string.reports_analysis_comment_hint_approve
+                                        else R.string.reports_analysis_comment_hint_reject
+                                    ),
                                     style = bodyMediumMd,
                                     color = MaterialTheme.colorScheme.outline
                                 )
@@ -543,7 +544,7 @@ private fun ReportCommentDialog(
                 Spacer(Modifier.height(12.dp))
 
                 Text(
-                    text = errorMessage,
+                    text = errorMessage.asString(),
                     style = bodySmallMedium,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -580,7 +581,7 @@ private fun ReportCommentDialog(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (isSubmitting) "Enviando..." else "Enviar",
+                    text = stringResource(if (isSubmitting) R.string.reports_analysis_sending else R.string.reports_analysis_send),
                     style = titleMediumMD,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -630,7 +631,7 @@ private fun EmissionsCard(
                 .padding(24.dp)
         ) {
             Text(
-                text = "Emissões mapeadas",
+                text = stringResource(R.string.reports_analysis_mapped_emissions),
                 style = titleMedium,
                 color = Color.White
             )
@@ -638,7 +639,7 @@ private fun EmissionsCard(
             Spacer(Modifier.height(12.dp))
 
             Text(
-                text = "Total mapeadas",
+                text = stringResource(R.string.reports_analysis_total_mapped),
                 style = bodyLargeMedium,
                 color = Color.White
             )
@@ -657,7 +658,7 @@ private fun EmissionsCard(
                 Spacer(Modifier.width(8.dp))
 
                 Text(
-                    text = "tCO₂e/mês",
+                    text = stringResource(R.string.common_emission_unit_per_month),
                     style = bodyLargeMedium,
                     color = Color.White,
                     modifier = Modifier.padding(bottom = 6.dp)
@@ -693,11 +694,10 @@ private fun EmissionsCard(
 
                 Icon(
                     painter = painterResource(indicatorIcon),
-                    contentDescription = if (isIncrease) {
-                        "Aumento das emissões"
-                    } else {
-                        "Redução das emissões"
-                    },
+                    contentDescription = stringResource(
+                        if (isIncrease) R.string.reports_analysis_emissions_increase
+                        else R.string.reports_analysis_emissions_decrease
+                    ),
                     tint = Color.White,
                     modifier = Modifier.size(16.dp)
                 )
@@ -748,7 +748,7 @@ private fun ScopeCard(
 ) {
     AnalysisCard {
         Text(
-            text = "Divisão por escopo",
+            text = stringResource(R.string.reports_analysis_scope_split),
             style = titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -812,7 +812,7 @@ private fun ImprovementPlanCard(
 ) {
     AnalysisCard {
         Text(
-            text = "Plano de melhorias",
+            text = stringResource(R.string.reports_analysis_improvement_plan),
             style = titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -821,7 +821,7 @@ private fun ImprovementPlanCard(
 
         if (plans.isEmpty()) {
             Text(
-                text = "Nenhum plano de melhoria disponível.",
+                text = stringResource(R.string.reports_analysis_no_plan),
                 style = bodyMediumMd,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -829,7 +829,7 @@ private fun ImprovementPlanCard(
             plans.forEachIndexed { index, plan ->
                 PlanDetailRow(
                     icon = R.drawable.ic_problem,
-                    title = "Problema identificado",
+                    title = stringResource(R.string.reports_analysis_problem),
                     description = plan.definedProblem,
                     iconBackground = MaterialTheme.colorScheme.error
                         .copy(alpha = 0.12f),
@@ -840,7 +840,7 @@ private fun ImprovementPlanCard(
 
                 PlanDetailRow(
                     icon = R.drawable.ic_method,
-                    title = "Método recomendado",
+                    title = stringResource(R.string.reports_analysis_method),
                     description = plan.method,
                     iconBackground = MaterialTheme.colorScheme.secondary
                         .copy(alpha = 0.12f),
@@ -851,7 +851,7 @@ private fun ImprovementPlanCard(
 
                 PlanDetailRow(
                     icon = R.drawable.ic_justification,
-                    title = "Justificativa técnica",
+                    title = stringResource(R.string.reports_analysis_reasoning),
                     description = plan.reasoning,
                     iconBackground = MaterialTheme.colorScheme.primary
                         .copy(alpha = 0.12f),
@@ -942,7 +942,7 @@ private fun PlanDetailRow(
             Spacer(Modifier.width(8.dp))
 
             Text(
-                text = if (expanded) "Ver menos" else "Ver tudo",
+                text = stringResource(if (expanded) R.string.reports_history_see_less else R.string.reports_analysis_see_all),
                 style = labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.clickable { expanded = !expanded }
@@ -957,7 +957,7 @@ private fun ReplacementCard(
 ) {
     AnalysisCard {
         Text(
-            text = item.title,
+            text = stringResource(item.titleRes),
             style = titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -965,7 +965,7 @@ private fun ReplacementCard(
         Spacer(Modifier.height(20.dp))
 
         Text(
-            text = "Redução em número",
+            text = stringResource(R.string.reports_analysis_reduction_amount),
             style = bodyLargeMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -984,7 +984,7 @@ private fun ReplacementCard(
             Spacer(Modifier.width(6.dp))
 
             Text(
-                text = "tCO₂e/mês",
+                text = stringResource(R.string.common_emission_unit_per_month),
                 style = bodyMediumMd,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -1016,7 +1016,7 @@ private fun ReplacementCard(
                     painter = painterResource(
                         R.drawable.ic_decrease
                     ),
-                    contentDescription = "Redução",
+                    contentDescription = stringResource(R.string.reports_analysis_reduction),
                     tint = MaterialTheme.colorScheme.error,
                     modifier = Modifier.size(14.dp)
                 )
@@ -1128,7 +1128,7 @@ private fun FinancialCard(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = "R$ ${formatNumber(amount)}",
+                text = stringResource(R.string.reports_analysis_currency, formatNumber(amount)),
                 style = displayMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -1195,9 +1195,7 @@ private fun DecisionButton(
 }
 
 private fun formatNumber(value: Number): String =
-    NumberFormat.getIntegerInstance(
-        Locale.forLanguageTag("pt-BR")
-    ).format(value)
+    AppLocale.integerFormat().format(value)
 
 private val previewAnalysis = AetherAnalysisUi(
     totalEmissions = 2403,
@@ -1217,14 +1215,14 @@ private val previewAnalysis = AetherAnalysisUi(
         )
     ),
     priority = ReplacementUi(
-        title = "Substituição prioritária",
+        titleRes = R.string.reports_analysis_priority_replacement,
         reduction = 817,
         percent = 34,
         technology = "Biometano",
         scope = "Escopo 1"
     ),
     secondary = ReplacementUi(
-        title = "Substituição secundária",
+        titleRes = R.string.reports_analysis_secondary_replacement,
         reduction = 264,
         percent = 11,
         technology = "Energia solar fotovoltaica",

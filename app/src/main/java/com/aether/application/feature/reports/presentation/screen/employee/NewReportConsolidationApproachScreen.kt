@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.application.core.ui.components.FormErrorText
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.core.ui.theme.*
 
 @Composable
@@ -32,7 +35,7 @@ fun ConsolidationApproachScreen(
     onConsultAekoClick: () -> Unit,
     modifier: Modifier = Modifier,
     isSubmitting: Boolean = false,
-    errorMessage: String? = null
+    errorMessage: UiText? = null
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         ConsolidationApproachContent(
@@ -66,7 +69,7 @@ private fun ConsolidationApproachContent(
     onFinancialControlClick: () -> Unit,
     onOperationalControlClick: () -> Unit,
     onConsultAekoClick: () -> Unit,
-    errorMessage: String?,
+    errorMessage: UiText?,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -97,13 +100,13 @@ private fun ConsolidationApproachContent(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_chevron_left),
-                    contentDescription = "Voltar",
+                    contentDescription = stringResource(R.string.common_back),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
 
             Text(
-                text = "Criar relatório",
+                text = stringResource(R.string.reports_new_title),
                 style = titleMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.weight(1f),
@@ -116,7 +119,7 @@ private fun ConsolidationApproachContent(
         Spacer(modifier = Modifier.height(40.dp))
 
         Text(
-            text = "Abordagem de consolidação",
+            text = stringResource(R.string.reports_approach_title),
             style = titleLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -124,7 +127,7 @@ private fun ConsolidationApproachContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Essa escolha define quais emissões das suas operações entram no relatório.",
+            text = stringResource(R.string.reports_approach_description),
             style = bodyLargeMedium,
             color = MaterialTheme.colorScheme.outline
         )
@@ -133,8 +136,8 @@ private fun ConsolidationApproachContent(
 
         ConsolidationOptionItem(
             iconRes = R.drawable.ic_building,
-            title = "Participação societária",
-            subtitle = "Contabiliza as emissões sobre participação.",
+            title = stringResource(R.string.reports_approach_equity_share),
+            subtitle = stringResource(R.string.reports_approach_equity_share_subtitle),
             onClick = onEquityShareClick
         )
 
@@ -145,8 +148,8 @@ private fun ConsolidationApproachContent(
 
         ConsolidationOptionItem(
             iconRes = R.drawable.ic_coin,
-            title = "Controle financeiro",
-            subtitle = "100% das emissões sob controle financeiro.",
+            title = stringResource(R.string.reports_approach_financial_control),
+            subtitle = stringResource(R.string.reports_approach_financial_control_subtitle),
             onClick = onFinancialControlClick
         )
 
@@ -157,14 +160,14 @@ private fun ConsolidationApproachContent(
 
         ConsolidationOptionItem(
             iconRes = R.drawable.ic_document,
-            title = "Controle operacional",
-            subtitle = "100% das emissões sob gestão operacional.",
+            title = stringResource(R.string.reports_approach_operational_control),
+            subtitle = stringResource(R.string.reports_approach_operational_control_subtitle),
             onClick = onOperationalControlClick
         )
 
         if (errorMessage != null) {
             Spacer(modifier = Modifier.height(12.dp))
-            FormErrorText(errorMessage)
+            FormErrorText(errorMessage.asString())
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -179,7 +182,7 @@ private fun ConsolidationApproachContent(
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.outline)) {
-                        append("Não sabe qual escolher? ")
+                        append(stringResource(R.string.common_ask_aeko_help))
                     }
                     withStyle(
                         style = SpanStyle(
@@ -187,7 +190,7 @@ private fun ConsolidationApproachContent(
                             fontWeight = FontWeight.SemiBold
                         )
                     ) {
-                        append("Consulte o Aeko")
+                        append(stringResource(R.string.common_ask_aeko_link))
                     }
                 },
                 style = bodyLargeMedium
@@ -270,7 +273,7 @@ fun ConsolidationApproachScreenErrorPreview() {
             onFinancialControlClick = {},
             onOperationalControlClick = {},
             onConsultAekoClick = {},
-            errorMessage = "Não foi possível criar o relatório. Tente novamente."
+            errorMessage = uiText(R.string.reports_error_create_failed)
         )
     }
 }
