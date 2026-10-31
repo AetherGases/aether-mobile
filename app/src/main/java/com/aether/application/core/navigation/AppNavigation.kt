@@ -55,7 +55,9 @@ import com.aether.application.feature.reports.presentation.screen.manager.Aether
 import com.aether.application.feature.reports.presentation.screen.shared.ReportReviewScreen
 import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.shared.ReportReviewViewModel
+import com.aether.application.feature.profile.presentation.viewmodel.ProblemViewModel
 import com.aether.application.feature.settings.presentation.screen.PrivacyPolicyScreen
+import com.aether.application.feature.settings.presentation.screen.ReportProblemRoot
 import com.aether.application.feature.settings.presentation.screen.SettingsScreen
 import com.aether.application.feature.settings.presentation.screen.ThemePickerDialog
 import com.aether.application.feature.settings.presentation.screen.label
@@ -583,7 +585,7 @@ private fun AppNavHost(
                     onThemeClick = { showThemePicker = true },
                     onLanguageClick = { /* TODO: no translated resources yet */ },
                     onTalkToAekoClick = { navController.navigate(ChatbotRoute) },
-                    onReportProblemClick = { /* TODO: ReportProblem route */ },
+                    onReportProblemClick = { navController.navigate(ReportProblemRoute) },
                     onTermsOfUseClick = { navController.navigate(TermsOfUseRoute) },
                     onPrivacyPolicyClick = { navController.navigate(PrivacyPolicyRoute) },
                     onLogoutClick = viewModel::onLogoutClick,
@@ -600,6 +602,14 @@ private fun AppNavHost(
                         onDismiss = { showThemePicker = false }
                     )
                 }
+            }
+
+            composable<ReportProblemRoute> {
+                val viewModel = koinViewModel<ProblemViewModel>()
+                ReportProblemRoot(
+                    viewModel = viewModel,
+                    onBackClick = { navController.popBackStack() }
+                )
             }
 
             composable<TermsOfUseRoute> {

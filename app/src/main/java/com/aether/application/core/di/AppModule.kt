@@ -36,6 +36,7 @@ import com.aether.application.feature.reports.domain.usecase.GetPendingReportsUs
 import com.aether.application.feature.reports.domain.usecase.GetReportsUseCase
 import com.aether.application.feature.reports.domain.usecase.GetReviewedReportsUseCase
 import com.aether.application.feature.reports.presentation.viewmodel.ReportHistoryViewModel
+import com.aether.application.feature.profile.presentation.viewmodel.ProblemViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
@@ -164,6 +165,10 @@ object AppModule {
                 getReviewedReports = get(),
                 sessionManager = get()
             )
+        }
+
+        viewModel {
+            ProblemViewModel(problemRepository = get())
         }
 
         viewModel {

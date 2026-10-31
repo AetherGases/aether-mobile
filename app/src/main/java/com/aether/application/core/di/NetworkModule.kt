@@ -42,7 +42,9 @@ import com.aether.application.feature.notifications.data.repository.Notification
 import com.aether.application.feature.notifications.domain.repository.NotificationsRepository
 import com.aether.application.feature.home.domain.repository.HomeRepository
 import com.aether.application.feature.profile.data.local.AvatarImageProcessor
+import com.aether.application.feature.profile.data.repository.ProblemRepositoryImpl
 import com.aether.application.feature.profile.data.repository.ProfileRepositoryImpl
+import com.aether.application.feature.profile.domain.repository.ProblemRepository
 import com.aether.application.feature.profile.domain.repository.ProfileRepository
 import com.aether.application.feature.reports.data.repository.ReportsRepositoryImpl
 import com.aether.application.feature.reports.domain.repository.ReportsRepository
@@ -209,6 +211,10 @@ object NetworkModule {
                 profileLocalDataSource = get(),
                 sessionManager = get()
             )
+        }
+
+        single<ProblemRepository> {
+            ProblemRepositoryImpl(profileApi = get(), cloudinaryApi = get(), uploader = get())
         }
 
         single<ReportsRepository> {
