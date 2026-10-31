@@ -5,12 +5,11 @@ import com.aether.application.core.serialization.LocalDateTimeSerializer
 import com.aether.application.feature.home.domain.model.inventoryStatusOf
 import com.aether.application.feature.reports.domain.model.GasEmission
 import com.aether.application.feature.reports.domain.model.ImprovementPlan
-import com.aether.application.feature.reports.domain.model.Replacement
 import com.aether.application.feature.reports.domain.model.ReportAnalysis
 import com.aether.application.feature.reports.domain.model.ReportDetails
+import com.aether.application.feature.reports.domain.model.RecommendedGas
 import com.aether.application.feature.reports.domain.model.ReportReviewer
 import com.aether.application.feature.reports.domain.model.ScopeEmissions
-import com.aether.application.feature.reports.domain.model.ScopeShare
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
@@ -104,45 +103,17 @@ data class GasDto(
     val formula: String,
 )
 
+/** Response of the (still guessed) ms-inventory analysis route; scope shares are derived from the report emissions. */
 @Serializable
 data class GetReportAnalysisResponse(
     val totalEmissions: Double,
     val changePercent: Double,
-    val scopes: List<ScopeShareDto>,
-    val priorityReplacement: ReplacementDto? = null,
-    val secondaryReplacement: ReplacementDto? = null,
     val monthlySavings: Long,
-    val initialInvestment: Long,
 ) {
     fun toDomain() = ReportAnalysis(
         totalEmissions = totalEmissions,
         changePercent = changePercent,
-        scopes = scopes.map { ScopeShare(name = it.name, percent = it.percent) },
-        priorityReplacement = priorityReplacement?.toDomain(),
-        secondaryReplacement = secondaryReplacement?.toDomain(),
-        monthlySavings = monthlySavings,
-        initialInvestment = initialInvestment
-    )
-}
-
-@Serializable
-data class ScopeShareDto(
-    val name: String,
-    val percent: Int,
-)
-
-@Serializable
-data class ReplacementDto(
-    val reduction: Double,
-    val percent: Int,
-    val technology: String,
-    val scope: String,
-) {
-    fun toDomain() = Replacement(
-        reduction = reduction,
-        percent = percent,
-        technology = technology,
-        scope = scope
+        monthlySavings = monthlySavings
     )
 }
 
@@ -154,11 +125,34 @@ data class GetImprovementPlanResponse(
     @SerialName("solving_method")
     val solvingMethod: String,
     val reasoning: String,
+    // TODO: field names of the recommended gases are assumed, not agreed on with the hub yet
+    @SerialName("recommended_gases")
+    val recommendedGases: List<RecommendedGasDto> = emptyList(),
 ) {
     fun toDomain() = ImprovementPlan(
         definedProblem = definedProblem,
         solvingMethod = solvingMethod,
-        reasoning = reasoning
+        reasoning = reasoning,
+        // The lower the index, the higher the priority
+        recommendedGases = recommendedGases.sortedBy { it.index }.map { it.toDomain() }
+    )
+}
+
+@Serializable
+data class RecommendedGasDto(
+    val index: Int,
+    /** 1, 2 or 3. */
+    val scope: Int,
+    val emission: Int,
+    @SerialName("reduction_percentage")
+    val reductionPercentage: Int,
+    val name: String,
+) {
+    fun toDomain() = RecommendedGas(
+        scope = scope,
+        emission = emission,
+        reductionPercentage = reductionPercentage,
+        name = name
     )
 }
 

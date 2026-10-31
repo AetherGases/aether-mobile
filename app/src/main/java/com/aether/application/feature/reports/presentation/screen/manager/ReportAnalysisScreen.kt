@@ -86,8 +86,7 @@ data class AetherAnalysisUi(
     val improvements: List<ImprovementPlanUi>,
     val priority: ReplacementUi?,
     val secondary: ReplacementUi?,
-    val monthlySavings: Long,
-    val initialInvestment: Long
+    val monthlySavings: Long
 )
 
 // Same bounds ms-inventory validates the approval/rejection message with
@@ -208,16 +207,6 @@ fun AetherAnalysisScreen(
                     amount = analysis.monthlySavings,
                     suffix = "/mês",
                     isGreen = true
-                )
-
-                Spacer(Modifier.height(32.dp))
-
-                FinancialCard(
-                    heading = "Investimento inicial necessário",
-                    caption = null,
-                    amount = analysis.initialInvestment,
-                    suffix = null,
-                    isGreen = false
                 )
 
                 if (canDecide) {
@@ -1230,8 +1219,7 @@ private val previewAnalysis = AetherAnalysisUi(
         technology = "Energia solar fotovoltaica",
         scope = "Escopo 2"
     ),
-    monthlySavings = 87400,
-    initialInvestment = 1220000
+    monthlySavings = 87400
 )
 
 @Preview(

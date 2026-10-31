@@ -7,8 +7,9 @@ import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.reports.domain.model.ImprovementPlan
-import com.aether.application.feature.reports.domain.model.Replacement
+import com.aether.application.feature.reports.domain.model.RecommendedGas
 import com.aether.application.feature.reports.domain.model.ReportAnalysis
+import com.aether.application.feature.reports.domain.model.ScopeEmissions
 import com.aether.application.feature.reports.domain.repository.ReportsRepository
 import com.aether.application.feature.reports.presentation.screen.manager.AetherAnalysisUi
 import com.aether.application.feature.reports.presentation.screen.manager.ImprovementPlanUi
@@ -63,15 +64,16 @@ class ReportAnalysisViewModel(
             val canReview = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
 
             try {
-                val (analysis, status) = coroutineScope {
+                val (analysis, report) = coroutineScope {
                     val plan = async { loadImprovementPlan() }
                     val analysis = async { reportsRepository.getReportAnalysis(reportId) }
                     val report = async { reportsRepository.getReport(reportId, asReviewer = canReview) }
-                    analysis.await().toUi(plan.await()) to report.await().status
+                    val details = report.await()
+                    analysis.await().toUi(plan.await(), details.emissionsByScope) to details
                 }
                 _uiState.update { it.copy(
                     analysis = analysis,
-                    canDecide = canReview && status !in decidedStatuses,
+                    canDecide = canReview && report.status !in decidedStatuses,
                     isLoading = false
                 ) }
             } catch (e: CancellationException) {
@@ -120,11 +122,11 @@ class ReportAnalysisViewModel(
         }
     }
 
-    private fun ReportAnalysis.toUi(plan: ImprovementPlan?) = AetherAnalysisUi(
+    private fun ReportAnalysis.toUi(plan: ImprovementPlan?, emissionsByScope: List<ScopeEmissions>) = AetherAnalysisUi(
         totalEmissions = totalEmissions.roundToInt(),
         changePercent = changePercent.roundToInt(),
         isEmissionIncrease = changePercent > 0,
-        scopes = scopes.map { ScopeUi(name = it.name, percent = it.percent) },
+        scopes = emissionsByScope.toScopeShares(),
         improvements = listOfNotNull(
             plan?.let {
                 ImprovementPlanUi(
@@ -135,17 +137,25 @@ class ReportAnalysisViewModel(
                 )
             }
         ),
-        priority = priorityReplacement?.toUi("Substituição prioritária"),
-        secondary = secondaryReplacement?.toUi("Substituição secundária"),
-        monthlySavings = monthlySavings,
-        initialInvestment = initialInvestment
+        // The hub already sends the gases ordered by priority
+        priority = plan?.recommendedGases?.getOrNull(0)?.toUi("Substituição prioritária"),
+        secondary = plan?.recommendedGases?.getOrNull(1)?.toUi("Substituição secundária"),
+        monthlySavings = monthlySavings
     )
 
-    private fun Replacement.toUi(title: String) = ReplacementUi(
+    // Share of each scope in the report's own gas breakdown
+    private fun List<ScopeEmissions>.toScopeShares(): List<ScopeUi> {
+        val totals = map { scope -> scope.scope to scope.gases.sumOf { it.quantityCo2e } }
+        val sum = totals.sumOf { it.second }
+        if (sum <= 0.0) return emptyList()
+        return totals.map { (name, total) -> ScopeUi(name = name, percent = (total / sum * 100).roundToInt()) }
+    }
+
+    private fun RecommendedGas.toUi(title: String) = ReplacementUi(
         title = title,
-        reduction = reduction.roundToInt(),
-        percent = percent,
-        technology = technology,
-        scope = scope
+        reduction = emission,
+        percent = reductionPercentage,
+        technology = name,
+        scope = "Escopo $scope"
     )
 }
