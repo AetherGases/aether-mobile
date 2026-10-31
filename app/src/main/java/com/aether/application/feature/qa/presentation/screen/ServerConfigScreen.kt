@@ -1,5 +1,6 @@
 package com.aether.application.feature.qa.presentation.screen
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,7 +40,7 @@ fun ServerConfigScreen(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier.fillMaxWidth().padding(24.dp)) {
+    Column(modifier = modifier.fillMaxWidth().imePadding().padding(24.dp)) {
         Text(
             text = "Servidor de QA",
             style = MaterialTheme.typography.titleLarge

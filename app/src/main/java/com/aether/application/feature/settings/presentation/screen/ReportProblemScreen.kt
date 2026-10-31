@@ -1,5 +1,6 @@
 package com.aether.application.feature.settings.presentation.screen
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -50,6 +51,7 @@ fun ReportProblemScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .imePadding()
             .background(MaterialTheme.colorScheme.background)
     ) {
         AetherTopBar(title = "Relatar problema", onBackClick = onBackClicked)

@@ -1,5 +1,6 @@
 package com.aether.application.feature.auth.presentation.screen
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -116,6 +117,7 @@ fun VerificationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .imePadding()
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(Modifier.height(64.dp))

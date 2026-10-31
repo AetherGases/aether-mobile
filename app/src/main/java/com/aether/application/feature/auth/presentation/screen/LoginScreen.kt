@@ -1,5 +1,8 @@
 package com.aether.application.feature.auth.presentation.screen
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.imePadding
 import com.aether.application.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -140,6 +143,8 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.Center
         ) {

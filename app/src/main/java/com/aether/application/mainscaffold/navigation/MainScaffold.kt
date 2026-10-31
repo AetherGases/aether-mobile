@@ -1,5 +1,6 @@
 package com.aether.application.navigation
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -66,6 +67,7 @@ fun MainScaffold(
 
     Scaffold(
         modifier = modifier,
+        contentWindowInsets = WindowInsets(0),
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             if (showBottomBar) {

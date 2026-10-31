@@ -1,5 +1,6 @@
 package com.aether.application.feature.auth.presentation.screen
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -103,6 +104,7 @@ fun ChangePasswordScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .imePadding()
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(Modifier.height(64.dp))
