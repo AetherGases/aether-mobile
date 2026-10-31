@@ -32,6 +32,9 @@ import com.aether.application.feature.reports.data.remote.ReportsApi
 import com.aether.application.feature.reports.data.repository.NewReportRepositoryImpl
 import com.aether.application.feature.reports.domain.repository.NewReportRepository
 import com.aether.application.feature.home.data.repository.HomeRepositoryImpl
+import com.aether.application.feature.notifications.data.remote.NotificationsApi
+import com.aether.application.feature.notifications.data.repository.NotificationsRepositoryImpl
+import com.aether.application.feature.notifications.domain.repository.NotificationsRepository
 import com.aether.application.feature.home.domain.repository.HomeRepository
 import com.aether.application.feature.profile.data.local.AvatarImageProcessor
 import com.aether.application.feature.profile.data.repository.ProfileRepositoryImpl
@@ -107,6 +110,15 @@ object NetworkModule {
                 sessionManager = get(),
                 profileLocalDataSource = get()
             )
+        }
+
+        single<NotificationsApi> {
+            val retrofit: Retrofit = get()
+            retrofit.create(NotificationsApi::class.java)
+        }
+
+        single<NotificationsRepository> {
+            NotificationsRepositoryImpl(api = get())
         }
 
         single<InventoryApi> {
