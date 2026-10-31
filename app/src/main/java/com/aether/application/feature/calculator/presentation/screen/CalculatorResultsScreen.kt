@@ -1,6 +1,7 @@
 package com.aether.application.feature.calculator.presentation.screen
 
 import android.content.res.Configuration
+import com.aether.application.core.utils.AppLocale
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,6 +20,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -27,6 +30,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.aether.application.R
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.core.ui.theme.*
 import java.text.NumberFormat
@@ -79,7 +83,7 @@ fun CalculatorResultsScreen(
                 )
             }
     ) {
-        AetherTopBar(title = "Resultados", onBackClick = onBackClick)
+        AetherTopBar(title = stringResource(R.string.calculator_results_title), onBackClick = onBackClick)
 
         Column(
             modifier = Modifier
@@ -112,7 +116,7 @@ fun CalculatorResultsScreen(
                 .clickable(onClick = onFinishClick),
             contentAlignment = Alignment.Center
         ) {
-            Text("Concluir", style = titleMediumMD, color = onPrimary)
+            Text(stringResource(R.string.calculator_results_finish), style = titleMediumMD, color = onPrimary)
         }
     }
 }
@@ -163,8 +167,8 @@ private fun MainResultCard(result: CalculatorResultUi) {
             }
             .padding(24.dp)
     ) {
-        Text("Resultado Principal", style = titleLarge, color = onPrimary)
-        Text("Emissões estimadas após a substituição", style = bodyLargeMedium, color = onPrimary)
+        Text(stringResource(R.string.calculator_results_main), style = titleLarge, color = onPrimary)
+        Text(stringResource(R.string.calculator_results_estimated), style = bodyLargeMedium, color = onPrimary)
 
         Spacer(Modifier.height(8.dp))
 
@@ -184,7 +188,7 @@ private fun MainResultCard(result: CalculatorResultUi) {
         }
 
         Text(
-            "${result.percentOfTotal}% do total emitido",
+            stringResource(R.string.calculator_results_percent_of_total, result.percentOfTotal),
             style = bodyMediumMd,
             color = onPrimary
         )
@@ -245,12 +249,12 @@ private fun ImpactCard(result: CalculatorResultUi) {
     ) {
         Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp)) {
             Text(
-                "Impacto da substituição",
+                stringResource(R.string.calculator_results_impact),
                 style = titleLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                "Quantidade neutralizada",
+                stringResource(R.string.calculator_results_neutralized),
                 style = bodyLargeMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -296,7 +300,7 @@ private fun ComparisonChart(
         HorizontalDivider(color = divider)
 
         ChartRow(
-            label = "Antes",
+            label = stringResource(R.string.calculator_results_before),
             labelColumnWidth = labelColumnWidth
         ) {
             ComparisonBar(
@@ -308,7 +312,7 @@ private fun ComparisonChart(
         }
 
         ChartRow(
-            label = "Depois",
+            label = stringResource(R.string.calculator_results_after),
             labelColumnWidth = labelColumnWidth
         ) {
             ComparisonBar(
@@ -429,8 +433,6 @@ private fun ComparisonBar(
 private fun SimulationDataCard(result: CalculatorResultUi) {
     val primary = MaterialTheme.colorScheme.primary
     val shape = RoundedCornerShape(20.dp)
-    val periodLabel = if (result.periodYears == 1) "ano" else "anos"
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -440,7 +442,7 @@ private fun SimulationDataCard(result: CalculatorResultUi) {
             .padding(24.dp)
     ) {
         Text(
-            "Dados da simulação",
+            stringResource(R.string.calculator_results_simulation_data),
             style = titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -451,8 +453,15 @@ private fun SimulationDataCard(result: CalculatorResultUi) {
             modifier = Modifier.width(IntrinsicSize.Max),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            SimulationChip("Gás utilizado: ${result.greenGasName.lowercase(Locale.forLanguageTag("pt-BR"))}")
-            SimulationChip("Prazo escolhido: ${result.periodYears} $periodLabel")
+            SimulationChip(
+                stringResource(
+                    R.string.calculator_results_gas_used,
+                    result.greenGasName.lowercase(AppLocale.current())
+                )
+            )
+            SimulationChip(
+                pluralStringResource(R.plurals.calculator_results_chosen_period, result.periodYears, result.periodYears)
+            )
         }
     }
 }
@@ -483,10 +492,12 @@ private fun barFraction(value: Int, ticks: List<Int>): Float {
 }
 
 // A subscript glyph instead of a baseline-shifted span: the shift grows the line box and pushes the text up
-private fun emissionUnit(prefix: String = ""): AnnotatedString = AnnotatedString("${prefix}tCO₂e/mês")
+@Composable
+private fun emissionUnit(prefix: String = ""): AnnotatedString =
+    AnnotatedString(prefix + stringResource(R.string.common_emission_unit_per_month))
 
 private fun formatNumber(value: Int): String =
-    NumberFormat.getIntegerInstance(Locale.forLanguageTag("pt-BR")).format(value)
+    AppLocale.integerFormat().format(value)
 
 private val previewResult = CalculatorResultUi(
     emissionBefore = 1240,
