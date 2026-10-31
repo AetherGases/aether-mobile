@@ -5,6 +5,7 @@ import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.di.AppModule
 import com.aether.application.core.di.NetworkModule
 import com.aether.application.core.di.dataStoreModule
+import com.aether.application.core.notification.data.createNotificationChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
@@ -16,6 +17,7 @@ class AetherApplication : Application(), KoinComponent {
 
     override fun onCreate() {
         super.onCreate()
+        createNotificationChannel(this)
 
         startKoin {
             androidContext(this@AetherApplication)

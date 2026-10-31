@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Aether</string>
+    <string name="notification_channel_name">Notificações</string>
 </resources>

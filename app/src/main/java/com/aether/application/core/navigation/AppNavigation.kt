@@ -1,5 +1,12 @@
 package com.aether.application.core.navigation
 
+import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.rememberLauncherForActivityResult
+import android.os.Build
+import android.content.pm.PackageManager
+import android.Manifest
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -52,6 +59,8 @@ import com.aether.application.feature.settings.presentation.screen.PrivacyPolicy
 import com.aether.application.feature.settings.presentation.screen.SettingsScreen
 import com.aether.application.feature.settings.presentation.screen.ThemePickerDialog
 import com.aether.application.feature.settings.presentation.screen.label
+import com.aether.application.feature.notifications.presentation.screen.NotificationsScreen
+import com.aether.application.feature.notifications.presentation.viewmodel.NotificationsViewModel
 import com.aether.application.feature.settings.presentation.viewmodel.SettingsViewModel
 import com.aether.application.feature.settings.presentation.screen.TermsOfUseScreen
 import com.aether.application.feature.chatbot.presentation.screen.AekoScreen
@@ -83,6 +92,8 @@ private const val REPORT_REVIEWED_KEY = "report_reviewed"
 
 @Composable
 fun AppNavigation(
+    pendingReportId: Long? = null,
+    onPendingReportConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
@@ -103,6 +114,14 @@ fun AppNavigation(
     }
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         if (isInAppGraph) proximityViewModel.check()
+    }
+
+    // A tapped push waits for the login (and the app graph) before opening its report
+    LaunchedEffect(pendingReportId, isInAppGraph) {
+        if (pendingReportId != null && isInAppGraph) {
+            navController.navigate(ReportReviewRoute(pendingReportId))
+            onPendingReportConsumed()
+        }
     }
 
     Box(modifier = modifier) {
@@ -327,6 +346,20 @@ private fun AppNavHost(
         navigation<AppGraph>(startDestination = HomeRoute) {
             composable<HomeRoute> {
                 val viewModel = koinViewModel<HomeViewModel>()
+                val context = LocalContext.current
+                val notificationPermissionLauncher = rememberLauncherForActivityResult(
+                    ActivityResultContracts.RequestPermission()
+                ) {}
+
+                LaunchedEffect(Unit) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+                        PackageManager.PERMISSION_GRANTED
+                    ) {
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                }
+
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                 LaunchedEffect(Unit) {
@@ -515,7 +548,16 @@ private fun AppNavHost(
             }
 
             composable<NotificationsRoute> {
-                TODO()
+                val viewModel = koinViewModel<NotificationsViewModel>()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                NotificationsScreen(
+                    sections = uiState.sections,
+                    selectedFilter = uiState.selectedFilter,
+                    onFilterSelected = viewModel::onFilterSelected,
+                    onBackClicked = { navController.popBackStack() },
+                    onNotificationClick = { reportId -> navController.navigate(ReportReviewRoute(reportId)) }
+                )
             }
 
             composable<SettingsRoute> {

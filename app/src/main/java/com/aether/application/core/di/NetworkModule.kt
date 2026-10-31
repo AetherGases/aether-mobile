@@ -34,6 +34,7 @@ import com.aether.application.feature.reports.domain.repository.NewReportReposit
 import com.aether.application.feature.home.data.repository.HomeRepositoryImpl
 import com.aether.application.core.notification.data.DeviceTokenRegistrarImpl
 import com.aether.application.core.notification.data.FcmTokenStorageImpl
+import com.aether.application.core.notification.data.NotificationPresenter
 import com.aether.application.core.notification.domain.DeviceTokenRegistrar
 import com.aether.application.core.notification.domain.FcmTokenStorage
 import com.aether.application.feature.notifications.data.remote.NotificationsApi
@@ -116,6 +117,8 @@ object NetworkModule {
                 deviceTokenRegistrar = get()
             )
         }
+
+        single { NotificationPresenter(context = androidContext()) }
 
         single<FcmTokenStorage> {
             FcmTokenStorageImpl(dataStore = get())
