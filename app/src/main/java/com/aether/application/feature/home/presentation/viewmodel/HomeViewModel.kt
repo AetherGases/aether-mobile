@@ -1,11 +1,13 @@
 package com.aether.application.feature.home.presentation.viewmodel
 
 import android.util.Log
+import com.aether.application.core.utils.AppLocale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aether.application.R
 import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.model.Inventory
 import com.aether.application.feature.home.domain.repository.HomeRepository
@@ -72,7 +74,6 @@ class HomeViewModel(
     private val _events = Channel<HomeEvent>(Channel.BUFFERED)
     val events: Flow<HomeEvent> = _events.receiveAsFlow()
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     init {
         loadFirstTime()
@@ -230,7 +231,7 @@ class HomeViewModel(
         lastInventory: Inventory?,
         inventoryCount: Int
     ): HomeHeroCard? {
-        val lastDate = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE
+        val lastDate = lastInventory?.createdAt?.format(AppLocale.shortDateFormatter()) ?: NO_VALUE
 
         if (isManager) {
             val enterpriseInfo = homeRepository.getEnterpriseInfos()
@@ -243,11 +244,7 @@ class HomeViewModel(
             )
         }
 
-        val monthFormatter = DateTimeFormatter
-            .ofPattern(
-                "MMM",
-                Locale.forLanguageTag("pt-BR")
-            )
+        val monthFormatter = AppLocale.monthAbbreviationFormatter()
         val reportingPeriodLabel = lastInventory?.period?.let { period ->
             buildString {
                 append(period.start.format(monthFormatter))
@@ -262,7 +259,7 @@ class HomeViewModel(
                     append(period.end.year)
                 }
             }
-        } ?: NO_VALUE
+        }?.let(::uiText) ?: uiText(R.string.home_period_unknown)
 
         return EmployeeHeroCard(
             lastSubmittedLabel = lastDate,
@@ -281,8 +278,8 @@ class HomeViewModel(
         inventoryCount: Int
     ): HomeHeroCard? =
         ReportsSummaryHomeCard(
-            title = if (isManager) "Relatórios analisados" else "Relatórios realizados",
-            lastSubmittedLabel = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE,
+            title = uiText(if (isManager) R.string.home_reports_analyzed else R.string.home_reports_done),
+            lastSubmittedLabel = lastInventory?.createdAt?.format(AppLocale.shortDateFormatter()) ?: NO_VALUE,
             count = "$inventoryCount",
             onViewHistoryClick = {
                 viewModelScope.launch { _events.send(HomeEvent.NavigateToHistory) }
@@ -293,8 +290,8 @@ class HomeViewModel(
         val unitInfo = homeRepository.getMonthlyUnitInfos()
         return UnitEmissionsHomeCard(
             value = "${unitInfo.emissions}",
-            unitLabel = "tCO₂e/mês",
-            changeLabel = "${unitInfo.reductionPercentage}% ↗ em relação ao período anterior"
+            unitLabel = uiText(R.string.common_emission_unit_per_month),
+            changeLabel = uiText(R.string.home_unit_change, "${unitInfo.reductionPercentage}")
         )
     }
 
@@ -310,7 +307,7 @@ class HomeViewModel(
         }
         return SealProgressHomeCard(
             levelPercent = "${seal.percent}%",
-            criteriaLabel = "${seal.criteriaMet} de ${seal.criteriaTotal} critérios atendidos"
+            criteriaLabel = uiText(R.string.home_seal_criteria, "${seal.criteriaMet}", "${seal.criteriaTotal}")
         )
     }
 
@@ -336,9 +333,7 @@ class HomeViewModel(
                     name = inventory.name,
                     ownerName = inventory.author ?: userName,
                     ownerAvatarUrl = inventory.authorImageUrl ?: avatarUrl,
-                    createdAt = inventory.createdAt.format(
-                        DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                    ),
+                    createdAt = inventory.createdAt.format(AppLocale.shortDateFormatter()),
                     status = inventory.status.toReportStatus()
                 )
             }
@@ -349,7 +344,7 @@ class HomeViewModel(
         if (sessionManager.hasPermission(AppPermission.INVENTORY_VIEW)) {
             quickActions.add(
                 QuickAction(
-                    label = "Histórico",
+                    labelRes = R.string.home_action_history,
                     iconRes = R.drawable.ic_history_green,
                     iconSize = 60.dp,
                     offsetX = 3.dp,
@@ -364,7 +359,7 @@ class HomeViewModel(
         if (sessionManager.hasPermission(AppPermission.INVENTORY_CREATING)) {
             quickActions.add(
                 QuickAction(
-                    label = "Criar relatório",
+                    labelRes = R.string.home_action_create_report,
                     iconRes = R.drawable.ic_create_report,
                     iconSize = 60.dp,
                     offsetX = 0.dp,
@@ -379,7 +374,7 @@ class HomeViewModel(
         if (sessionManager.hasPermission(AppPermission.CALCULATOR)) {
             quickActions.add(
                 QuickAction(
-                    label = "Calcular CO2",
+                    labelRes = R.string.home_action_calculate,
                     iconRes = R.drawable.ic_calculator_purple,
                     iconSize = 50.dp,
                     offsetX = 0.dp,
@@ -394,7 +389,7 @@ class HomeViewModel(
         if (sessionManager.hasPermission(AppPermission.CHATBOT)) {
             quickActions.add(
                 QuickAction(
-                    label = "Chatbot",
+                    labelRes = R.string.home_action_chatbot,
                     iconRes = R.drawable.ic_aeko,
                     iconSize = 90.dp,
                     offsetX = 3.dp,

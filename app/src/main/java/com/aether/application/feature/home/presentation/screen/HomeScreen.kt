@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -42,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.aether.application.R
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.home.presentation.components.QuickAction
 import com.aether.application.feature.home.presentation.components.QuickActionContainer
 import com.aether.application.feature.home.presentation.components.RecentReport
@@ -131,15 +133,15 @@ fun HomeScreen(
             Spacer(Modifier.height(24.dp))
 
             if (cards.isEmpty() && cardsFailed) {
-                Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.home_overview), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
                 Spacer(Modifier.height(16.dp))
                 SectionLoadError(
                     icon = Icons.Outlined.CloudOff,
-                    message = "Não foi possível carregar a visão geral. Puxe para baixo para tentar de novo."
+                    message = stringResource(R.string.home_overview_load_failed)
                 )
                 Spacer(Modifier.height(24.dp))
             } else if (cards.isNotEmpty()) {
-                Text("Visão Geral", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.home_overview), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
                 Spacer(Modifier.height(16.dp))
 
                 val pagerState = rememberPagerState(pageCount = { cards.size })
@@ -160,10 +162,11 @@ fun HomeScreen(
                         }
                     }
                 ) { page ->
-                    BoxWithConstraints (
+                    val cardDescription = stringResource(R.string.home_card_position, page + 1, cards.size)
+                    BoxWithConstraints(
                         modifier = Modifier
                             .semantics {
-                                stateDescription = "Cartão ${page + 1} de ${cards.size}"
+                                stateDescription = cardDescription
                             }
                             .shadow(
                                 elevation = 10.dp,
@@ -218,13 +221,13 @@ fun HomeScreen(
                 Spacer(Modifier.height(24.dp))
             }
 
-            Text("Ações Rápidas", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.home_quick_actions), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(16.dp))
 
             if (quickActions.isEmpty() && quickActionsFailed) {
                 SectionLoadError(
                     icon = Icons.Outlined.ErrorOutline,
-                    message = "Não foi possível carregar as ações rápidas. Puxe para baixo para tentar de novo."
+                    message = stringResource(R.string.home_quick_actions_load_failed)
                 )
             } else {
                 BoxWithConstraints(Modifier.fillMaxWidth()) {
@@ -257,10 +260,10 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Últimos Relatórios", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.home_recent_reports), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
                 if (!recentReports.isEmpty()) {
                     Text(
-                        "Ver tudo",
+                        stringResource(R.string.home_see_all),
                         style = titleSmall,
                         color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.clickable { onSeeAllReportsClick() }
@@ -274,7 +277,7 @@ fun HomeScreen(
                 if (recentReports.isEmpty()) {
                     Image(
                         painter = painterResource(id = R.drawable.empty_inventory),
-                        contentDescription = "Sem relatórios recentes",
+                        contentDescription = stringResource(R.string.home_no_recent_reports),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 } else {
@@ -342,7 +345,7 @@ fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier, fillWidt
             val iconScale = maxWidth / QUICK_ACTION_SIZE
             Image(
                 painter = painterResource(id = if (action.iconRes != 0) action.iconRes else R.drawable.ic_home),
-                contentDescription = action.label,
+                contentDescription = stringResource(action.labelRes),
                 modifier = Modifier
                     .size(action.iconSize * iconScale)
                     .offset(x = action.offsetX * iconScale, y = action.offsetY * iconScale)
@@ -350,7 +353,7 @@ fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier, fillWidt
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            text = action.label,
+            text = stringResource(action.labelRes),
             style = bodyMediumMd,
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1
@@ -386,7 +389,7 @@ fun RecentReportItem(
     ) {
         AsyncImage(
             model = report.ownerAvatarUrl,
-            contentDescription = "Avatar de ${report.ownerName}",
+            contentDescription = stringResource(R.string.common_avatar_description, report.ownerName),
             placeholder = painterResource(R.drawable.ic_avatar),
             error = painterResource(R.drawable.ic_avatar),
             contentScale = ContentScale.Crop,
@@ -416,7 +419,7 @@ fun RecentReportItem(
             Spacer(Modifier.height(6.dp))
 
             Text(
-                text = "Realizado por ${report.ownerName}",
+                text = stringResource(R.string.home_report_performed_by, report.ownerName),
                 style = bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -471,7 +474,7 @@ fun StatusBadge(status: ReportStatus) {
         )
         Spacer(Modifier.width(4.dp))
         Text(
-            text = status.label,
+            text = stringResource(status.labelRes),
             style = labelSmall.copy(fontWeight = FontWeight.SemiBold),
             color = color
         )
@@ -490,19 +493,19 @@ fun HomeScreenEmployeePreview() {
             cards = listOf(
                 EmployeeHeroCard(
                     lastSubmittedLabel = "29/05/2026",
-                    reportingPeriodLabel = "Jan–Mar 2026",
+                    reportingPeriodLabel = uiText("Jan–Mar 2026"),
                     statusLabel = "Aguardando revisão há 2 dias",
                     summaryCount = "506"
                 ),
-                ReportsSummaryHomeCard("Relatórios realizados", "29/05/2026", "506") {},
-                UnitEmissionsHomeCard("2.403", "tCO₂e/mês", "12% ↗ em relação ao período anterior"),
-                SealProgressHomeCard("50%", "2 de 4 critérios atendidos")
+                ReportsSummaryHomeCard(uiText(R.string.home_reports_done), "29/05/2026", "506") {},
+                UnitEmissionsHomeCard("2.403", uiText(R.string.common_emission_unit_per_month), uiText(R.string.home_unit_change, "12")),
+                SealProgressHomeCard("50%", uiText(R.string.home_seal_criteria, "2", "4"))
             ),
             quickActions = listOf(
-                QuickAction("Criar relatório", R.drawable.ic_create_report, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
-                QuickAction("Calcular CO2", R.drawable.ic_calculator_purple, 50.dp, 0.dp, 0.dp, QuickActionContainer.PRIMARY) {},
-                QuickAction("Histórico", R.drawable.ic_history_green, 60.dp, 3.dp, 0.dp, QuickActionContainer.SECONDARY) {},
-                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
+                QuickAction(R.string.home_action_create_report, R.drawable.ic_create_report, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction(R.string.home_action_calculate, R.drawable.ic_calculator_purple, 50.dp, 0.dp, 0.dp, QuickActionContainer.PRIMARY) {},
+                QuickAction(R.string.home_action_history, R.drawable.ic_history_green, 60.dp, 3.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction(R.string.home_action_chatbot, R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
             ),
             recentReports = listOf(
                 RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
@@ -537,14 +540,14 @@ fun HomeScreenManagerPreview() {
                     reductionAchieved = "8,3%",
                     summaryCount = "450"
                 ),
-                ReportsSummaryHomeCard("Relatórios analisados", "26/01/2026", "450") {},
-                UnitEmissionsHomeCard("2.403", "tCO₂e/mês", "12% ↗ em relação ao período anterior"),
-                SealProgressHomeCard("50%", "2 de 4 critérios atendidos")
+                ReportsSummaryHomeCard(uiText(R.string.home_reports_analyzed), "26/01/2026", "450") {},
+                UnitEmissionsHomeCard("2.403", uiText(R.string.common_emission_unit_per_month), uiText(R.string.home_unit_change, "12")),
+                SealProgressHomeCard("50%", uiText(R.string.home_seal_criteria, "2", "4"))
             ),
             quickActions = listOf(
-                QuickAction("Histórico", R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, QuickActionContainer.PRIMARY) {},
-                QuickAction("Calcular CO2", R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
-                QuickAction("Chatbot", R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
+                QuickAction(R.string.home_action_history, R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, QuickActionContainer.PRIMARY) {},
+                QuickAction(R.string.home_action_calculate, R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction(R.string.home_action_chatbot, R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
             ),
             recentReports = listOf(
                 RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
