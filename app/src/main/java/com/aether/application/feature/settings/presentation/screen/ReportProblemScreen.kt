@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
@@ -31,13 +32,17 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.core.ui.components.AetherTopBar
+import com.aether.application.core.ui.components.FormErrorText
 import com.aether.core.ui.components.FormDropdownField
 import com.aether.core.ui.theme.*
 import com.aether.application.R
 
+private const val MAX_DESCRIPTION_LENGTH = 100
+
 @Composable
 fun ReportProblemScreen(
     category: String,
+    categoryOptions: List<String>,
     description: String,
     attachedFileName: String?,
     onCategoryChanged: (String) -> Unit,
@@ -46,7 +51,13 @@ fun ReportProblemScreen(
     onRemoveFileClicked: () -> Unit,
     onBackClicked: () -> Unit,
     onSubmitClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    categoriesLoading: Boolean = false,
+    categoriesError: String? = null,
+    onRetryCategoriesClicked: () -> Unit = {},
+    errorMessage: String? = null,
+    isSubmitting: Boolean = false,
+    canSubmit: Boolean = true
 ) {
     Column(
         modifier = modifier
@@ -63,11 +74,23 @@ fun ReportProblemScreen(
         ) {
             Spacer(Modifier.height(16.dp))
 
-            FormDropdownField(
+            if (categoriesError != null) {
+                FormErrorText(categoriesError)
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Tentar novamente",
+                    style = bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable(onClick = onRetryCategoriesClicked)
+                )
+            } else if (categoriesLoading) {
+                Text("Carregando categorias...", style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
+            } else FormDropdownField(
                 label = "Categoria do problema*",
                 placeholder = "Selecione a categoria",
                 value = category,
-                options = listOf("Erro no app", "Dados incorretos", "Lentidão", "Outro"),
+                options = categoryOptions,
                 onValueSelected = onCategoryChanged
             )
 
@@ -83,7 +106,7 @@ fun ReportProblemScreen(
             ) {
                 OutlinedTextField(
                     value = description,
-                    onValueChange = onDescriptionChanged,
+                    onValueChange = { onDescriptionChanged(it.take(MAX_DESCRIPTION_LENGTH)) },
                     placeholder = { Text("Descreva detalhadamente o que aconteceu") },
                     modifier = Modifier.fillMaxSize(),
                     shape = RoundedCornerShape(20.dp),
@@ -95,7 +118,7 @@ fun ReportProblemScreen(
                     )
                 )
                 Text(
-                    text = "${description.length}/500",
+                    text = "${description.length}/$MAX_DESCRIPTION_LENGTH",
                     style = bodySmall,
                     color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier
@@ -120,6 +143,11 @@ fun ReportProblemScreen(
 
             Spacer(Modifier.weight(1f))
 
+            if (errorMessage != null) {
+                Spacer(Modifier.height(8.dp))
+                FormErrorText(errorMessage)
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,10 +162,11 @@ fun ReportProblemScreen(
                             )
                         )
                     )
-                    .clickable(onClick = onSubmitClicked),
+                    .alpha(if (canSubmit && !isSubmitting) 1f else 0.5f)
+                    .clickable(enabled = canSubmit && !isSubmitting, onClick = onSubmitClicked),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Enviar", style = titleMediumMD, color = MaterialTheme.colorScheme.onPrimary)
+                Text(if (isSubmitting) "Enviando..." else "Enviar", style = titleMediumMD, color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
@@ -241,6 +270,7 @@ fun ReportProblemScreenPreview() {
     AetherTheme {
         ReportProblemScreen(
             category = "",
+            categoryOptions = listOf("Erro no app", "Dados incorretos", "Lentidão", "Outro"),
             description = "",
             attachedFileName = null,
             onCategoryChanged = {},
@@ -259,6 +289,7 @@ fun ReportProblemScreenWithFilePreview() {
     AetherTheme {
         ReportProblemScreen(
             category = "Erro no app",
+            categoryOptions = listOf("Erro no app", "Dados incorretos", "Lentidão", "Outro"),
             description = "O botão de enviar não responde ao toque.",
             attachedFileName = "print_erro.png",
             onCategoryChanged = {},

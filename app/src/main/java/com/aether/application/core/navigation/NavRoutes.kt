@@ -22,5 +22,6 @@ import kotlinx.serialization.Serializable
 @Serializable data object SettingsRoute
 @Serializable data object TermsOfUseRoute
 @Serializable data object PrivacyPolicyRoute
+@Serializable data object ReportProblemRoute
 @Serializable data object CalculatorRoute
 @Serializable data object ChatbotRoute
