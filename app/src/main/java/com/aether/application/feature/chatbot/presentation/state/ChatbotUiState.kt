@@ -1,20 +1,23 @@
 package com.aether.application.feature.chatbot.presentation.state
 
+import androidx.annotation.StringRes
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.chatbot.domain.model.Conversation
 import com.aether.application.feature.chatbot.presentation.screen.ConversationItem
 import com.aether.core.ui.components.ChatMessage
 import com.aether.core.ui.components.ChatSender
 
-const val NEW_CONVERSATION_TITLE = "Nova conversa"
 private const val TYPING_MESSAGE_ID = "typing"
 
 data class ChatbotUiState(
     val userName: String = "",
-    val userRole: String = "",
+    val userRole: UiText = uiText(""),
     val avatarUrl: String? = null,
-    val title: String = NEW_CONVERSATION_TITLE,
+    val title: UiText = uiText(R.string.chatbot_new_conversation),
     val messages: List<ChatMessage> = emptyList(),
-    val suggestions: List<String> = emptyList(),
+    @StringRes val suggestionRes: List<Int> = emptyList(),
     val inputText: String = "",
     val conversations: List<Conversation> = emptyList(),
     val pinnedConversationIds: Set<String> = emptySet(),
@@ -22,7 +25,7 @@ data class ChatbotUiState(
     val activeConversationId: String? = null,
     val isSending: Boolean = false,
     val isLoadingConversation: Boolean = false,
-    val errorMessage: String? = null,
+    val errorMessage: UiText? = null,
 ) {
     /** The messages plus a placeholder from the assistant while it is answering. */
     val displayMessages: List<ChatMessage>
