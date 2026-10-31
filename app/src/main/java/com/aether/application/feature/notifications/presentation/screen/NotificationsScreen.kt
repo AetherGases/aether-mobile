@@ -1,5 +1,6 @@
 package com.aether.application.feature.notifications.presentation.screen
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,17 +19,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.application.core.ui.components.AetherTopBar
+import com.aether.application.core.ui.components.FormErrorText
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.core.ui.components.NotificationCard
 import com.aether.core.ui.components.NotificationStatus
 import com.aether.core.ui.theme.*
 
-enum class NotificationFilter(val label: String) {
-    RECENTES("Mais recentes"),
-    ANTIGAS("Mais antigas"),
+enum class NotificationFilter(@StringRes val labelRes: Int) {
+    RECENTES(R.string.notifications_filter_recent),
+    ANTIGAS(R.string.notifications_filter_oldest),
 }
 
 data class NotificationItem(
@@ -37,11 +42,11 @@ data class NotificationItem(
     val title: String,
     val reviewer: String,
     val timestamp: String,
-    val relativeTime: String
+    val relativeTime: UiText
 )
 
 data class NotificationSection(
-    val title: String,
+    val title: UiText,
     val items: List<NotificationItem>
 )
 
@@ -52,14 +57,15 @@ fun NotificationsScreen(
     onFilterSelected: (NotificationFilter) -> Unit,
     onBackClicked: () -> Unit,
     onNotificationClick: (reportId: Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    loadFailed: Boolean = false
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        AetherTopBar(title = "Notificações", onBackClick = onBackClicked)
+        AetherTopBar(title = stringResource(R.string.common_notifications), onBackClick = onBackClicked)
 
         Spacer(modifier = Modifier.height(30.dp))
         Row(
@@ -72,7 +78,7 @@ fun NotificationsScreen(
         ) {
             NotificationFilter.values().forEach { filter ->
                 NotificationFilterChip(
-                    label = filter.label,
+                    label = stringResource(filter.labelRes),
                     selected = filter == selectedFilter,
                     onClick = {onFilterSelected(filter)}
                 )
@@ -89,12 +95,19 @@ fun NotificationsScreen(
             if (sections.isEmpty()) {
                 Image(
                     painter = painterResource(id = R.drawable.sad_bell),
-                    contentDescription = "sino triste",
+                    contentDescription = stringResource(R.string.notifications_empty_icon_description),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(Modifier.height(44.dp))
+                if (loadFailed) {
+                    FormErrorText(
+                        message = stringResource(R.string.notifications_load_error),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Spacer(Modifier.height(12.dp))
+                }
                 Text(
-                    text = "Sem notificações no momento",
+                    text = stringResource(R.string.notifications_empty),
                     style = titleMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -102,7 +115,7 @@ fun NotificationsScreen(
             } else {
                 sections.forEach { section ->
                     Text(
-                        section.title,
+                        section.title.asString(),
                         style = titleLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -113,7 +126,7 @@ fun NotificationsScreen(
                             title = item.title,
                             description = item.reviewer,
                             timestamp = item.timestamp,
-                            relativeTime = item.relativeTime,
+                            relativeTime = item.relativeTime.asString(),
                             onClick = item.reportId?.let { id -> { onNotificationClick(id) } },
                             modifier = Modifier.shadow(
                                 elevation = 12.dp,
@@ -190,26 +203,26 @@ fun NotificationsScreenPreview() {
         NotificationsScreen(
             sections = listOf(
                 NotificationSection(
-                    title = "Hoje",
+                    title = uiText("Hoje"),
                     items = listOf(
-                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas")
+                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", uiText("Há 2 horas")),
+                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", uiText("Há 2 horas"))
                     )
                 ),
                 NotificationSection(
-                    title = "Essa semana",
+                    title = uiText("Essa semana"),
                     items = listOf(
-                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas")
+                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", uiText("Há 2 horas")),
+                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", uiText("Há 2 horas")),
+                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", uiText("Há 2 horas"))
                     )
                 ),
                 NotificationSection(
-                    title = "Esse mês",
+                    title = uiText("Esse mês"),
                     items = listOf(
-                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas"),
-                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", "Há 2 horas")
+                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", uiText("Há 2 horas")),
+                        NotificationItem(null, NotificationStatus.REPROVADO, "Relatório reprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", uiText("Há 2 horas")),
+                        NotificationItem(null, NotificationStatus.APROVADO, "Relatório aprovado", "Revisado por Nisflei Grandão", "Hoje 09:12", uiText("Há 2 horas"))
                     )
                 )
             ),
@@ -226,6 +239,7 @@ fun NotificationsScreenPreview() {
 fun EmptyNotificationsScreenPreview() {
     AetherTheme {
         NotificationsScreen(
+            loadFailed = true,
             sections = emptyList(),
             selectedFilter = NotificationFilter.RECENTES,
             onFilterSelected = {},
