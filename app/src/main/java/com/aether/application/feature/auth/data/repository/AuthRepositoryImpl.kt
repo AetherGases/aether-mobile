@@ -1,6 +1,7 @@
 package com.aether.application.feature.auth.data.repository
 
 import android.util.Log
+import com.aether.application.core.notification.domain.DeviceTokenRegistrar
 import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.database.ProfileLocalDataSource
@@ -24,7 +25,8 @@ class AuthRepositoryImpl(
     private val api: AuthApi,
     private val profileApi: ProfileApi,
     private val sessionManager: SessionManager,
-    private val profileLocalDataSource: ProfileLocalDataSource
+    private val profileLocalDataSource: ProfileLocalDataSource,
+    private val deviceTokenRegistrar: DeviceTokenRegistrar
 ): AuthRepository {
 
     override suspend fun login(
@@ -40,6 +42,9 @@ class AuthRepositoryImpl(
         if (!sessionManager.save(session, remember = rememberMe)) {
             return Result.failure(AuthException.Unexpected(IllegalStateException("Failed to persist session")))
         }
+
+        // Needs the session saved above for the auth header; a failure doesn't block the login
+        deviceTokenRegistrar.registerCurrent()
 
         // Get profiles info. A failure here doesn't block the login, but leaves it without permissions
         val profile = try {

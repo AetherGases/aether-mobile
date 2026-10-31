@@ -3,6 +3,7 @@ package com.aether.core.ui.components
 import com.aether.application.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -20,21 +21,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.core.ui.theme.*
 
-enum class NotificationStatus {APROVADO, REPROVADO}
+enum class NotificationStatus {APROVADO, REPROVADO, PENDENTE}
 
 @Composable
 fun NotificationCard(
     status: NotificationStatus,
     title: String,
-    reviewer: String,
+    description: String,
     timestamp: String,
     relativeTime: String,
+    onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
-    val iconResId = if (status == NotificationStatus.APROVADO) {
-        R.drawable.ic_approved_report
-    } else {
-        R.drawable.ic_rejected_report
+    val iconResId = when (status) {
+        NotificationStatus.APROVADO -> R.drawable.ic_approved_report
+        NotificationStatus.REPROVADO -> R.drawable.ic_rejected_report
+        NotificationStatus.PENDENTE -> R.drawable.ic_inventory
     }
 
     Row(
@@ -49,6 +51,7 @@ fun NotificationCard(
             .clip(RoundedCornerShape(18.dp))
             .background(MaterialTheme.colorScheme.surface)
             .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), RoundedCornerShape(18.dp))
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(18.dp),
         verticalAlignment = Alignment.Top
     ) {
@@ -66,7 +69,7 @@ fun NotificationCard(
         Column(modifier = Modifier.weight(1f)) {
             Text(title, style = titleSmall, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(2.dp))
-            Text(reviewer, style = bodySmallMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(description, style = bodySmallMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(2.dp))
             Text(timestamp, style = bodySmallMedium, color = MaterialTheme.colorScheme.outlineVariant)
         }
@@ -83,7 +86,7 @@ fun NotificationCardPreview() {
             NotificationCard(
                 status = NotificationStatus.APROVADO,
                 title = "Relatório aprovado",
-                reviewer = "Revisado por Nisflei Grandão",
+                description = "Revisado por Nisflei Grandão",
                 timestamp = "Hoje 09:12",
                 relativeTime = "Há 2 horas"
             )
@@ -91,7 +94,15 @@ fun NotificationCardPreview() {
             NotificationCard(
                 status = NotificationStatus.REPROVADO,
                 title = "Relatório reprovado",
-                reviewer = "Revisado por Nisflei Grandão",
+                description = "Revisado por Nisflei Grandão",
+                timestamp = "Hoje 09:12",
+                relativeTime = "Há 2 horas"
+            )
+            Spacer(Modifier.height(12.dp))
+            NotificationCard(
+                status = NotificationStatus.PENDENTE,
+                title = "Relatório recebido",
+                description = "Realizado por Daniel Sagaz",
                 timestamp = "Hoje 09:12",
                 relativeTime = "Há 2 horas"
             )

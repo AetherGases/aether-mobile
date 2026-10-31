@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdateProfileRequest(
     val image: ImageRequest? = null,
+    val deviceToken: String? = null,
 )
 
 @Serializable

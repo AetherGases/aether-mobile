@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
 }
 
 val keystoreProperties = Properties()
@@ -158,6 +159,14 @@ dependencies {
     implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.navigation3)
+
+
+    // =========================
+    // Firebase
+    // =========================
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
 
 
     // =========================

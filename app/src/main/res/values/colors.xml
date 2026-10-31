@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="ic_launcher_background_dark">#0D3B35</color>
+    <color name="notification_accent">#359270</color>
 </resources>

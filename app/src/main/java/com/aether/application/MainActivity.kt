@@ -1,6 +1,7 @@
 package com.aether.application
 
 import com.aether.application.core.navigation.AppNavigation
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,9 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.aether.application.core.notification.domain.EXTRA_REPORT_ID
 import com.aether.application.feature.settings.domain.model.ThemePreference
 import com.aether.application.feature.settings.domain.model.UserSettings
 import com.aether.application.feature.settings.domain.repository.SettingsRepository
@@ -21,10 +25,12 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
     private val settingsRepository: SettingsRepository by inject()
+    private var pendingReportId by mutableStateOf<Long?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        if (savedInstanceState == null) pendingReportId = reportIdFrom(intent)
         setContent {
             val settings by settingsRepository.settings
                 .collectAsStateWithLifecycle(initialValue = UserSettings())
@@ -37,6 +43,8 @@ class MainActivity : ComponentActivity() {
             AetherTheme(darkTheme = darkTheme) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     AppNavigation(
+                        pendingReportId = pendingReportId,
+                        onPendingReportConsumed = { pendingReportId = null },
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding)
@@ -45,4 +53,14 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        pendingReportId = reportIdFrom(intent)
+    }
+
+    /** A tap on a push (FCM `data` extra, or our own notification) carries the report id as a string. */
+    private fun reportIdFrom(intent: Intent?): Long? =
+        intent?.getStringExtra(EXTRA_REPORT_ID)?.toLongOrNull()
 }
