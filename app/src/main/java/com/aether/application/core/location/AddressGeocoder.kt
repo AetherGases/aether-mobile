@@ -1,6 +1,7 @@
 package com.aether.application.core.location
 
 import android.content.Context
+import com.aether.application.core.utils.AppLocale
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
@@ -22,7 +23,7 @@ class AddressGeocoder(
 ) {
     suspend fun geocode(address: String): Coordinates? {
         if (!Geocoder.isPresent()) return null
-        val geocoder = Geocoder(context, Locale.forLanguageTag("pt-BR"))
+        val geocoder = Geocoder(context, AppLocale.current())
 
         return try {
             val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
