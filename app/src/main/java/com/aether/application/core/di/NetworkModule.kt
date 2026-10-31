@@ -32,6 +32,10 @@ import com.aether.application.feature.reports.data.remote.ReportsApi
 import com.aether.application.feature.reports.data.repository.NewReportRepositoryImpl
 import com.aether.application.feature.reports.domain.repository.NewReportRepository
 import com.aether.application.feature.home.data.repository.HomeRepositoryImpl
+import com.aether.application.core.notification.data.DeviceTokenRegistrarImpl
+import com.aether.application.core.notification.data.FcmTokenStorageImpl
+import com.aether.application.core.notification.domain.DeviceTokenRegistrar
+import com.aether.application.core.notification.domain.FcmTokenStorage
 import com.aether.application.feature.notifications.data.remote.NotificationsApi
 import com.aether.application.feature.notifications.data.repository.NotificationsRepositoryImpl
 import com.aether.application.feature.notifications.domain.repository.NotificationsRepository
@@ -108,7 +112,20 @@ object NetworkModule {
                 api = get(),
                 profileApi = get(),
                 sessionManager = get(),
-                profileLocalDataSource = get()
+                profileLocalDataSource = get(),
+                deviceTokenRegistrar = get()
+            )
+        }
+
+        single<FcmTokenStorage> {
+            FcmTokenStorageImpl(dataStore = get())
+        }
+
+        single<DeviceTokenRegistrar> {
+            DeviceTokenRegistrarImpl(
+                tokenStorage = get(),
+                profileApi = get(),
+                sessionManager = get()
             )
         }
 
