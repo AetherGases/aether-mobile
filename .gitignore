@@ -35,3 +35,5 @@ release.keystore
 .kotlin*.keystore
 *.jks
 keystore.properties
+# Firebase
+google-services.json
