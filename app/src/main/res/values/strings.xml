@@ -382,6 +382,10 @@
     <string name="settings_change_avatar">Alterar foto de perfil</string>
     <string name="settings_profile_photo">Foto de perfil</string>
     <string name="settings_stat_reports">Relatórios</string>
+    <string name="settings_stat_done">Realizados</string>
+    <string name="settings_stat_reviewed">Analisados</string>
+    <string name="settings_problem_loading_categories">Carregando categorias...</string>
+    <string name="settings_problem_sending">Enviando...</string>
     <string name="settings_stat_entry_date">Data de entrada</string>
     <string name="settings_error_avatar">Não foi possível atualizar a foto de perfil.</string>
     <string name="settings_theme_system">Sistema</string>

@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -66,7 +67,7 @@ fun ReportProblemScreen(
             .imePadding()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        AetherTopBar(title = "Relatar problema", onBackClick = onBackClicked)
+        AetherTopBar(title = stringResource(R.string.settings_problem_title), onBackClick = onBackClicked)
 
         Column(
             modifier = Modifier
@@ -79,17 +80,17 @@ fun ReportProblemScreen(
                 FormErrorText(categoriesError)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Tentar novamente",
+                    stringResource(R.string.common_try_again),
                     style = bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable(onClick = onRetryCategoriesClicked)
                 )
             } else if (categoriesLoading) {
-                Text("Carregando categorias...", style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
+                Text(stringResource(R.string.settings_problem_loading_categories), style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
             } else FormDropdownField(
-                label = "Categoria do problema*",
-                placeholder = "Selecione a categoria",
+                label = stringResource(R.string.settings_problem_category_label),
+                placeholder = stringResource(R.string.settings_problem_category_placeholder),
                 value = category,
                 options = categoryOptions,
                 onValueSelected = onCategoryChanged
@@ -97,7 +98,7 @@ fun ReportProblemScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            RequiredFieldLabel(text = "Descrição do problema")
+            RequiredFieldLabel(text = stringResource(R.string.settings_problem_description_label))
             Spacer(Modifier.height(8.dp))
 
             Box(
@@ -108,7 +109,7 @@ fun ReportProblemScreen(
                 OutlinedTextField(
                     value = description,
                     onValueChange = { onDescriptionChanged(it.take(MAX_DESCRIPTION_LENGTH)) },
-                    placeholder = { Text("Descreva detalhadamente o que aconteceu") },
+                    placeholder = { Text(stringResource(R.string.settings_problem_description_placeholder)) },
                     modifier = Modifier.fillMaxSize(),
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -131,8 +132,8 @@ fun ReportProblemScreen(
             Spacer(Modifier.height(24.dp))
 
             Row {
-                Text("Anexar print ", style = bodyMediumMd, color = MaterialTheme.colorScheme.onBackground)
-                Text("(Opcional)", style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
+                Text(stringResource(R.string.settings_problem_attach), style = bodyMediumMd, color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.settings_problem_optional), style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
             }
             Spacer(Modifier.height(8.dp))
 
@@ -167,7 +168,7 @@ fun ReportProblemScreen(
                     .clickable(enabled = canSubmit && !isSubmitting, onClick = onSubmitClicked),
                 contentAlignment = Alignment.Center
             ) {
-                Text(if (isSubmitting) "Enviando..." else "Enviar", style = titleMediumMD, color = MaterialTheme.colorScheme.onPrimary)
+                Text(stringResource(if (isSubmitting) R.string.settings_problem_sending else R.string.settings_problem_submit), style = titleMediumMD, color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
@@ -217,9 +218,9 @@ private fun FileDropzone(
                     modifier = Modifier.size(44.dp)
                 )
                 Spacer(Modifier.height(10.dp))
-                Text("Selecione um arquivo", style = bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+                Text(stringResource(R.string.settings_problem_select_file), style = bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
                 Spacer(Modifier.height(2.dp))
-                Text("PNG, JPG, JPEG", style = bodySmallMedium, color = MaterialTheme.colorScheme.secondary)
+                Text(stringResource(R.string.settings_problem_file_types), style = bodySmallMedium, color = MaterialTheme.colorScheme.secondary)
             }
         } else {
             Row(
@@ -238,7 +239,7 @@ private fun FileDropzone(
                 IconButton(onClick = onRemoveFileClicked, modifier = Modifier.size(22.dp)) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Remover arquivo",
+                        contentDescription = stringResource(R.string.reports_new_remove_file),
                         tint = MaterialTheme.colorScheme.outline
                     )
                 }

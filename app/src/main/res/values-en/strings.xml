@@ -382,6 +382,10 @@
     <string name="settings_change_avatar">Change profile photo</string>
     <string name="settings_profile_photo">Profile photo</string>
     <string name="settings_stat_reports">Reports</string>
+    <string name="settings_stat_done">Completed</string>
+    <string name="settings_stat_reviewed">Reviewed</string>
+    <string name="settings_problem_loading_categories">Loading categories...</string>
+    <string name="settings_problem_sending">Sending...</string>
     <string name="settings_stat_entry_date">Joined on</string>
     <string name="settings_error_avatar">Could not update the profile photo.</string>
     <string name="settings_theme_system">System</string>
