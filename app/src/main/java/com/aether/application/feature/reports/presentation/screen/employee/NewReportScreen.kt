@@ -1,5 +1,6 @@
 package com.aether.application.feature.reports.presentation.screen
 
+import androidx.compose.foundation.layout.imePadding
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -75,6 +76,7 @@ fun CreateReportUploadScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .imePadding()
             .background(MaterialTheme.colorScheme.background)
     ) {
         AetherTopBar(title = "Criar relatório", onBackClick = onBackClicked)

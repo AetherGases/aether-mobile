@@ -148,6 +148,7 @@ fun AekoScreen(
         Column(
             modifier = modifier
                 .fillMaxSize()
+                .imePadding()
                 .background(MaterialTheme.colorScheme.background)
                 .drawBehind {
                     val purpleRadius = size.width

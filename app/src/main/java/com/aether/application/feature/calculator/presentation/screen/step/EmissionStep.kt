@@ -1,5 +1,6 @@
 package com.aether.application.feature.calculator.presentation.screen.step
 
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -44,7 +45,7 @@ fun EmissionStep(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize().imePadding()
     ) {
         AetherTopBar(
             title = "Inserir dados",

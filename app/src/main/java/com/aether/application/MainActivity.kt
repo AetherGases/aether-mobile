@@ -1,5 +1,10 @@
 package com.aether.application
 
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.WindowInsets
 import com.aether.application.core.navigation.AppNavigation
 import android.content.Intent
 import android.os.Bundle
@@ -41,13 +46,18 @@ class MainActivity : ComponentActivity() {
             }
 
             AetherTheme(darkTheme = darkTheme) {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    // O teclado é tratado por tela (imePadding); o root só reserva as barras do sistema.
+                    contentWindowInsets = WindowInsets.safeDrawing.exclude(WindowInsets.ime)
+                ) { innerPadding ->
                     AppNavigation(
                         pendingReportId = pendingReportId,
                         onPendingReportConsumed = { pendingReportId = null },
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding)
                     )
                 }
             }
