@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,12 +54,12 @@ data class ManagerHeroCard(
             ) {
                 Column {
                     Text(
-                        "Total de emissões mapeadas",
+                        stringResource(R.string.managerhero_total_mapped),
                         style = titleSmall,
                         color = Color.White
                     )
                     Text(
-                        "Último envio em $lastSubmittedLabel",
+                        stringResource(R.string.managerhero_last_sent_on, lastSubmittedLabel),
                         style = bodySmallMedium,
                         color = Color.White
                     )
@@ -85,7 +86,7 @@ data class ManagerHeroCard(
                     ) {
                         Column {
                             Text(
-                                "Total (em tCO₂e)",
+                                stringResource(R.string.managerhero_total_tco2e),
                                 style = bodySmallMedium,
                                 color = Color.White,
                                 maxLines = 1
@@ -114,7 +115,7 @@ data class ManagerHeroCard(
                     ) {
                         Column {
                             Text(
-                                "Redução obtida",
+                                stringResource(R.string.managerhero_reduction),
                                 style = bodySmallMedium,
                                 color = Color.White,
                                 maxLines = 1

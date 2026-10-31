@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
@@ -30,10 +31,13 @@ fun RequirementItem(text: String, isMet: Boolean) {
         label = "requirementTextColor",
     )
 
+    val metDescription = stringResource(R.string.common_requirement_met)
+    val pendingDescription = stringResource(R.string.common_requirement_pending)
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.semantics(mergeDescendants = true) {
-            stateDescription = if (isMet) "atendido" else "pendente"
+            stateDescription = if (isMet) metDescription else pendingDescription
         },
     ) {
         Icon(
