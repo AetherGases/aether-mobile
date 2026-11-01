@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.annotation.DrawableRes
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 import coil3.compose.AsyncImage
 import com.aether.application.R
 
@@ -61,6 +61,7 @@ fun SettingsScreen(
     avatarErrorMessage: String?,
     onAvatarPicked: (Uri) -> Unit,
     reportsCount: Int,
+    reviewedCount: Int? = null,
     entryDate: String,
     notificationsEnabled: Boolean,
     emailNotificationsEnabled: Boolean,
@@ -113,7 +114,7 @@ fun SettingsScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
         ) {
-            StatsCard(reportsCount = reportsCount, entryDate = entryDate)
+            StatsCard(reportsCount = reportsCount, reviewedCount = reviewedCount, entryDate = entryDate)
 
             Spacer(Modifier.height(20.dp))
 
@@ -324,7 +325,7 @@ private fun ProfileHeader(
 }
 
 @Composable
-private fun StatsCard(reportsCount: Int, entryDate: String) {
+private fun StatsCard(reportsCount: Int, reviewedCount: Int?, entryDate: String) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -349,15 +350,22 @@ private fun StatsCard(reportsCount: Int, entryDate: String) {
                 icon = R.drawable.ic_reports,
                 iconTint = MaterialTheme.colorScheme.secondary,
                 value = reportsCount.toString(),
-                label = "Relatórios"
+                label = if (reviewedCount != null) "Realizados" else "Relatórios"
             )
 
-            Box(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(36.dp)
-                    .background(MaterialTheme.colorScheme.outlineVariant)
-            )
+            StatDivider()
+
+            // Only for someone who both makes and reviews reports
+            if (reviewedCount != null) {
+                StatItem(
+                    icon = R.drawable.ic_reports,
+                    iconTint = MaterialTheme.colorScheme.secondary,
+                    value = reviewedCount.toString(),
+                    label = "Analisados"
+                )
+
+                StatDivider()
+            }
 
             StatItem(
                 icon = R.drawable.ic_calendar,
@@ -367,6 +375,16 @@ private fun StatsCard(reportsCount: Int, entryDate: String) {
             )
         }
     }
+}
+
+@Composable
+private fun StatDivider() {
+    Box(
+        modifier = Modifier
+            .width(1.dp)
+            .height(36.dp)
+            .background(MaterialTheme.colorScheme.outlineVariant)
+    )
 }
 
 @Composable

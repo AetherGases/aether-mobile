@@ -54,12 +54,18 @@ class SettingsViewModel(
 
             try {
                 val count = homeRepository.getInventoryCount()
-                val reportsCount = if (sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)) {
-                    count.reviewedCount
-                } else {
-                    count.submittedCount
+                val canReview = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
+                val canCreate = sessionManager.hasPermission(AppPermission.INVENTORY_CREATING)
+                _uiState.update {
+                    when {
+                        canReview && canCreate -> it.copy(
+                            reportsCount = count.submittedCount,
+                            reviewedCount = count.reviewedCount
+                        )
+                        canReview -> it.copy(reportsCount = count.reviewedCount)
+                        else -> it.copy(reportsCount = count.submittedCount)
+                    }
                 }
-                _uiState.update { it.copy(reportsCount = reportsCount) }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

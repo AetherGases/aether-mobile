@@ -26,10 +26,10 @@ import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.application.feature.auth.domain.model.DefaultPasswordRules
 import com.aether.application.feature.auth.domain.model.PasswordRule
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 import com.aether.application.core.ui.components.FormErrorText
 import com.aether.application.core.ui.components.RequirementItem
-import com.aether.core.ui.components.GlassIconButton
+import com.aether.application.core.ui.components.GlassIconButton
 
 @Composable
 fun ChangePasswordScreen(

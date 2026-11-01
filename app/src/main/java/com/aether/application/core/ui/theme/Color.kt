@@ -1,4 +1,4 @@
-package com.aether.core.ui.theme
+package com.aether.application.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

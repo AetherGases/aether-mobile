@@ -2,8 +2,8 @@ package com.aether.application.feature.chatbot.presentation.state
 
 import com.aether.application.feature.chatbot.domain.model.Conversation
 import com.aether.application.feature.chatbot.presentation.screen.ConversationItem
-import com.aether.core.ui.components.ChatMessage
-import com.aether.core.ui.components.ChatSender
+import com.aether.application.core.ui.components.ChatMessage
+import com.aether.application.core.ui.components.ChatSender
 
 const val NEW_CONVERSATION_TITLE = "Nova conversa"
 private const val TYPING_MESSAGE_ID = "typing"

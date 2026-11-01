@@ -65,6 +65,7 @@ class SessionStorageImpl(
             }
             Log.d(TAG, "Restored profile ${profile.id} with permissions ${profile.permissions.map { it.name }}")
             session.copy(
+                userId = profile.id,
                 name = profile.name,
                 avatar = profile.avatarUrl.orEmpty(),
                 permissions = profile.permissions,

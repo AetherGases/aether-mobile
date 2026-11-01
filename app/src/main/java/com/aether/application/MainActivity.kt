@@ -24,7 +24,7 @@ import com.aether.application.core.notification.domain.EXTRA_REPORT_ID
 import com.aether.application.feature.settings.domain.model.ThemePreference
 import com.aether.application.feature.settings.domain.model.UserSettings
 import com.aether.application.feature.settings.domain.repository.SettingsRepository
-import com.aether.core.ui.theme.AetherTheme
+import com.aether.application.core.ui.theme.AetherTheme
 import org.koin.android.ext.android.inject
 
 

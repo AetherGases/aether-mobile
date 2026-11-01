@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.application.feature.reports.presentation.components.ReportLoadState
 import com.aether.application.core.ui.components.AetherTopBar
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.abs

@@ -10,7 +10,7 @@ import com.aether.application.feature.notifications.presentation.screen.Notifica
 import com.aether.application.feature.notifications.presentation.screen.NotificationItem
 import com.aether.application.feature.notifications.presentation.screen.NotificationSection
 import com.aether.application.feature.notifications.presentation.state.NotificationsUiState
-import com.aether.core.ui.components.NotificationStatus
+import com.aether.application.core.ui.components.NotificationStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

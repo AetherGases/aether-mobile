@@ -56,7 +56,7 @@ class TokenAuthenticator(
                     // inactive user). A 5xx comes from the server/gateway and doesn't invalidate the session
                     if (e.code() in 400..499) {
                         Log.w(TAG, "Token refresh rejected (${e.code()}), logging out", e)
-                        sessionManager.logout()
+                        sessionManager.logout(expired = true)
                     } else {
                         Log.w(TAG, "Token refresh failed on the server (${e.code()}), keeping the session", e)
                     }

@@ -31,11 +31,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -44,17 +46,18 @@ import com.aether.application.feature.home.presentation.components.QuickAction
 import com.aether.application.feature.home.presentation.components.QuickActionContainer
 import com.aether.application.feature.home.presentation.components.RecentReport
 import com.aether.application.core.ui.components.AppHeader
-import com.aether.core.ui.components.EmployeeHeroCard
-import com.aether.core.ui.components.HomeHeroCard
-import com.aether.core.ui.components.ManagerHeroCard
-import com.aether.core.ui.components.ReportsSummaryHomeCard
-import com.aether.core.ui.components.SealProgressHomeCard
-import com.aether.core.ui.components.UnitEmissionsHomeCard
+import com.aether.application.core.ui.components.EmployeeHeroCard
+import com.aether.application.core.ui.components.HomeHeroCard
+import com.aether.application.core.ui.components.ManagerHeroCard
+import com.aether.application.core.ui.components.ReportsSummaryHomeCard
+import com.aether.application.core.ui.components.SealProgressHomeCard
+import com.aether.application.core.ui.components.UnitEmissionsHomeCard
 import com.aether.application.feature.home.presentation.model.ReportStatus
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 
 private val SCREEN_PADDING = 24.dp
 private val CARD_WIDTH = 335.dp
+private val QUICK_ACTION_SIZE = 100.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -157,7 +160,7 @@ fun HomeScreen(
                         }
                     }
                 ) { page ->
-                    Box(
+                    BoxWithConstraints (
                         modifier = Modifier
                             .semantics {
                                 stateDescription = "Cartão ${page + 1} de ${cards.size}"
@@ -169,7 +172,14 @@ fun HomeScreen(
                                 spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
                             )
                     ) {
-                        cards[page].Render()
+                        val containerSize  = LocalWindowInfo.current.containerSize
+
+                        val isPortrait = containerSize.height > containerSize.width
+
+                        val width = if (isPortrait) maxWidth else 335.dp
+                        val height = width * (205f / 335f)
+
+                        cards[page].Render(Modifier.width(width).height(height))
                     }
                 }
                 // Only worth showing when there is something to scroll to
@@ -217,12 +227,25 @@ fun HomeScreen(
                     message = "Não foi possível carregar as ações rápidas. Puxe para baixo para tentar de novo."
                 )
             } else {
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(quickActions) { action ->
-                        QuickActionItem(action = action)
+                BoxWithConstraints(Modifier.fillMaxWidth()) {
+                    val count = quickActions.size
+                    val spacing = 16.dp
+                    val fillsBar = count >= 4 && (QUICK_ACTION_SIZE * count + spacing * (count - 1)) <= maxWidth
+                    if (fillsBar) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(spacing)) {
+                            quickActions.forEach { action ->
+                                QuickActionItem(action = action, fillWidth = true, modifier = Modifier.weight(1f))
+                            }
+                        }
+                    } else {
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(spacing)
+                        ) {
+                            items(quickActions) { action ->
+                                QuickActionItem(action = action)
+                            }
+                        }
                     }
                 }
             }
@@ -298,16 +321,15 @@ private fun SectionLoadError(
 }
 
 @Composable
-fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier) {
+fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier, fillWidth: Boolean = false) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .width(100.dp)
+            .then(if (fillWidth) Modifier else Modifier.width(QUICK_ACTION_SIZE))
             .clickable { action.onClick() }
     ) {
-        Box(
-            modifier = Modifier
-                .size(100.dp)
+        BoxWithConstraints(
+            modifier = (if (fillWidth) Modifier.fillMaxWidth().aspectRatio(1f) else Modifier.size(QUICK_ACTION_SIZE))
                 .background(
                     when (action.container) {
                         QuickActionContainer.PRIMARY -> MaterialTheme.colorScheme.primaryContainer
@@ -317,12 +339,13 @@ fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier) {
                 ),
             contentAlignment = Alignment.Center
         ) {
+            val iconScale = maxWidth / QUICK_ACTION_SIZE
             Image(
                 painter = painterResource(id = if (action.iconRes != 0) action.iconRes else R.drawable.ic_home),
                 contentDescription = action.label,
                 modifier = Modifier
-                    .size(action.iconSize)
-                    .offset(x = action.offsetX, y = action.offsetY)
+                    .size(action.iconSize * iconScale)
+                    .offset(x = action.offsetX * iconScale, y = action.offsetY * iconScale)
             )
         }
         Spacer(Modifier.height(8.dp))
@@ -455,7 +478,7 @@ fun StatusBadge(status: ReportStatus) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, device = Devices.TABLET)
 @Composable
 fun HomeScreenEmployeePreview() {
     AetherTheme {
@@ -498,7 +521,7 @@ fun HomeScreenEmployeePreview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, device = Devices.TABLET)
 @Composable
 fun HomeScreenManagerPreview() {
     AetherTheme {

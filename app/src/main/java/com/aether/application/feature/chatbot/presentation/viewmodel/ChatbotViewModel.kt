@@ -10,8 +10,8 @@ import com.aether.application.feature.chatbot.domain.repository.ChatbotRepositor
 import com.aether.application.feature.chatbot.domain.repository.SavedConversationsRepository
 import com.aether.application.feature.chatbot.presentation.state.ChatbotUiState
 import com.aether.application.feature.chatbot.presentation.state.NEW_CONVERSATION_TITLE
-import com.aether.core.ui.components.ChatMessage
-import com.aether.core.ui.components.ChatSender
+import com.aether.application.core.ui.components.ChatMessage
+import com.aether.application.core.ui.components.ChatSender
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

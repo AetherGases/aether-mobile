@@ -23,6 +23,13 @@ class SessionManagerImpl(
     private val _authState = MutableStateFlow(false)
     override val authState: StateFlow<Boolean> = _authState.asStateFlow()
 
+    private val _sessionExpired = MutableStateFlow(false)
+    override val sessionExpired: StateFlow<Boolean> = _sessionExpired.asStateFlow()
+
+    override fun consumeSessionExpired() {
+        _sessionExpired.value = false
+    }
+
     override suspend fun restoreSession() {
         session = sessionStorage.get()
         _authState.value = isAuthenticated()
@@ -37,7 +44,7 @@ class SessionManagerImpl(
         // An expired access token is refreshed on the first 401: only an expired refresh token ends the session
         val sessionExpiration = currentSession.refreshExpiration ?: currentSession.expiration
         if (sessionExpiration.isBefore(Instant.now())) {
-            logout()
+            logout(expired = true)
             return false
         }
         return true
@@ -62,10 +69,11 @@ class SessionManagerImpl(
         }
     }
 
-    override suspend fun logout() {
+    override suspend fun logout(expired: Boolean) {
         sessionStorage.clear()
         onLogout()
         session = null
+        _sessionExpired.value = expired
         _authState.value = false
     }
 }

@@ -63,9 +63,9 @@ import com.aether.application.R
 import com.aether.application.feature.reports.presentation.model.buildMonthWeeks
 import com.aether.application.feature.reports.presentation.model.label
 import com.aether.application.core.ui.components.AetherTopBar
-import com.aether.core.ui.components.ReportCard
-import com.aether.core.ui.components.ReportStatus
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.components.ReportCard
+import com.aether.application.core.ui.components.ReportStatus
+import com.aether.application.core.ui.theme.*
 import java.time.LocalDate
 import java.time.YearMonth
 

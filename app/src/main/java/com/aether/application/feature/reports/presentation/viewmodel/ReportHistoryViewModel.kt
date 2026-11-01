@@ -17,7 +17,7 @@ import com.aether.application.feature.reports.presentation.screen.ReportTimeFilt
 import com.aether.application.feature.reports.presentation.screen.ReportViewerRole
 import com.aether.application.feature.reports.presentation.model.toCalendarDay
 import com.aether.application.feature.reports.presentation.state.ReportHistoryUiState
-import com.aether.core.ui.components.ReportStatus
+import com.aether.application.core.ui.components.ReportStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async

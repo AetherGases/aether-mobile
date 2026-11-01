@@ -49,11 +49,11 @@ import androidx.compose.ui.unit.dp
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.application.core.ui.components.AetherTrailingIconButton
 import com.aether.application.core.ui.components.FormErrorText
-import com.aether.core.ui.components.ChatInputBar
-import com.aether.core.ui.components.ChatMessage
-import com.aether.core.ui.components.ChatMessageBubble
-import com.aether.core.ui.components.ChatSender
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.components.ChatInputBar
+import com.aether.application.core.ui.components.ChatMessage
+import com.aether.application.core.ui.components.ChatMessageBubble
+import com.aether.application.core.ui.components.ChatSender
+import com.aether.application.core.ui.theme.*
 import com.aether.application.R
 import kotlinx.coroutines.launch
 

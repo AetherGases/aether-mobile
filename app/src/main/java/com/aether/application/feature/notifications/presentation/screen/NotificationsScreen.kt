@@ -22,9 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
 import com.aether.application.core.ui.components.AetherTopBar
-import com.aether.core.ui.components.NotificationCard
-import com.aether.core.ui.components.NotificationStatus
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.components.NotificationCard
+import com.aether.application.core.ui.components.NotificationStatus
+import com.aether.application.core.ui.theme.*
 
 enum class NotificationFilter(val label: String) {
     RECENTES("Mais recentes"),

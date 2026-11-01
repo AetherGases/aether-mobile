@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 import com.aether.application.core.ui.components.FormErrorText
 
 @Composable

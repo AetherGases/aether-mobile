@@ -40,7 +40,7 @@ import com.aether.application.R
 import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.reports.presentation.components.ReportLoadState
 import com.aether.application.core.ui.components.AetherTopBar
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 
 data class ReportReviewUi(
     val name: String,

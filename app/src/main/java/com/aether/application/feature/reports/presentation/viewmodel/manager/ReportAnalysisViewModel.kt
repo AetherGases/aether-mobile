@@ -8,6 +8,7 @@ import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.reports.domain.model.ImprovementPlan
 import com.aether.application.feature.reports.domain.model.RecommendedGas
+import com.aether.application.feature.reports.domain.model.ReportDetails
 import com.aether.application.feature.reports.domain.model.ReportAnalysis
 import com.aether.application.feature.reports.domain.model.ScopeEmissions
 import com.aether.application.feature.reports.domain.repository.ReportsRepository
@@ -73,7 +74,7 @@ class ReportAnalysisViewModel(
                 }
                 _uiState.update { it.copy(
                     analysis = analysis,
-                    canDecide = canReview && report.status !in decidedStatuses,
+                    canDecide = canReview && !isOwn(report) && report.status !in decidedStatuses,
                     isLoading = false
                 ) }
             } catch (e: CancellationException) {
@@ -87,6 +88,10 @@ class ReportAnalysisViewModel(
             }
         }
     }
+
+    // Nobody reviews their own inventory
+    private fun isOwn(report: ReportDetails) =
+        report.ownerId != null && report.ownerId == sessionManager.getSession()?.userId
 
     // The plan text comes from Aeko; when it is unavailable the rest of the analysis still shows
     private suspend fun loadImprovementPlan(): ImprovementPlan? =
