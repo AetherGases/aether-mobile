@@ -40,7 +40,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.aether.application.core.ui.components.FormErrorText
 import com.aether.application.core.ui.components.AetherTopBar
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 import com.aether.application.R
 
 private val spreadsheetMimeTypes = arrayOf(

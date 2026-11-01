@@ -14,9 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.theme.bodyMediumMd
-import com.aether.core.ui.theme.titleLarge
-import com.aether.core.ui.theme.titleMediumMD
+import com.aether.application.core.ui.theme.bodyMediumMd
+import com.aether.application.core.ui.theme.titleLarge
+import com.aether.application.core.ui.theme.titleMediumMD
 
 /** Shown until the profile, the permissions and the home sections are loaded. */
 @Composable

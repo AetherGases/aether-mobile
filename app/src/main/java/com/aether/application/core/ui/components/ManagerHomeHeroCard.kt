@@ -1,4 +1,4 @@
-package com.aether.core.ui.components
+package com.aether.application.core.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
@@ -19,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 
 data class ManagerHeroCard(
     val lastSubmittedLabel: String,
@@ -28,9 +28,10 @@ data class ManagerHeroCard(
     val summaryCount: String
 ) : HomeHeroCard {
     @Composable
-    override fun Render() {
+    override fun Render(modifier: Modifier) {
         Box(
             modifier = Modifier
+                .then(modifier)
                 .width(335.dp)
                 .height(205.dp)
                 .clip(RoundedCornerShape(18.dp))

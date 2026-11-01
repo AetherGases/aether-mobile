@@ -23,11 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.theme.AetherTheme
-import com.aether.core.ui.theme.lightRed
-import com.aether.core.ui.theme.purple300
-import com.aether.core.ui.theme.textDisabledLight
-import com.aether.core.ui.theme.textPrimaryLight
+import com.aether.application.core.ui.theme.AetherTheme
+import com.aether.application.core.ui.theme.lightRed
+import com.aether.application.core.ui.theme.purple300
+import com.aether.application.core.ui.theme.textDisabledLight
+import com.aether.application.core.ui.theme.textPrimaryLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

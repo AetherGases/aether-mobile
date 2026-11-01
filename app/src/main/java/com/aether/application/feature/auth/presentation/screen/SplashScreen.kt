@@ -37,7 +37,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.compose.PlayerSurface
 import androidx.media3.ui.compose.SURFACE_TYPE_TEXTURE_VIEW
 import androidx.media3.ui.compose.state.rememberPresentationState
-import com.aether.core.ui.theme.green500
+import com.aether.application.core.ui.theme.green500
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 

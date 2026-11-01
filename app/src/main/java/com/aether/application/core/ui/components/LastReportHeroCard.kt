@@ -1,4 +1,4 @@
-package com.aether.core.ui.components
+package com.aether.application.core.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
@@ -22,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
@@ -34,11 +34,12 @@ data class EmployeeHeroCard(
     val summaryCount: String
 ) : HomeHeroCard {
     @Composable
-    override fun Render() {
+    override fun Render(modifier: Modifier) {
         val hazeState = remember { HazeState() }
 
         Box(
             modifier = Modifier
+                .then(modifier)
                 .width(335.dp)
                 .height(205.dp)
                 .clip(RoundedCornerShape(18.dp))

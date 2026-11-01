@@ -1,4 +1,4 @@
-package com.aether.core.ui.components
+package com.aether.application.core.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,7 +15,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 
 @Composable
 fun ReportsSummaryCard(
@@ -27,6 +27,7 @@ fun ReportsSummaryCard(
 ) {
     Box(
         modifier = modifier
+            .then(modifier)
             .width(335.dp)
             .height(205.dp)
             .clip(RoundedCornerShape(18.dp))
@@ -89,6 +90,7 @@ fun UnitEmissionsCard(
 ) {
     Box(
         modifier = modifier
+            .then(modifier)
             .width(335.dp)
             .height(205.dp)
             .clip(RoundedCornerShape(20.dp))
@@ -142,6 +144,7 @@ fun SealProgressCard(
 ) {
     Box(
         modifier = modifier
+            .then(modifier)
             .width(335.dp)
             .height(205.dp)
             .clip(RoundedCornerShape(18.dp))
@@ -193,7 +196,14 @@ data class ReportsSummaryHomeCard(
     val onViewHistoryClick: () -> Unit,
 ) : HomeHeroCard {
     @Composable
-    override fun Render() = ReportsSummaryCard(title, lastSubmittedLabel, count, onViewHistoryClick)
+    override fun Render(modifier: Modifier) =
+        ReportsSummaryCard(
+            title = title,
+            lastSubmittedLabel = lastSubmittedLabel,
+            count = count,
+            onViewHistoryClick = onViewHistoryClick,
+            modifier = modifier
+        )
 }
 
 data class UnitEmissionsHomeCard(
@@ -202,7 +212,13 @@ data class UnitEmissionsHomeCard(
     val changeLabel: String,
 ) : HomeHeroCard {
     @Composable
-    override fun Render() = UnitEmissionsCard(value, unitLabel, changeLabel)
+    override fun Render(modifier: Modifier) =
+        UnitEmissionsCard(
+            value = value,
+            unitLabel = unitLabel,
+            changeLabel = changeLabel,
+            modifier = modifier
+        )
 }
 
 data class SealProgressHomeCard(
@@ -210,7 +226,12 @@ data class SealProgressHomeCard(
     val criteriaLabel: String,
 ) : HomeHeroCard {
     @Composable
-    override fun Render() = SealProgressCard(levelPercent, criteriaLabel)
+    override fun Render(modifier: Modifier) =
+        SealProgressCard(
+            levelPercent = levelPercent,
+            criteriaLabel = criteriaLabel,
+            modifier = modifier
+        )
 }
 
 @Preview(showBackground = true)

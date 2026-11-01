@@ -32,9 +32,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
-import com.aether.core.ui.theme.bodyLargeMedium
-import com.aether.core.ui.theme.titleLarge
-import com.aether.core.ui.theme.titleMediumMD
+import com.aether.application.core.ui.theme.bodyLargeMedium
+import com.aether.application.core.ui.theme.titleLarge
+import com.aether.application.core.ui.theme.titleMediumMD
 import java.io.File
 
 private const val AVATAR_CACHE_DIR = "avatars"

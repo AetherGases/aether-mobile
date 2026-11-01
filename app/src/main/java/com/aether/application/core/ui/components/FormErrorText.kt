@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
-import com.aether.core.ui.theme.labelMedium
+import com.aether.application.core.ui.theme.labelMedium
 
 /**
  * Inline error shown as "* message", in place of a pop-up. Same look as the login error:

@@ -3,7 +3,7 @@ package com.aether.application.feature.home.presentation.model
 import androidx.compose.ui.graphics.Color
 import com.aether.application.R
 import com.aether.application.feature.home.domain.model.InventoryStatus
-import com.aether.core.ui.theme.lightRed
+import com.aether.application.core.ui.theme.lightRed
 
 enum class ReportStatus(
     val label: String,

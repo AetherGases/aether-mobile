@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 import com.aether.application.core.ui.components.FormErrorText
 import kotlinx.coroutines.delay
 

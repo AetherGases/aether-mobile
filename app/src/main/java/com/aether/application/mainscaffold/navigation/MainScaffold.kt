@@ -21,9 +21,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aether.application.R
-import com.aether.core.ui.components.AetherBottomBar
-import com.aether.core.ui.components.BottomBarItem
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.components.AetherBottomBar
+import com.aether.application.core.ui.components.BottomBarItem
+import com.aether.application.core.ui.theme.*
 
 object AppRoute {
     const val HOME = "home"

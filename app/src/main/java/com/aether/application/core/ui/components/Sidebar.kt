@@ -1,4 +1,4 @@
-package com.aether.core.ui.components
+package com.aether.application.core.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.aether.application.R
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 
 data class SavedConversation(
     val id: String,

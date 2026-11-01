@@ -38,11 +38,11 @@ import com.aether.application.R
 import com.aether.application.feature.proximity.domain.ProximityStatus
 import com.aether.application.feature.proximity.domain.WORKPLACE_RADIUS_METERS
 import com.aether.application.feature.proximity.presentation.qa.QaProximityBypass
-import com.aether.core.ui.theme.AetherTheme
-import com.aether.core.ui.theme.bodyMediumMd
-import com.aether.core.ui.theme.purple500
-import com.aether.core.ui.theme.titleLarge
-import com.aether.core.ui.theme.titleMediumMD
+import com.aether.application.core.ui.theme.AetherTheme
+import com.aether.application.core.ui.theme.bodyMediumMd
+import com.aether.application.core.ui.theme.purple500
+import com.aether.application.core.ui.theme.titleLarge
+import com.aether.application.core.ui.theme.titleMediumMD
 
 /**
  * Covers the app while the first proximity check runs ([status] null)

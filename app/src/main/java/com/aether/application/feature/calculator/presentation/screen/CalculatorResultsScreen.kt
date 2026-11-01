@@ -28,7 +28,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.core.ui.components.AetherTopBar
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 import java.text.NumberFormat
 import java.util.Locale
 

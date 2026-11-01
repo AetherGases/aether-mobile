@@ -1,4 +1,4 @@
-package com.aether.core.ui.components
+package com.aether.application.core.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 import com.aether.application.R
 
 enum class ChatSender { USER, AEKO }

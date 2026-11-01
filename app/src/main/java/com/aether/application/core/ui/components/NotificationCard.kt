@@ -1,4 +1,4 @@
-package com.aether.core.ui.components
+package com.aether.application.core.ui.components
 
 import com.aether.application.R
 import androidx.compose.foundation.background
@@ -19,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 
 enum class NotificationStatus {APROVADO, REPROVADO, PENDENTE}
 

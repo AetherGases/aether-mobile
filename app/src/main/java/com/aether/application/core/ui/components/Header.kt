@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.aether.application.R
-import com.aether.core.ui.theme.*
+import com.aether.application.core.ui.theme.*
 
 @Composable
 fun AppHeader(

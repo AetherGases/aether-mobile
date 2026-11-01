@@ -4,7 +4,7 @@ import com.aether.application.feature.reports.presentation.screen.CalendarDay
 import com.aether.application.feature.reports.presentation.screen.ReportItem
 import com.aether.application.feature.reports.presentation.screen.ReportTimeFilter
 import com.aether.application.feature.reports.presentation.screen.ReportViewerRole
-import com.aether.core.ui.components.ReportStatus
+import com.aether.application.core.ui.components.ReportStatus
 import java.time.LocalDate
 import java.time.YearMonth
 
