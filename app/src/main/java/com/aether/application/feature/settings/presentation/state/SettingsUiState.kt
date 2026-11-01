@@ -9,6 +9,8 @@ data class SettingsUiState(
     /** Shown under the header until the next upload attempt. */
     val avatarErrorMessage: String? = null,
     val reportsCount: Int = 0,
+    /** Only set for someone who both makes and reviews reports; [reportsCount] is then the ones made. */
+    val reviewedCount: Int? = null,
     val entryDate: String = "",
     val notificationsEnabled: Boolean = true,
     val emailNotificationsEnabled: Boolean = true,
