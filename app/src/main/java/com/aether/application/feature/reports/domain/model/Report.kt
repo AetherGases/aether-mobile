@@ -9,6 +9,7 @@ data class ReportDetails(
     val sector: String?,
     val unitName: String?,
     val description: String?,
+    val ownerId: Long?,
     val createdAt: LocalDateTime,
     val status: InventoryStatus,
     /** Null while the report has not been reviewed yet. */

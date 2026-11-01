@@ -14,6 +14,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.math.roundToInt
 
 /** Response of ms-inventory `GET /api/inventories/mine/{id}` and `/reviewed/{id}`; null fields are omitted. */
 @Serializable
@@ -46,6 +47,7 @@ data class GetReportResponse(
         sector = null,
         unitName = null,
         description = description,
+        ownerId = owner?.id,
         createdAt = createdAt,
         status = inventoryStatusOf(status, type),
         reviewer = validator?.let { ReportReviewer(name = it.name, avatarUrl = it.imageUrl) },
@@ -132,25 +134,25 @@ data class GetImprovementPlanResponse(
         definedProblem = definedProblem,
         solvingMethod = solvingMethod,
         reasoning = reasoning,
-        // The lower the index, the higher the priority
-        recommendedGases = recommendedGases.sortedBy { it.index }.map { it.toDomain() }
+        // The hub already sends the gases ordered by priority
+        recommendedGases = recommendedGases.map { it.toDomain() }
     )
 }
 
 @Serializable
 data class RecommendedGasDto(
-    val index: Int,
     /** 1, 2 or 3. */
     val scope: Int,
-    val emission: Int,
+    // The hub sends these as decimals (0.0, 100.0)
+    val emission: Double,
     @SerialName("reduction_percentage")
-    val reductionPercentage: Int,
+    val reductionPercentage: Double,
     val name: String,
 ) {
     fun toDomain() = RecommendedGas(
         scope = scope,
-        emission = emission,
-        reductionPercentage = reductionPercentage,
+        emission = emission.roundToInt(),
+        reductionPercentage = reductionPercentage.roundToInt(),
         name = name
     )
 }

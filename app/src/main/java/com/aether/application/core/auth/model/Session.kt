@@ -9,6 +9,8 @@ import java.time.Instant
 @Serializable
 data class Session(
     val email: String,
+    /** Null until the profile is loaded. */
+    val userId: Long? = null,
     val name: String = "Desconhecido",
     val avatar: String = "",
     val accessToken: String,

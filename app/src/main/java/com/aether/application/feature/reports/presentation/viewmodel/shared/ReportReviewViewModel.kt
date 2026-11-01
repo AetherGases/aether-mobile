@@ -86,7 +86,7 @@ class ReportReviewViewModel(
         scopes = emissionsByScope.map { scope ->
             ScopeGasesUi(
                 scope = scope.scope,
-                gases = scope.gases.map { gas ->
+                gases = scope.gases.filter { it.quantityCo2e > 0.0 }.map { gas ->
                     GasEmissionUi(
                         name = gas.name,
                         formula = gas.formula,

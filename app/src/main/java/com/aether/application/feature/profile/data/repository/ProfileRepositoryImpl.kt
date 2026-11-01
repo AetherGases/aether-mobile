@@ -58,6 +58,7 @@ class ProfileRepositoryImpl(
 
         val session = checkNotNull(sessionManager.getSession()) { "No session to update" }
         val updated = session.copy(
+            userId = profile.id,
             permissions = profile.permissions,
             name = profile.name,
             avatar = profile.avatarUrl ?: "",
