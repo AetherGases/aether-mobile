@@ -2,6 +2,7 @@ package com.aether.application.feature.auth.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.core.utils.userMessage
 import com.aether.application.feature.auth.domain.usecase.LoginUseCase
 import kotlinx.coroutines.channels.Channel
@@ -27,14 +28,23 @@ sealed interface LoginEvent {
 
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(LoginUiState())
+    private val _uiState = MutableStateFlow(
+        LoginUiState(
+            errorMessage = if (sessionManager.sessionExpired.value) SESSION_EXPIRED_MESSAGE else null
+        )
+    )
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     private val _events = Channel<LoginEvent>(Channel.BUFFERED)
     val events: Flow<LoginEvent> = _events.receiveAsFlow()
+
+    init {
+        sessionManager.consumeSessionExpired()
+    }
 
     fun onEmailChange(email: String) {
         _uiState.update { it.copy(email = email) }
@@ -70,3 +80,5 @@ class LoginViewModel(
         }
     }
 }
+
+private const val SESSION_EXPIRED_MESSAGE = "Sua sessão expirou. Entre novamente para continuar."

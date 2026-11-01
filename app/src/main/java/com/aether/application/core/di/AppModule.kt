@@ -87,7 +87,7 @@ object AppModule {
         }
 
         viewModel {
-            LoginViewModel(loginUseCase = get())
+            LoginViewModel(loginUseCase = get(), sessionManager = get())
         }
         single<RequestPasswordRecoveryUseCase> {
             RequestPasswordRecoveryUseCase(authRepository = get())

@@ -21,5 +21,11 @@ interface SessionManager {
 
     suspend fun restoreSession()
 
-    suspend fun logout()
+    /** True after the session was ended by the app (expired or rejected token) rather than by the user. */
+    val sessionExpired: StateFlow<Boolean>
+
+    fun consumeSessionExpired()
+
+    /** [expired] marks a logout the user didn't ask for, so the login screen can explain it. */
+    suspend fun logout(expired: Boolean = false)
 }
