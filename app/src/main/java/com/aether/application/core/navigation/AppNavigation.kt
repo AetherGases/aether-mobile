@@ -77,6 +77,7 @@ import com.aether.application.feature.reports.domain.model.ConsolidationApproach
 import com.aether.application.feature.reports.presentation.screen.CreateReportUploadScreen
 import com.aether.application.feature.reports.presentation.state.NewReportEvent
 import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import androidx.compose.foundation.layout.Box
@@ -349,6 +350,12 @@ private fun AppNavHost(
             composable<HomeRoute> {
                 val viewModel = koinViewModel<HomeViewModel>()
                 val context = LocalContext.current
+                // Home stays alive in the back stack: reload when coming back to it
+                var firstResume by remember { mutableStateOf(true) }
+                LifecycleResumeEffect(Unit) {
+                    if (firstResume) firstResume = false else viewModel.reloadOnReturn()
+                    onPauseOrDispose {}
+                }
                 val notificationPermissionLauncher = rememberLauncherForActivityResult(
                     ActivityResultContracts.RequestPermission()
                 ) {}
@@ -574,6 +581,7 @@ private fun AppNavHost(
                     avatarErrorMessage = uiState.avatarErrorMessage,
                     onAvatarPicked = viewModel::onAvatarPicked,
                     reportsCount = uiState.reportsCount,
+                    reviewedCount = uiState.reviewedCount,
                     entryDate = uiState.entryDate,
                     notificationsEnabled = uiState.notificationsEnabled,
                     emailNotificationsEnabled = uiState.emailNotificationsEnabled,

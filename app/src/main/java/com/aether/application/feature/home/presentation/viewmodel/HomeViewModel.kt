@@ -14,12 +14,12 @@ import com.aether.application.feature.home.presentation.components.QuickActionCo
 import com.aether.application.feature.home.presentation.components.RecentReport
 import com.aether.application.feature.home.presentation.model.toReportStatus
 import com.aether.application.feature.profile.domain.repository.ProfileRepository
-import com.aether.core.ui.components.EmployeeHeroCard
-import com.aether.core.ui.components.HomeHeroCard
-import com.aether.core.ui.components.ManagerHeroCard
-import com.aether.core.ui.components.ReportsSummaryHomeCard
-import com.aether.core.ui.components.SealProgressHomeCard
-import com.aether.core.ui.components.UnitEmissionsHomeCard
+import com.aether.application.core.ui.components.EmployeeHeroCard
+import com.aether.application.core.ui.components.HomeHeroCard
+import com.aether.application.core.ui.components.ManagerHeroCard
+import com.aether.application.core.ui.components.ReportsSummaryHomeCard
+import com.aether.application.core.ui.components.SealProgressHomeCard
+import com.aether.application.core.ui.components.UnitEmissionsHomeCard
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -103,6 +103,12 @@ class HomeViewModel(
         }
     }
 
+    // Quiet reload for when Home comes back to the foreground (new inventory, a review decided...)
+    fun reloadOnReturn() {
+        if (_uiState.value.phase != HomeLoadPhase.READY || _uiState.value.isRefreshing) return
+        viewModelScope.launch { loadHome() }
+    }
+
     fun refresh() {
         if (_uiState.value.isRefreshing) return
         viewModelScope.launch {
@@ -175,27 +181,39 @@ class HomeViewModel(
 
     // Cards load independently: one failing is left out and the others still show
     private suspend fun getHomeCards(): List<HomeHeroCard> {
-        val isManager = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
-        // The hero and summary cards share these, so they are fetched once
-        val summary = loadSection("inventory summary") {
-            val lastInventory = if (isManager) {
-                homeRepository.getLastReviewedInventory()
-            } else {
-                homeRepository.getLastSubmittedInventory()
-            }
-            val inventoryCount = homeRepository.getInventoryCount().let {
-                if (isManager) it.reviewedCount else it.submittedCount
-            }
-            lastInventory to inventoryCount
+        val canReview = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
+        val canCreate = sessionManager.hasPermission(AppPermission.INVENTORY_CREATING)
+        // Someone with both permissions gets the "you made" and the "you approved" cards;
+        // with none of them the employee cards are the fallback
+        val roles = buildList {
+            if (canCreate || !canReview) add(false)
+            if (canReview) add(true)
         }
 
-        val cards = listOfNotNull(
-            summary?.let { (lastInventory, inventoryCount) ->
-                loadSection("hero card") { getHeroCard(isManager, lastInventory, inventoryCount) }
-            },
-            summary?.let { (lastInventory, inventoryCount) ->
-                getReportsSummaryCard(isManager, lastInventory, inventoryCount)
-            },
+        val roleCards = roles.flatMap { isManager ->
+            // The hero and summary cards share these, so they are fetched once per role
+            val summary = loadSection("inventory summary") {
+                val lastInventory = if (isManager) {
+                    homeRepository.getLastReviewedInventory()
+                } else {
+                    homeRepository.getLastSubmittedInventory()
+                }
+                val inventoryCount = homeRepository.getInventoryCount().let {
+                    if (isManager) it.reviewedCount else it.submittedCount
+                }
+                lastInventory to inventoryCount
+            }
+            listOfNotNull(
+                summary?.let { (lastInventory, inventoryCount) ->
+                    loadSection("hero card") { getHeroCard(isManager, lastInventory, inventoryCount) }
+                },
+                summary?.let { (lastInventory, inventoryCount) ->
+                    getReportsSummaryCard(isManager, lastInventory, inventoryCount)
+                }
+            )
+        }
+
+        val cards = roleCards + listOfNotNull(
             loadSection("unit emissions card") { getUnitEmissionsCard() },
             getSealProgressCard()
         )
