@@ -205,7 +205,7 @@ private fun AppNavHost(
                     LaunchedEffect(Unit) {
                         viewModel.events.collect { event ->
                             when (event) {
-                                is ServerConfigEvent.Saved -> navController.popBackStack()
+                                is ServerConfigEvent.Saved -> navController.safePopBackStack()
                             }
                         }
                     }
@@ -273,7 +273,7 @@ private fun AppNavHost(
                     email = uiState.email,
                     isLoading = uiState.isLoading,
                     onEmailChange = viewModel::onEmailChange,
-                    onBackToLoginClick = navController::popBackStack,
+                    onBackToLoginClick = navController::safePopBackStack,
                     onSendCodeClick = viewModel::onSendCodeClick,
                     errorMessage = uiState.errorMessage
                 )
@@ -301,7 +301,7 @@ private fun AppNavHost(
                     email = route.email,
                     code = uiState.code,
                     onCodeChange = viewModel::onCodeChange,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.safePopBackStack() },
                     onVerifyClick = viewModel::onVerifyClick,
                     onResendClick = viewModel::onResendClick,
                     isLoading = uiState.isLoading,
@@ -328,7 +328,7 @@ private fun AppNavHost(
                                     popUpTo<LoginRoute> { inclusive = true }
                                 }
                             is ChangePasswordEvent.NavigateBack ->
-                                navController.popBackStack()
+                                navController.safePopBackStack()
                         }
                     }
                 }
@@ -438,7 +438,7 @@ private fun AppNavHost(
                     isLoading = uiState.isLoading,
                     errorMessage = uiState.errorMessage,
                     onRetry = viewModel::load,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.safePopBackStack() },
                     onProceedClick = { navController.navigate(ReportAnalysisRoute(route.reportId)) }
                 )
             }
@@ -460,7 +460,7 @@ private fun AppNavHost(
                         viewModel.clearError()
                         navController.navigate(ConsolidationApproachRoute)
                     },
-                    onBackClicked = { navController.popBackStack() }
+                    onBackClicked = { navController.safePopBackStack() }
                 )
             }
 
@@ -489,7 +489,7 @@ private fun AppNavHost(
                 ConsolidationApproachScreen(
                     isSubmitting = uiState.isSubmitting,
                     errorMessage = uiState.errorMessage,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.safePopBackStack() },
                     onEquityShareClick = { viewModel.onApproachSelected(ConsolidationApproach.EQUITY_SHARE) },
                     onFinancialControlClick = { viewModel.onApproachSelected(ConsolidationApproach.FINANCIAL_CONTROL) },
                     onOperationalControlClick = { viewModel.onApproachSelected(ConsolidationApproach.OPERATIONAL_CONTROL) },
@@ -521,7 +521,7 @@ private fun AppNavHost(
                     decision = uiState.decision,
                     isSubmitting = uiState.isSubmitting,
                     submitErrorMessage = uiState.submitErrorMessage,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.safePopBackStack() },
                     onDecisionSubmit = viewModel::onDecisionSubmit
                 )
             }
@@ -553,7 +553,7 @@ private fun AppNavHost(
                     onDaySelected = viewModel::onDaySelected,
                     onMonthChanged = viewModel::onMonthChanged,
                     onReviewClick = { id -> navController.navigate(ReportReviewRoute(id.toLong())) },
-                    onBackClicked = { navController.popBackStack() }
+                    onBackClicked = { navController.safePopBackStack() }
                 )
             }
 
@@ -565,7 +565,7 @@ private fun AppNavHost(
                     sections = uiState.sections,
                     selectedFilter = uiState.selectedFilter,
                     onFilterSelected = viewModel::onFilterSelected,
-                    onBackClicked = { navController.popBackStack() },
+                    onBackClicked = { navController.safePopBackStack() },
                     onNotificationClick = { reportId -> navController.navigate(ReportReviewRoute(reportId)) }
                 )
             }
@@ -604,7 +604,7 @@ private fun AppNavHost(
                     onTermsOfUseClick = { navController.navigate(TermsOfUseRoute) },
                     onPrivacyPolicyClick = { navController.navigate(PrivacyPolicyRoute) },
                     onLogoutClick = viewModel::onLogoutClick,
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.safePopBackStack() }
                 )
 
                 if (showThemePicker) {
@@ -626,16 +626,16 @@ private fun AppNavHost(
                 }
                 ReportProblemRoot(
                     viewModel = viewModel,
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.safePopBackStack() }
                 )
             }
 
             composable<TermsOfUseRoute> {
-                TermsOfUseScreen(onBackClick = { navController.popBackStack() })
+                TermsOfUseScreen(onBackClick = { navController.safePopBackStack() })
             }
 
             composable<PrivacyPolicyRoute> {
-                PrivacyPolicyScreen(onBackClick = { navController.popBackStack() })
+                PrivacyPolicyScreen(onBackClick = { navController.safePopBackStack() })
             }
 
             composable<CalculatorRoute> {
@@ -651,13 +651,13 @@ private fun AppNavHost(
                     onDeadlineChanged = viewModel::onDeadlineChanged,
                     onNextClicked = viewModel::onNextClicked,
                     onBackClicked = {
-                        if (!viewModel.onBackClicked()) navController.popBackStack()
+                        if (!viewModel.onBackClicked()) navController.safePopBackStack()
                     },
                     onCalculateClicked = viewModel::onCalculateClicked,
                     onConsultAekoClicked = { navController.navigate(ChatbotRoute) },
                     onFinishClicked = {
                         viewModel.onFinishClicked()
-                        navController.popBackStack()
+                        navController.safePopBackStack()
                     }
                 )
             }
@@ -691,7 +691,7 @@ private fun AppNavHost(
                     onNewConversationClick = viewModel::onNewConversationClick,
                     onConversationClick = viewModel::onConversationClick,
                     onSettingsClick = { navController.navigate(SettingsRoute) },
-                    onBackClicked = { navController.popBackStack() },
+                    onBackClicked = { navController.safePopBackStack() },
                     errorMessage = uiState.errorMessage
                 )
             }
