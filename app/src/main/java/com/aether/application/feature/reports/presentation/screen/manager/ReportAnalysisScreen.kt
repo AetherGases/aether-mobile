@@ -203,7 +203,7 @@ fun AetherAnalysisScreen(
 
                 FinancialCard(
                     heading = "Economia de Carbono",
-                    caption = "Créditos de carbono estimados",
+                    caption = "Créditos de carbono estimados a partir do inventário",
                     amount = analysis.monthlySavings,
                     suffix = "/mês",
                     isGreen = true
