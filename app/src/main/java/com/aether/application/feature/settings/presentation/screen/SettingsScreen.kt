@@ -324,6 +324,8 @@ private fun ProfileHeader(
     Spacer(Modifier.height(20.dp))
 }
 
+private val BothCountsMinWidth = 400.dp
+
 @Composable
 private fun StatsCard(reportsCount: Int, reviewedCount: Int?, entryDate: String) {
     Surface(
@@ -340,39 +342,55 @@ private fun StatsCard(reportsCount: Int, reviewedCount: Int?, entryDate: String)
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = 0.dp
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 20.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            StatItem(
-                icon = R.drawable.ic_reports,
-                iconTint = MaterialTheme.colorScheme.secondary,
-                value = reportsCount.toString(),
-                label = if (reviewedCount != null) "Realizados" else "Relatórios"
-            )
-
-            StatDivider()
-
-            // Only for someone who both makes and reviews reports
-            if (reviewedCount != null) {
-                StatItem(
-                    icon = R.drawable.ic_reports,
-                    iconTint = MaterialTheme.colorScheme.secondary,
-                    value = reviewedCount.toString(),
-                    label = "Analisados"
-                )
-
-                StatDivider()
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            // Both counts only fit side by side on wider screens; otherwise keep the bigger one
+            val showBoth = reviewedCount != null && maxWidth >= BothCountsMinWidth
+            val single = if (reviewedCount != null && reviewedCount > reportsCount) {
+                reviewedCount to "Analisados"
+            } else {
+                reportsCount to if (reviewedCount != null) "Realizados" else "Relatórios"
             }
 
-            StatItem(
-                icon = R.drawable.ic_calendar,
-                iconTint = MaterialTheme.colorScheme.secondary,
-                value = entryDate,
-                label = "Data de entrada"
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                if (showBoth && reviewedCount != null) {
+                    StatItem(
+                        icon = R.drawable.ic_reports,
+                        iconTint = MaterialTheme.colorScheme.secondary,
+                        value = reportsCount.toString(),
+                        label = "Realizados"
+                    )
+
+                    StatDivider()
+
+                    StatItem(
+                        icon = R.drawable.ic_reports,
+                        iconTint = MaterialTheme.colorScheme.secondary,
+                        value = reviewedCount.toString(),
+                        label = "Analisados"
+                    )
+                } else {
+                    StatItem(
+                        icon = R.drawable.ic_reports,
+                        iconTint = MaterialTheme.colorScheme.secondary,
+                        value = single.first.toString(),
+                        label = single.second
+                    )
+                }
+
+                StatDivider()
+
+                StatItem(
+                    icon = R.drawable.ic_calendar,
+                    iconTint = MaterialTheme.colorScheme.secondary,
+                    value = entryDate,
+                    label = "Data de entrada"
+                )
+            }
         }
     }
 }
