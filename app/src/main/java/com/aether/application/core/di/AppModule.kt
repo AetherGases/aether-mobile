@@ -33,8 +33,7 @@ import com.aether.application.feature.proximity.presentation.viewmodel.Proximity
 import com.aether.application.feature.reports.presentation.viewmodel.manager.ReportAnalysisViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.shared.ReportReviewViewModel
 import com.aether.application.feature.reports.domain.usecase.GetPendingReportsUseCase
-import com.aether.application.feature.reports.domain.usecase.GetReportsUseCase
-import com.aether.application.feature.reports.domain.usecase.GetReviewedReportsUseCase
+import com.aether.application.feature.reports.domain.usecase.GetHistoryUseCase
 import com.aether.application.feature.reports.presentation.viewmodel.ReportHistoryViewModel
 import com.aether.application.feature.profile.presentation.viewmodel.ProblemViewModel
 import com.aether.application.feature.reports.presentation.viewmodel.employee.NewReportViewModel
@@ -150,19 +149,15 @@ object AppModule {
             )
         }
 
-        single<GetReportsUseCase> {
-            GetReportsUseCase(reportsRepository = get())
-        }
         single<GetPendingReportsUseCase> {
             GetPendingReportsUseCase(reportsRepository = get())
         }
-        single<GetReviewedReportsUseCase> {
-            GetReviewedReportsUseCase(reportsRepository = get())
+        single<GetHistoryUseCase> {
+            GetHistoryUseCase(reportsRepository = get())
         }
         viewModel {
             ReportHistoryViewModel(
-                getReports = get(),
-                getReviewedReports = get(),
+                getHistory = get(),
                 sessionManager = get()
             )
         }

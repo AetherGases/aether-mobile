@@ -190,25 +190,27 @@ class HomeViewModel(
             if (canReview) add(true)
         }
 
+        // The count is the same for every role, so it is fetched once
+        val inventoryCount = loadSection("inventory count") { homeRepository.getHistoryCount() }
+
         val roleCards = roles.flatMap { isManager ->
             // The hero and summary cards share these, so they are fetched once per role
-            val summary = loadSection("inventory summary") {
-                val lastInventory = if (isManager) {
-                    homeRepository.getLastReviewedInventory()
-                } else {
-                    homeRepository.getLastSubmittedInventory()
+            val summary = inventoryCount?.let { count ->
+                loadSection("inventory summary") {
+                    val lastInventory = if (isManager) {
+                        homeRepository.getLastReviewedInventory()
+                    } else {
+                        homeRepository.getLastSubmittedInventory()
+                    }
+                    lastInventory to count
                 }
-                val inventoryCount = homeRepository.getInventoryCount().let {
-                    if (isManager) it.reviewedCount else it.submittedCount
-                }
-                lastInventory to inventoryCount
             }
             listOfNotNull(
-                summary?.let { (lastInventory, inventoryCount) ->
-                    loadSection("hero card") { getHeroCard(isManager, lastInventory, inventoryCount) }
+                summary?.let { (lastInventory, count) ->
+                    loadSection("hero card") { getHeroCard(isManager, lastInventory, count) }
                 },
-                summary?.let { (lastInventory, inventoryCount) ->
-                    getReportsSummaryCard(isManager, lastInventory, inventoryCount)
+                summary?.let { (lastInventory, count) ->
+                    getReportsSummaryCard(isManager, lastInventory, count)
                 }
             )
         }
@@ -225,7 +227,7 @@ class HomeViewModel(
     private suspend fun getHeroCard(
         isManager: Boolean,
         lastInventory: Inventory?,
-        inventoryCount: Int
+        inventoryCount: Long
     ): HomeHeroCard? {
         val lastDate = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE
 
@@ -272,10 +274,10 @@ class HomeViewModel(
     private fun getReportsSummaryCard(
         isManager: Boolean,
         lastInventory: Inventory?,
-        inventoryCount: Int
+        inventoryCount: Long
     ): HomeHeroCard? =
         ReportsSummaryHomeCard(
-            title = if (isManager) "Relatórios analisados" else "Relatórios realizados",
+            title = if (isManager) "Relatórios" else "Relatórios realizados",
             lastSubmittedLabel = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE,
             count = "$inventoryCount",
             onViewHistoryClick = {

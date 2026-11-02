@@ -537,7 +537,7 @@ fun HomeScreenManagerPreview() {
                     reductionAchieved = "8,3%",
                     summaryCount = "450"
                 ),
-                ReportsSummaryHomeCard("Relatórios analisados", "26/01/2026", "450") {},
+                ReportsSummaryHomeCard("Relatórios", "26/01/2026", "450") {},
                 UnitEmissionsHomeCard("2.403", "tCO₂e/mês", "12% ↗ em relação ao período anterior"),
                 SealProgressHomeCard("50%", "2 de 4 critérios atendidos")
             ),

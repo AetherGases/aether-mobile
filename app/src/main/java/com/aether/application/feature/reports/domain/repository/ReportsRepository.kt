@@ -7,8 +7,6 @@ import com.aether.application.feature.reports.domain.model.ReportsPage
 
 interface ReportsRepository {
 
-    suspend fun getMyReports(skip: Int, take: Int): ReportsPage
-
     suspend fun getReport(id: Long, asReviewer: Boolean): ReportDetails
 
     suspend fun getReportAnalysis(id: Long): ReportAnalysis
@@ -17,7 +15,7 @@ interface ReportsRepository {
 
     suspend fun getImprovementPlan(id: Long): ImprovementPlan?
 
-    suspend fun getReviewedReports(skip: Int, take: Int): ReportsPage
+    suspend fun getHistory(skip: Int, take: Int): ReportsPage
 
     suspend fun approveReport(id: Long, comment: String)
 

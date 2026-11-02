@@ -2,9 +2,9 @@ package com.aether.application.feature.home.data.remote
 
 import com.aether.application.feature.home.data.remote.dto.GetEnterpriseInfoResponse
 import com.aether.application.feature.home.data.remote.dto.GetInventoryCountResponse
+import com.aether.application.feature.home.data.remote.dto.GetInventoryHistoryResponse
 import com.aether.application.feature.home.data.remote.dto.GetMyInventoriesResponse
 import com.aether.application.feature.home.data.remote.dto.GetPendingInventoriesResponse
-import com.aether.application.feature.home.data.remote.dto.GetReviewedInventoriesResponse
 import com.aether.application.feature.home.data.remote.dto.GetSealProgressResponse
 import com.aether.application.feature.home.data.remote.dto.GetUnitInfoResponse
 import com.aether.application.feature.home.data.remote.dto.LastInventoryDto
@@ -16,7 +16,7 @@ private const val INVENTORY = "api/inventories"
 
 interface InventoryApi {
 
-    // The backend caps `take` at 6 on the three list routes
+    // The backend caps `take` at 6 on the list routes
     @GET("$INVENTORY/mine")
     suspend fun getMyInventories(
         @Query("name") name: String? = null,
@@ -32,13 +32,13 @@ interface InventoryApi {
         @Query("take") take: Int? = null,
     ): GetPendingInventoriesResponse
 
-    @GET("$INVENTORY/reviewed")
-    suspend fun getReviewedInventories(
+    @GET("$INVENTORY/history")
+    suspend fun getInventoryHistory(
         @Query("name") name: String? = null,
         @Query("status") status: String? = null,
         @Query("skip") skip: Int? = null,
         @Query("take") take: Int? = null,
-    ): GetReviewedInventoriesResponse
+    ): GetInventoryHistoryResponse
 
     @GET("$INVENTORY/reviewed/last")
     suspend fun getLastReviewedInventory(): LastInventoryDto

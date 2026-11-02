@@ -110,6 +110,10 @@
         {
           "type": "route",
           "uuid": "b7e24c10-3d58-4f6a-8c91-0a5d2e7f3b64"
+        },
+        {
+          "type": "route",
+          "uuid": "51c7c689-bee3-4e80-8c46-a29bd4a3b807"
         }
       ]
     },
@@ -1533,6 +1537,37 @@
         {
           "uuid": "db109117-8e8a-4370-afd3-0194e0565e8f",
           "body": "[\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c001\",\n    \"name\": \"Funcionamento do Aether\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c002\",\n    \"name\": \"Como reduzir emissões\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c003\",\n    \"name\": \"Criação de relatório\"\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "51c7c689-bee3-4e80-8c46-a29bd4a3b807",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/history",
+      "responses": [
+        {
+          "uuid": "a91efb63-19db-409c-9d14-9cea7c226233",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": \"https://i.pravatar.cc/150?img=12\",\n      \"status\": \"UNDER_REVIEW\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Inventário Q2\",\n      \"createdAt\": \"2026-09-12T10:00:00\",\n      \"author\": \"Maria Souza\",\n      \"authorImageUrl\": \"https://i.pravatar.cc/150?img=12\",\n      \"status\": \"APPROVED\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Inventário Q1\",\n      \"createdAt\": \"2026-09-13T10:00:00\",\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": \"https://i.pravatar.cc/150?img=12\",\n      \"status\": \"REJECTED\",\n      \"type\": \"INPUT\"\n    }\n  ],\n  \"totalCount\": 3\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
