@@ -22,8 +22,5 @@ interface HomeRepository {
     suspend fun getMonthlyUnitInfos(): UnitInfo
     suspend fun getEnterpriseInfos(): EnterpriseInfo
     suspend fun getInventoryCount(): InventoryCount
-
-    /** Size of the user's history, the number the summary and hero cards show. */
-    suspend fun getHistoryCount(): Long
     suspend fun getSealProgress(): SealProgress
 }

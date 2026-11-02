@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +33,9 @@ data class EmployeeHeroCard(
     val lastSubmittedLabel: String,
     val reportingPeriodLabel: String,
     val statusLabel: String,
-    val summaryCount: String
+    val summaryCount: String,
+    /** Opens the last report, null while the user has none. */
+    val onClick: (() -> Unit)? = null
 ) : HomeHeroCard {
     @Composable
     override fun Render(modifier: Modifier) {
@@ -43,7 +47,13 @@ data class EmployeeHeroCard(
                 .width(335.dp)
                 .height(205.dp)
                 .clip(RoundedCornerShape(18.dp))
-                .focusable()
+                .then(
+                    if (onClick != null) {
+                        Modifier.clickable(role = Role.Button, onClick = onClick)
+                    } else {
+                        Modifier.focusable()
+                    }
+                )
                 .semantics(mergeDescendants = true) {}
         ) {
             Image(
