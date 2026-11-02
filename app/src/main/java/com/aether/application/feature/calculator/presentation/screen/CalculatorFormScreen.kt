@@ -71,7 +71,7 @@ fun CalculatorFormScreen(
 
         uiState.errorMessage?.let { message ->
             FormErrorText(
-                message = message,
+                message = message.asString(),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(horizontal = 24.dp, vertical = 96.dp)

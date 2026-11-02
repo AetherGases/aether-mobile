@@ -4,6 +4,9 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.application.feature.reports.domain.model.ConsolidationApproach
 import com.aether.application.feature.reports.domain.model.ReportException
 import com.aether.application.feature.reports.domain.model.isSpreadsheetFileName
@@ -43,7 +46,7 @@ class NewReportViewModel(
     fun onFileSelected(uri: Uri) {
         val fileName = newReportRepository.displayName(uri.toString())
         if (fileName == null || !isSpreadsheetFileName(fileName)) {
-            _uiState.update { it.copy(errorMessage = "Selecione uma planilha no formato .xlsx.") }
+            _uiState.update { it.copy(errorMessage = uiText(R.string.reports_new_error_not_xlsx)) }
             return
         }
 
@@ -102,7 +105,7 @@ class NewReportViewModel(
         val nameError = validateReportName(state.reportName)
         if (nameError != null || fileName == null || fileUrl == null) {
             _uiState.update {
-                it.copy(errorMessage = nameError ?: "Envie a planilha antes de criar o relatório.")
+                it.copy(errorMessage = nameError ?: uiText(R.string.reports_new_error_upload_first))
             }
             return
         }
@@ -132,6 +135,6 @@ class NewReportViewModel(
         _uiState.update { it.copy(errorMessage = null) }
     }
 
-    private fun Exception.userMessage(): String =
-        (this as? ReportException)?.message ?: "Algo deu errado. Tente novamente."
+    private fun Exception.userMessage(): UiText =
+        (this as? ReportException)?.uiText ?: uiText(R.string.common_something_went_wrong)
 }

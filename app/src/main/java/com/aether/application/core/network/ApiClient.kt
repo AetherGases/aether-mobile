@@ -25,6 +25,7 @@ object ApiClient {
                     addInterceptor(baseUrlInterceptor)
                 }
             }
+            .addInterceptor(AcceptLanguageInterceptor())
             .addInterceptor(authInterceptor)
             .addInterceptor(HttpCallLoggingInterceptor())
             .authenticator(tokenAuthenticator)
@@ -45,6 +46,7 @@ object ApiClient {
                     addInterceptor(baseUrlInterceptor)
                 }
             }
+            .addInterceptor(AcceptLanguageInterceptor())
             .addInterceptor(HttpCallLoggingInterceptor())
             .build()
     }

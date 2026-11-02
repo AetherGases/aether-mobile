@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -45,7 +46,7 @@ fun AetherTopBar(
     ) {
         ThemeAwareIconButton(
             painter = painterResource(id = R.drawable.ic_chevron_left),
-            contentDescription = "Voltar",
+            contentDescription = stringResource(R.string.common_back),
             onClick = onBackClick,
             iconSize = 16.dp
         )

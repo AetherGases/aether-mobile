@@ -1,13 +1,9 @@
 package com.aether.application.feature.reports.presentation.model
 
 import com.aether.application.feature.reports.presentation.screen.CalendarDay
+import com.aether.application.core.utils.AppLocale
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.util.Locale
-
-private val ptBr = Locale.forLanguageTag("pt-BR")
-private val monthFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", ptBr)
 
 fun LocalDate.toCalendarDay(
     selectedDate: LocalDate?,
@@ -35,4 +31,4 @@ fun buildMonthWeeks(
 }
 
 fun YearMonth.label(): String =
-    format(monthFormatter).replaceFirstChar { it.titlecase(ptBr) }
+    format(AppLocale.monthYearFormatter()).replaceFirstChar { it.titlecase(AppLocale.current()) }

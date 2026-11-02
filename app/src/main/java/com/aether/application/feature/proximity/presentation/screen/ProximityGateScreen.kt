@@ -1,6 +1,7 @@
 package com.aether.application.feature.proximity.presentation.screen
 
 import android.Manifest
+import com.aether.application.core.utils.AppLocale
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,17 +78,21 @@ fun ProximityGateScreen(
         val radiusKm = WORKPLACE_RADIUS_METERS / 1000
         val (title, description) = when (status) {
             ProximityStatus.PermissionRequired ->
-                "Permita o acesso à localização" to
-                    "O Aether só pode ser usado nas proximidades da sua empresa. Precisamos da sua localização para confirmar isso."
+                stringResource(R.string.proximity_permission_title) to
+                    stringResource(R.string.proximity_permission_message)
             ProximityStatus.LocationDisabled ->
-                "Ative a localização" to
-                    "A localização do dispositivo está desligada. Ative-a para confirmarmos que você está na sua empresa."
+                stringResource(R.string.proximity_disabled_title) to
+                    stringResource(R.string.proximity_disabled_message)
             ProximityStatus.LocationUnavailable ->
-                "Não foi possível obter sua localização" to
-                    "Verifique o sinal de GPS ou a conexão e tente novamente."
+                stringResource(R.string.proximity_unavailable_title) to
+                    stringResource(R.string.proximity_unavailable_message)
             is ProximityStatus.TooFar ->
-                "Você está longe da empresa" to
-                    "O Aether só pode ser usado a até ${formatKm(radiusKm)} km da sua empresa. Você está a cerca de ${formatKm(status.distanceMeters / 1000f)} km."
+                stringResource(R.string.proximity_too_far_title) to
+                    stringResource(
+                        R.string.proximity_too_far_message,
+                        formatKm(radiusKm),
+                        formatKm(status.distanceMeters / 1000f)
+                    )
             ProximityStatus.Allowed -> return@Box
         }
 
@@ -126,7 +132,7 @@ fun ProximityGateScreen(
 
             when (status) {
                 ProximityStatus.PermissionRequired -> {
-                    GateButton(text = "Permitir localização", enabled = !isChecking) {
+                    GateButton(text = stringResource(R.string.proximity_allow_location), enabled = !isChecking) {
                         permissionLauncher.launch(
                             arrayOf(
                                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -143,19 +149,19 @@ fun ProximityGateScreen(
                             )
                         )
                     }) {
-                        Text("Abrir configurações", style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
+                        Text(stringResource(R.string.proximity_open_settings), style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
                     }
                 }
                 ProximityStatus.LocationDisabled -> {
-                    GateButton(text = "Ativar localização", enabled = !isChecking) {
+                    GateButton(text = stringResource(R.string.proximity_enable_location), enabled = !isChecking) {
                         context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                     }
                     TextButton(onClick = onRetry, enabled = !isChecking) {
-                        Text("Tentar novamente", style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
+                        Text(stringResource(R.string.common_try_again), style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
                     }
                 }
                 else -> GateButton(
-                    text = if (isChecking) "Verificando..." else "Tentar novamente",
+                    text = stringResource(if (isChecking) R.string.proximity_checking else R.string.common_try_again),
                     enabled = !isChecking,
                     onClick = onRetry
                 )
@@ -190,7 +196,7 @@ private fun GateButton(
     }
 }
 
-private fun formatKm(value: Float): String = "%.1f".format(value).replace('.', ',')
+private fun formatKm(value: Float): String = AppLocale.decimalFormat(1).apply { minimumFractionDigits = 1 }.format(value)
 
 @Preview(showBackground = true)
 @Composable

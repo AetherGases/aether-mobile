@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.aether.application.R
+import com.aether.application.core.utils.UiText
 import com.aether.application.feature.home.domain.model.InventoryStatus
 import com.aether.application.feature.reports.presentation.components.ReportLoadState
 import com.aether.application.core.ui.components.AetherTopBar
@@ -81,7 +83,7 @@ data class GasEmissionUi(
 fun ReportReviewScreen(
     report: ReportReviewUi?,
     isLoading: Boolean,
-    errorMessage: String?,
+    errorMessage: UiText?,
     onRetry: () -> Unit,
     onBackClick: () -> Unit,
     onProceedClick: () -> Unit,
@@ -118,7 +120,7 @@ fun ReportReviewScreen(
     ) {
 
         AetherTopBar(
-            title = "Revisar relatório",
+            title = stringResource(R.string.reports_review_title),
             onBackClick = onBackClick
         )
 
@@ -159,7 +161,7 @@ private fun ReportReviewContent(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Revisão de\nrelatório",
+                    text = stringResource(R.string.reports_review_heading),
                     style = titleLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -182,7 +184,8 @@ private fun ReportReviewContent(
                             )
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
-                                text = report.reviewerName?.let { "Revisado por $it" } ?: "Revisor não informado",
+                                text = report.reviewerName?.let { stringResource(R.string.reports_reviewed_by, it) }
+                                    ?: stringResource(R.string.reports_reviewer_unknown),
                                 style = bodyMediumMd,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -191,18 +194,18 @@ private fun ReportReviewContent(
 
                     report.status.isProcessing -> StatusLabel(
                         iconRes = R.drawable.ic_clock,
-                        text = "Processando dados"
+                        text = stringResource(R.string.reports_review_status_processing)
                     )
 
                     report.status.processingFailed -> StatusLabel(
                         iconRes = R.drawable.ic_rejected_circle,
-                        text = "Falha no processamento",
+                        text = stringResource(R.string.reports_review_status_failed),
                         color = MaterialTheme.colorScheme.error
                     )
 
                     else -> StatusLabel(
                         iconRes = R.drawable.ic_clock,
-                        text = "Análise pendente"
+                        text = stringResource(R.string.reports_review_status_pending)
                     )
                 }
             }
@@ -241,7 +244,7 @@ private fun ReportReviewContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Identificação",
+                        text = stringResource(R.string.reports_review_identification),
                         style = titleLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -266,7 +269,7 @@ private fun ReportReviewContent(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.weight(1.2f)) {
                         Text(
-                            "Planta industrial",
+                            stringResource(R.string.reports_review_plant),
                             style = bodySmallMedium,
                             color = MaterialTheme.colorScheme.outline
                         )
@@ -287,7 +290,7 @@ private fun ReportReviewContent(
 
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            "Data de envio",
+                            stringResource(R.string.reports_review_submitted_on),
                             style = bodySmallMedium,
                             color = MaterialTheme.colorScheme.outline
                         )
@@ -304,7 +307,7 @@ private fun ReportReviewContent(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        text = "Descrição",
+                        text = stringResource(R.string.reports_review_description),
                         style = titleMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -323,7 +326,7 @@ private fun ReportReviewContent(
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = "Gases identificados",
+                text = stringResource(R.string.reports_review_gases),
                 style = titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -332,7 +335,7 @@ private fun ReportReviewContent(
 
             if (report.scopes.isEmpty()) {
                 Text(
-                    text = "Nenhum gás identificado neste relatório.",
+                    text = stringResource(R.string.reports_review_no_gases),
                     style = bodyMediumMd,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -364,8 +367,8 @@ private fun ReportReviewContent(
             val borderColor = if (isApproved) MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
             val iconRes = if (isApproved) R.drawable.ic_approved_circle else R.drawable.ic_rejected_circle
             val iconTint = if (isApproved) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error
-            val statusTitle = if (isApproved) "Relatório aprovado" else "Relatório reprovado"
-            val subtitle = if (isApproved) "Comentário" else "Motivo"
+            val statusTitle = stringResource(if (isApproved) R.string.reports_review_approved else R.string.reports_review_rejected)
+            val subtitle = stringResource(if (isApproved) R.string.reports_review_comment else R.string.reports_review_reason)
 
             Surface(
                 shape = RoundedCornerShape(24.dp),
@@ -415,16 +418,16 @@ private fun ReportReviewContent(
             ReportNoticeCard(
                 iconRes = R.drawable.ic_rejected_circle,
                 color = MaterialTheme.colorScheme.error,
-                title = "Falha no processamento",
-                message = "Não foi possível processar os dados deste relatório. Envie o relatório novamente."
+                title = stringResource(R.string.reports_review_failed_title),
+                message = stringResource(R.string.reports_review_failed_message)
             )
         } else if (report.status.isProcessing) {
             Spacer(modifier = Modifier.height(24.dp))
             ReportNoticeCard(
                 iconRes = R.drawable.ic_clock,
                 color = MaterialTheme.colorScheme.primary,
-                title = "Processando relatório",
-                message = "Os dados de emissões ainda estão sendo calculados. Volte em alguns instantes."
+                title = stringResource(R.string.reports_review_processing_title),
+                message = stringResource(R.string.reports_review_processing_message)
             )
         }
 
@@ -445,7 +448,7 @@ private fun ReportReviewContent(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Prosseguir para análise",
+                        text = stringResource(R.string.reports_review_proceed),
                         style = titleMediumMD,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
@@ -562,7 +565,7 @@ private fun GasEmissionCard(gas: GasEmissionUi) {
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = withSubscriptDigits("tCO2e/mês"),
+                    text = withSubscriptDigits(stringResource(R.string.reports_review_emission_unit)),
                     style = bodyMediumMd,
                     color = MaterialTheme.colorScheme.outline
                 )

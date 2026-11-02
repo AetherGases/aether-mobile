@@ -17,10 +17,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.core.ui.theme.*
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
 import com.aether.application.core.ui.components.FormErrorText
 
 @Composable
@@ -31,7 +34,7 @@ fun PasswordRecoveryScreen(
     onBackToLoginClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    errorMessage: String? = null
+    errorMessage: UiText? = null
 ) {
     Box(
         modifier = modifier
@@ -113,7 +116,7 @@ fun PasswordRecoveryScreen(
 
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Recuperação de senha",
+                    text = stringResource(R.string.auth_recovery_title),
                     style = titleMedium,
                     color = textPrimaryLight,
                     modifier = Modifier.align(Alignment.Center)
@@ -123,7 +126,7 @@ fun PasswordRecoveryScreen(
             Spacer(Modifier.height(64.dp))
 
             Text(
-                text = "Nos informe seu email",
+                text = stringResource(R.string.auth_recovery_enter_email),
                 style = displayMedium,
                 color = textPrimaryLight
             )
@@ -135,7 +138,7 @@ fun PasswordRecoveryScreen(
                 onValueChange = onEmailChange,
                 placeholder = {
                     Text(
-                        text = "Email:",
+                        text = stringResource(R.string.auth_email_label),
                         style = bodyLarge,
                         color = textPrimaryLight
                     )
@@ -160,7 +163,7 @@ fun PasswordRecoveryScreen(
 
             if (errorMessage != null) {
                 Spacer(Modifier.height(16.dp))
-                FormErrorText(errorMessage)
+                FormErrorText(errorMessage.asString())
             }
 
             Spacer(Modifier.weight(1f))
@@ -185,7 +188,7 @@ fun PasswordRecoveryScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(text = "Enviar código de recuperação", style = titleMedium, color = textPrimaryDark)
+                    Text(text = stringResource(R.string.auth_recovery_send_code), style = titleMedium, color = textPrimaryDark)
                 }
             }
 
@@ -206,7 +209,7 @@ fun PasswordRecoveryScreen(
                 shape = RoundedCornerShape(28.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = backgroundLight)
             ) {
-                Text(text = "Voltar ao login", style = titleMedium, color = textPrimaryLight)
+                Text(text = stringResource(R.string.auth_recovery_back_to_login), style = titleMedium, color = textPrimaryLight)
             }
 
             Spacer(Modifier.height(24.dp))

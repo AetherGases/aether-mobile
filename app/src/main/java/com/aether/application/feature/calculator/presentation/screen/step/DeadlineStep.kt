@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.aether.application.R
 import com.aether.application.core.ui.components.AetherTopBar
 import com.aether.application.core.ui.theme.*
 
@@ -38,7 +40,7 @@ fun DeadlineStep(
         modifier = modifier.fillMaxSize().imePadding()
     ) {
         AetherTopBar(
-            title = "Inserir dados",
+            title = stringResource(R.string.calculator_enter_data),
             onBackClick = onBackClicked
         )
 
@@ -49,13 +51,13 @@ fun DeadlineStep(
         ) {
             Spacer(Modifier.height(16.dp))
 
-            Text("Prazo", style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.calculator_deadline_title), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
 
             Spacer(Modifier.height(32.dp))
 
             Text(
                 text = buildAnnotatedString {
-                    append("Prazo que deseja para neutralizar")
+                    append(stringResource(R.string.calculator_deadline_label))
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.error)) {
                         append("*")
                     }
@@ -69,10 +71,10 @@ fun DeadlineStep(
             OutlinedTextField(
                 value = deadline,
                 onValueChange = onDeadlineChanged,
-                placeholder = { Text("Ex: 5") },
+                placeholder = { Text(stringResource(R.string.calculator_deadline_placeholder)) },
                 trailingIcon = {
                     Text(
-                        text = "anos",
+                        text = stringResource(R.string.calculator_deadline_unit),
                         style = bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(end = 16.dp)
@@ -125,7 +127,7 @@ fun DeadlineStep(
                     contentPadding = PaddingValues()
                 ) {
                     Text(
-                        text = "Calcular",
+                        text = stringResource(R.string.calculator_calculate),
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = titleSmall,
                     )

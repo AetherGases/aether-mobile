@@ -1,31 +1,35 @@
 package com.aether.application.feature.auth.domain.exception
 
-import com.aether.application.core.utils.DEFAULT_ERROR_MESSAGE
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.UserFacingException
+import com.aether.application.core.utils.uiText
+
 
 sealed class AuthException(
-    message: String,
+    uiText: UiText,
     cause: Throwable? = null
-) : Exception(message, cause) {
+) : UserFacingException(uiText, cause) {
 
     class InvalidCredentials : AuthException(
-        "Usuário e/ou senha inválidos."
+        uiText(R.string.auth_error_invalid_credentials)
     )
 
     class Api(
         message: String
-    ) : AuthException(message)
+    ) : AuthException(uiText(message))
 
     class Network(
         cause: Throwable
     ) : AuthException(
-        "Não foi possível conectar ao servidor.",
+        uiText(R.string.common_error_server_unreachable),
         cause
     )
 
     class Unexpected(
         cause: Throwable
     ) : AuthException(
-        DEFAULT_ERROR_MESSAGE,
+        uiText(R.string.common_unexpected_error),
         cause
     )
 }

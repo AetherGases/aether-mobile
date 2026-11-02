@@ -1,6 +1,7 @@
 package com.aether.application.feature.reports.presentation.viewmodel
 
 import android.util.Log
+import com.aether.application.core.utils.AppLocale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aether.application.core.auth.storage.SessionManager
@@ -75,7 +76,6 @@ class ReportHistoryViewModel(
         val hasMore: Boolean = false
     )
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     private val entries = MutableStateFlow<List<Entry>>(emptyList())
     private val viewerRole = MutableStateFlow(ReportViewerRole.FUNCIONARIO)
@@ -194,9 +194,9 @@ class ReportHistoryViewModel(
                 id = id.toString(),
                 avatarUrl = authorImageUrl,
                 title = name,
-                authorName = author ?: "Desconhecido",
+                authorName = author,
                 reviewerName = reviewer,
-                createdAt = createdAt.format(dateFormatter),
+                createdAt = createdAt.format(AppLocale.shortDateFormatter()),
                 status = status.toHistoryStatus(),
                 // Nobody reviews their own report; the list has no owner id, so the author name is compared
                 canReview = viewerRole.value == ReportViewerRole.GERENTE &&
@@ -221,7 +221,7 @@ class ReportHistoryViewModel(
             .filter { entry ->
                 (query.isEmpty() ||
                     entry.item.title.contains(query, ignoreCase = true) ||
-                    entry.item.authorName.contains(query, ignoreCase = true)) &&
+                    entry.item.authorName?.contains(query, ignoreCase = true) == true) &&
                     (filters.statusFilters.isEmpty() || entry.item.status in filters.statusFilters) &&
                     (filters.selectedDate == null || entry.createdAt.toLocalDate() == filters.selectedDate)
             }

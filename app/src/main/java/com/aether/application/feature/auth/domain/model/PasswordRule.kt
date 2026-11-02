@@ -1,17 +1,19 @@
 package com.aether.application.feature.auth.domain.model
 
-const val PASSWORD_REQUIREMENTS_MESSAGE = "A senha não atende aos requisitos."
+import androidx.annotation.StringRes
+import com.aether.application.R
+
 
 class PasswordRule(
-    val label: String,
+    @StringRes val labelRes: Int,
     val isSatisfiedBy: (String) -> Boolean,
 )
 
 val DefaultPasswordRules = listOf(
-    PasswordRule("8-28 caracteres") { it.length in 8..28 },
-    PasswordRule("Pelo menos uma letra maiúscula") { pw -> pw.any { it.isUpperCase() } },
-    PasswordRule("Pelo menos uma letra minúscula") { pw -> pw.any { it.isLowerCase() } },
-    PasswordRule("Pelo menos um número") { pw -> pw.any { it.isDigit() } },
+    PasswordRule(R.string.auth_password_rule_length) { it.length in 8..28 },
+    PasswordRule(R.string.auth_password_rule_uppercase) { pw -> pw.any { it.isUpperCase() } },
+    PasswordRule(R.string.auth_password_rule_lowercase) { pw -> pw.any { it.isLowerCase() } },
+    PasswordRule(R.string.auth_password_rule_number) { pw -> pw.any { it.isDigit() } },
 )
 
 fun String.meetsPasswordRules(): Boolean = DefaultPasswordRules.all { it.isSatisfiedBy(this) }

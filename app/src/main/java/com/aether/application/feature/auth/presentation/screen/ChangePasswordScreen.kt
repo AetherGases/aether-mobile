@@ -19,11 +19,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aether.application.R
+import com.aether.application.core.utils.UiText
 import com.aether.application.feature.auth.domain.model.DefaultPasswordRules
 import com.aether.application.feature.auth.domain.model.PasswordRule
 import com.aether.application.core.ui.theme.*
@@ -42,7 +44,7 @@ fun ChangePasswordScreen(
     onSubmitClick: () -> Unit,
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    errorMessage: String? = null,
+    errorMessage: UiText? = null,
     rules: List<PasswordRule> = DefaultPasswordRules
 ) {
     Box(
@@ -116,12 +118,12 @@ fun ChangePasswordScreen(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_chevron_left),
-                        contentDescription = "Voltar",
+                        contentDescription = stringResource(R.string.common_back),
                         tint = textPrimaryLight
                     )
                 }
                 Text(
-                text = "Recuperação de senha",
+                text = stringResource(R.string.auth_recovery_title),
                 style = titleMedium,
                 color = textPrimaryLight,
                 modifier = Modifier.align(Alignment.Center)
@@ -131,7 +133,7 @@ fun ChangePasswordScreen(
             Spacer(Modifier.height(64.dp))
 
             Text(
-                text = "Insira a nova \nsenha",
+                text = stringResource(R.string.auth_change_password_prompt),
                 style = displayMedium,
                 color = textPrimaryLight
             )
@@ -155,7 +157,7 @@ fun ChangePasswordScreen(
                 onValueChange = onPasswordChange,
                 placeholder = {
                     Text(
-                        text = "Nova Senha:",
+                        text = stringResource(R.string.auth_new_password_label),
                         style = bodyLarge,
                         color = textPrimaryLight
                     )
@@ -176,7 +178,7 @@ fun ChangePasswordScreen(
                     onValueChange = onConfirmPasswordChange,
                     placeholder = {
                         Text(
-                            text = "Confirmar Senha:",
+                            text = stringResource(R.string.auth_confirm_password_label),
                             style = bodyLarge,
                             color = textPrimaryLight
                         )
@@ -195,14 +197,14 @@ fun ChangePasswordScreen(
 
             if (errorMessage != null) {
                 Spacer(Modifier.height(16.dp))
-                FormErrorText(errorMessage)
+                FormErrorText(errorMessage.asString())
             }
 
             Spacer(Modifier.height(24.dp))
 
             Column {
                 Text(
-                    text = "A sua senha deve conter",
+                    text = stringResource(R.string.auth_password_must_contain),
                     color = textPrimaryLight,
                     style = titleMedium,
                 )
@@ -210,7 +212,7 @@ fun ChangePasswordScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     rules.forEach { rule ->
                         RequirementItem(
-                            text = rule.label,
+                            text = stringResource(rule.labelRes),
                             isMet = rule.isSatisfiedBy(password),
                         )
                     }
@@ -245,7 +247,7 @@ fun ChangePasswordScreen(
                         )
                     } else {
                         Text(
-                            text = if (isConfirmStep) "Trocar" else "Confirmar",
+                            text = stringResource(if (isConfirmStep) R.string.auth_change_password_change else R.string.auth_change_password_confirm),
                             style = titleMedium,
                             color = textPrimaryDark
                         )

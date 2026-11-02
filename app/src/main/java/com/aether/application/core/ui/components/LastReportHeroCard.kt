@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.ui.res.stringResource
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import dev.chrisbanes.haze.HazeState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -31,7 +34,7 @@ import dev.chrisbanes.haze.hazeSource
 
 data class EmployeeHeroCard(
     val lastSubmittedLabel: String,
-    val reportingPeriodLabel: String,
+    val reportingPeriodLabel: UiText,
     val statusLabel: String,
     val summaryCount: String,
     /** Opens the last report, null while the user has none. */
@@ -72,9 +75,9 @@ data class EmployeeHeroCard(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    Text("Último relatório", style = titleSmall, color = textPrimaryDark)
+                    Text(stringResource(R.string.lastreport_title), style = titleSmall, color = textPrimaryDark)
                     Text(
-                        "Enviado em $lastSubmittedLabel",
+                        stringResource(R.string.lastreport_sent_on, lastSubmittedLabel),
                         style = bodySmallMedium,
                         color = textPrimaryDark
                     )
@@ -101,11 +104,11 @@ data class EmployeeHeroCard(
                 ) {
                     Column {
                         Text(
-                            "Período do relatório",
+                            stringResource(R.string.lastreport_period),
                             style = bodySmallMedium,
                             color = textPrimaryDark
                         )
-                        Text(reportingPeriodLabel, style = displayMedium, color = textPrimaryDark)
+                        Text(reportingPeriodLabel.asString(), style = displayMedium, color = textPrimaryDark)
                     }
                 }
 
@@ -131,7 +134,7 @@ fun LastReportHeroCardPreview() {
     AetherTheme {
         EmployeeHeroCard(
             lastSubmittedLabel = "29/05/2026",
-            reportingPeriodLabel = "Jan–Mar 2026",
+            reportingPeriodLabel = uiText("Jan–Mar 2026"),
             statusLabel = "Aguardando revisão há 2 dias",
             summaryCount = "506"
         ).Render()

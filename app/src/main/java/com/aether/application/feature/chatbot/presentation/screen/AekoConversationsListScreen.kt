@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -100,7 +101,7 @@ fun AekoConversationsListScreen(
                 )
             }
             Spacer(Modifier.width(12.dp))
-            Text("Aeko", style = titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.chatbot_aeko_name), style = titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
         }
 
         Spacer(Modifier.height(16.dp))
@@ -126,7 +127,7 @@ fun AekoConversationsListScreen(
                 modifier = Modifier.size(30.dp)
             )
             Spacer(Modifier.width(10.dp))
-            Text("Nova conversa")
+            Text(stringResource(R.string.chatbot_new_conversation))
         }
 
         Spacer(Modifier.height(16.dp))
@@ -134,7 +135,7 @@ fun AekoConversationsListScreen(
         OutlinedTextField(
             value = searchQuery,
             onValueChange = onSearchQueryChanged,
-            placeholder = { Text("Pesquisar conversa") },
+            placeholder = { Text(stringResource(R.string.chatbot_search_conversation)) },
             leadingIcon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_search),
@@ -158,7 +159,7 @@ fun AekoConversationsListScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            "Conversas salvas",
+            stringResource(R.string.chatbot_saved_conversations),
             style = titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -183,7 +184,7 @@ fun AekoConversationsListScreen(
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = avatarUrl,
-                contentDescription = "Foto de perfil",
+                contentDescription = stringResource(R.string.chatbot_profile_photo),
                 modifier = Modifier
                     .size(44.dp)
                     .clip(CircleShape)
@@ -196,7 +197,7 @@ fun AekoConversationsListScreen(
             IconButton(onClick = onSettingsClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_settings),
-                    contentDescription = "Configurações",
+                    contentDescription = stringResource(R.string.common_settings),
                     tint = MaterialTheme.colorScheme.outline
                 )
             }
@@ -241,7 +242,7 @@ private fun ConversationRow(
             Spacer(Modifier.width(8.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_bookmark),
-                contentDescription = "Conversa salva",
+                contentDescription = stringResource(R.string.chatbot_saved_conversation),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(16.dp)
             )
