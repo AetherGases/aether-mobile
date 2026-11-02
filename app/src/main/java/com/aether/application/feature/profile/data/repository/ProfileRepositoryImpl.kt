@@ -10,7 +10,9 @@ import com.aether.application.core.network.cloudinary.CloudinaryUploader
 import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.profile.data.local.AvatarImageProcessor
 import com.aether.application.feature.profile.data.remote.dto.ImageRequest
+import com.aether.application.feature.profile.data.remote.dto.NotificationPreferencesDto
 import com.aether.application.feature.profile.data.remote.dto.UpdateProfileRequest
+import com.aether.application.feature.profile.domain.model.NotificationPreferences
 import com.aether.application.feature.profile.domain.repository.ProfileRepository
 
 private const val AVATAR_MIME_TYPE = "image/jpeg"
@@ -47,6 +49,20 @@ class ProfileRepositoryImpl(
             sessionManager.save(session.copy(avatar = imageUrl))
         }
         return imageUrl
+    }
+
+    override suspend fun getNotificationPreferences(): NotificationPreferences {
+        val notifications = profileApi.getUserProfile().notifications
+        return NotificationPreferences(
+            mobile = notifications?.mobile == true,
+            email = notifications?.email == true
+        )
+    }
+
+    override suspend fun setNotificationPreferences(mobile: Boolean?, email: Boolean?) {
+        profileApi.updateProfile(
+            UpdateProfileRequest(notifications = NotificationPreferencesDto(email = email, mobile = mobile))
+        )
     }
 
     override suspend fun refreshProfile(): Session {

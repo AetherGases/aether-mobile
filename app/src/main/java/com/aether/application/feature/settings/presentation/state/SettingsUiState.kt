@@ -12,8 +12,9 @@ data class SettingsUiState(
     /** Only set for someone who both makes and reviews reports; [reportsCount] is then the ones made. */
     val reviewedCount: Int? = null,
     val entryDate: String = "",
-    val notificationsEnabled: Boolean = true,
-    val emailNotificationsEnabled: Boolean = true,
+    /** Push and e-mail switches, loaded from the server; off until they arrive. */
+    val notificationsEnabled: Boolean = false,
+    val emailNotificationsEnabled: Boolean = false,
     val theme: ThemePreference = ThemePreference.SYSTEM,
     val canTalkToAeko: Boolean = false,
     // TODO: no translated resources yet, so the language is fixed

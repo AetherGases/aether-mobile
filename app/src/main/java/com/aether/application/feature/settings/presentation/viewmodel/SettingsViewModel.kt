@@ -33,11 +33,22 @@ class SettingsViewModel(
     init {
         viewModelScope.launch {
             settingsRepository.settings.collect { settings ->
+                _uiState.update { it.copy(theme = settings.theme) }
+            }
+        }
+
+        // The notification switches live on the server (ms-auth), not on the device
+        viewModelScope.launch {
+            try {
+                val preferences = profileRepository.getNotificationPreferences()
                 _uiState.update { it.copy(
-                    notificationsEnabled = settings.notificationsEnabled,
-                    emailNotificationsEnabled = settings.emailNotificationsEnabled,
-                    theme = settings.theme
+                    notificationsEnabled = preferences.mobile,
+                    emailNotificationsEnabled = preferences.email
                 ) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load the notification preferences", e)
             }
         }
 
@@ -75,11 +86,41 @@ class SettingsViewModel(
     }
 
     fun onNotificationsChanged(enabled: Boolean) {
-        viewModelScope.launch { settingsRepository.setNotificationsEnabled(enabled) }
+        changeNotificationPreference(
+            previous = _uiState.value.notificationsEnabled,
+            apply = { state, value -> state.copy(notificationsEnabled = value) },
+            enabled = enabled,
+            save = { profileRepository.setNotificationPreferences(mobile = enabled) }
+        )
     }
 
     fun onEmailNotificationsChanged(enabled: Boolean) {
-        viewModelScope.launch { settingsRepository.setEmailNotificationsEnabled(enabled) }
+        changeNotificationPreference(
+            previous = _uiState.value.emailNotificationsEnabled,
+            apply = { state, value -> state.copy(emailNotificationsEnabled = value) },
+            enabled = enabled,
+            save = { profileRepository.setNotificationPreferences(email = enabled) }
+        )
+    }
+
+    /** Flips the switch right away and puts it back when the server doesn't accept the change. */
+    private fun changeNotificationPreference(
+        previous: Boolean,
+        apply: (SettingsUiState, Boolean) -> SettingsUiState,
+        enabled: Boolean,
+        save: suspend () -> Unit
+    ) {
+        _uiState.update { apply(it, enabled) }
+        viewModelScope.launch {
+            try {
+                save()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to save the notification preference", e)
+                _uiState.update { apply(it, previous) }
+            }
+        }
     }
 
     fun onThemeSelected(theme: ThemePreference) {

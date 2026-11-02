@@ -7,6 +7,14 @@ import kotlinx.serialization.Serializable
 data class UpdateProfileRequest(
     val image: ImageRequest? = null,
     val deviceToken: String? = null,
+    val notifications: NotificationPreferencesDto? = null,
+)
+
+/** Which channels ms-inventory may notify the user on; null means "unchanged" in a PATCH and "never set" in a GET. */
+@Serializable
+data class NotificationPreferencesDto(
+    val email: Boolean? = null,
+    val mobile: Boolean? = null,
 )
 
 @Serializable
