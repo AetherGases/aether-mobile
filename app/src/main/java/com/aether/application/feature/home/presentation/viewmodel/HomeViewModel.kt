@@ -262,13 +262,16 @@ class HomeViewModel(
                     append(period.end.year)
                 }
             }
-        } ?: "Período não informado"
+        } ?: NO_VALUE
 
         return EmployeeHeroCard(
             lastSubmittedLabel = lastDate,
             reportingPeriodLabel = reportingPeriodLabel,
             statusLabel = lastInventory?.status?.toReportStatus()?.name ?: NO_VALUE,
-            summaryCount = "$inventoryCount"
+            summaryCount = "$inventoryCount",
+            onClick = lastInventory?.let { inventory ->
+                { viewModelScope.launch { _events.send(HomeEvent.NavigateToReport(inventory.id)) } }
+            }
         )
     }
 
