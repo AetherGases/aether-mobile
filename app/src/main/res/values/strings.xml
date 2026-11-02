@@ -129,6 +129,7 @@
     <!-- calculator -->
     <string name="calculator_error_no_connection">Sem conexão com o servidor. Verifique sua internet e tente novamente.</string>
     <string name="calculator_error_invalid_data">Os dados informados são inválidos.</string>
+    <string name="auth_session_expired">Sua sessão expirou. Entre novamente para continuar.</string>
     <string name="calculator_error_session_expired">Sua sessão expirou. Entre novamente para usar a calculadora.</string>
     <string name="calculator_error_forbidden">Você não tem permissão para usar a calculadora.</string>
     <string name="calculator_error_generic">Não foi possível calcular agora. Tente novamente mais tarde.</string>

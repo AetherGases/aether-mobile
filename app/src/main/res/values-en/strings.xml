@@ -129,6 +129,7 @@
     <!-- calculator -->
     <string name="calculator_error_no_connection">No connection to the server. Check your internet and try again.</string>
     <string name="calculator_error_invalid_data">The data provided is invalid.</string>
+    <string name="auth_session_expired">Your session has expired. Sign in again to continue.</string>
     <string name="calculator_error_session_expired">Your session has expired. Sign in again to use the calculator.</string>
     <string name="calculator_error_forbidden">You do not have permission to use the calculator.</string>
     <string name="calculator_error_generic">Could not calculate right now. Please try again later.</string>

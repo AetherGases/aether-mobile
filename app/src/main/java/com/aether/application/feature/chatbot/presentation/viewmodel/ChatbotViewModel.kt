@@ -12,7 +12,6 @@ import com.aether.application.feature.chatbot.domain.model.ChatbotException
 import com.aether.application.feature.chatbot.domain.repository.ChatbotRepository
 import com.aether.application.feature.chatbot.domain.repository.SavedConversationsRepository
 import com.aether.application.feature.chatbot.presentation.state.ChatbotUiState
-import com.aether.application.feature.chatbot.presentation.state.NEW_CONVERSATION_TITLE
 import com.aether.application.core.ui.components.ChatMessage
 import com.aether.application.core.ui.components.ChatSender
 import kotlinx.coroutines.CancellationException
