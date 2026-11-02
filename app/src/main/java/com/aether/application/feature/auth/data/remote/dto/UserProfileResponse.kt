@@ -5,6 +5,7 @@ import com.aether.application.core.database.model.LocalEnterprise
 import com.aether.application.core.database.model.LocalProfile
 import com.aether.application.core.database.model.WorkplaceAddress
 import com.aether.application.feature.auth.domain.model.Permission
+import com.aether.application.feature.profile.data.remote.dto.NotificationPreferencesDto
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
@@ -19,6 +20,7 @@ data class UserProfileResponse(
     val permissions: List<Permission>,
     val enterprise: EnterpriseDto? = null,
     val unit: UnitDto? = null,
+    val notifications: NotificationPreferencesDto? = null,
     @Serializable
     val createdAt: LocalDate? = null,
 ) {

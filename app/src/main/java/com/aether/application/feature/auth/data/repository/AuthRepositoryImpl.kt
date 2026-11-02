@@ -15,6 +15,8 @@ import com.aether.application.feature.auth.data.remote.dto.ResetPasswordSendCode
 import com.aether.application.feature.auth.data.remote.dto.ResetPasswordValidateCodeRequest
 import com.aether.application.feature.auth.domain.exception.AuthException
 import com.aether.application.feature.auth.domain.repository.AuthRepository
+import com.aether.application.feature.profile.data.remote.dto.NotificationPreferencesDto
+import com.aether.application.feature.profile.data.remote.dto.UpdateProfileRequest
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.HttpURLConnection.HTTP_FORBIDDEN
@@ -62,6 +64,8 @@ class AuthRepositoryImpl(
             null
         }
 
+        if (profile != null) enableUnsetNotificationChannels(profile.notifications)
+
         if (profile != null) {
             val sessionWithPermissions = session.copy(
                 permissions = profile.permissions,
@@ -77,6 +81,26 @@ class AuthRepositoryImpl(
         }
 
         session
+    }
+
+    /**
+     * ms-inventory only pushes or e-mails a channel that is explicitly true, and a user who never chose
+     * has it null. The settings switches show both on by default, so turn on whichever was never set;
+     * a channel the user switched off stays off. A failure doesn't block the login.
+     */
+    private suspend fun enableUnsetNotificationChannels(current: NotificationPreferencesDto?) {
+        val mobile = if (current?.mobile == null) true else null
+        val email = if (current?.email == null) true else null
+        if (mobile == null && email == null) return
+        try {
+            profileApi.updateProfile(
+                UpdateProfileRequest(notifications = NotificationPreferencesDto(email = email, mobile = mobile))
+            )
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to enable the default notification channels", e)
+        }
     }
 
     override suspend fun sendRecoveryPassword(
