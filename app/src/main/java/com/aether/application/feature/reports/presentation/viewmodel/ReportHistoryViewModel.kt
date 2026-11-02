@@ -3,14 +3,11 @@ package com.aether.application.feature.reports.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aether.application.core.auth.model.Session
 import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.auth.domain.model.AppPermission
 import com.aether.application.feature.home.domain.model.Inventory
 import com.aether.application.feature.home.domain.model.InventoryStatus
-import com.aether.application.feature.reports.domain.model.ReportsPage
-import com.aether.application.feature.reports.domain.usecase.GetReportsUseCase
-import com.aether.application.feature.reports.domain.usecase.GetReviewedReportsUseCase
+import com.aether.application.feature.reports.domain.usecase.GetHistoryUseCase
 import com.aether.application.feature.reports.presentation.screen.CalendarDay
 import com.aether.application.feature.reports.presentation.screen.ReportItem
 import com.aether.application.feature.reports.presentation.screen.ReportTimeFilter
@@ -20,9 +17,6 @@ import com.aether.application.feature.reports.presentation.state.ReportHistoryUi
 import com.aether.application.core.ui.components.ReportStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -43,33 +37,22 @@ private const val TAG = "ReportHistoryViewModel"
 private const val PAGE_SIZE = 6
 
 class ReportHistoryViewModel(
-    private val getReports: GetReportsUseCase,
-    private val getReviewedReports: GetReviewedReportsUseCase,
+    private val getHistory: GetHistoryUseCase,
     private val sessionManager: SessionManager
 ) : ViewModel() {
 
-    /**
-     * Reviewers see their whole department through the reviewed route, pending ones included;
-     * everyone else sees only their own reports.
-     */
-    private enum class Kind { MINE, DEPARTMENT }
+    /** The history is one paged list on the server; the backend decides what the user sees. */
+    private var skip = 0
+    private var total = Long.MAX_VALUE
+    private val hasMore get() = skip < total
 
-    /** One paged list on the server. */
-    private class Source(
-        val kind: Kind,
-        private val fetch: suspend (skip: Int, take: Int) -> ReportsPage
-    ) {
-        private var skip = 0
-        private var total = Long.MAX_VALUE
-        val hasMore get() = skip < total
-
-        suspend fun next(): List<Pair<Kind, Inventory>> {
-            val page = fetch(skip, PAGE_SIZE)
-            skip += page.reports.size
-            // An empty page ends the source even if the server count says otherwise
-            total = if (page.reports.isEmpty()) skip.toLong() else page.totalCount
-            return page.reports.map { kind to it }
-        }
+    // skip and total change only after the call succeeded, so a failure keeps the paging as it was
+    private suspend fun fetch(from: Int): List<Inventory> {
+        val page = getHistory(from, PAGE_SIZE)
+        skip = from + page.reports.size
+        // An empty page ends the list even if the server count says otherwise
+        total = if (page.reports.isEmpty()) skip.toLong() else page.totalCount
+        return page.reports
     }
 
     private data class Entry(
@@ -144,8 +127,6 @@ class ReportHistoryViewModel(
         }
     }
 
-    private var sources: List<Source> = emptyList()
-
     fun loadMore() {
         val state = loadState.value
         if (!state.hasMore || state.isRefreshing || state.isLoadingMore) return
@@ -157,26 +138,12 @@ class ReportHistoryViewModel(
     private suspend fun load() {
         loadState.update { it.copy(isRefreshing = true, failed = false, loadMoreFailed = false) }
         try {
-            val session = sessionManager.getSession()
-                ?: throw Exception("nah man, u need to be authed")
-
             val isAnalyst = sessionManager.hasPermission(AppPermission.INVENTORY_ANALYSIS)
+            val firstPage = fetch(from = 0)
 
-            val newSources = listOf(
-                if (isAnalyst) {
-                    Source(Kind.DEPARTMENT) { skip, take -> getReviewedReports(skip, take) }
-                } else {
-                    Source(Kind.MINE) { skip, take -> getReports(skip, take) }
-                }
-            )
-            val firstPage = coroutineScope {
-                newSources.map { source -> async { source.next() } }.awaitAll()
-            }.flatten()
-
-            sources = newSources
             viewerRole.value = if (isAnalyst) ReportViewerRole.GERENTE else ReportViewerRole.FUNCIONARIO
-            entries.value = merge(emptyList(), firstPage, session)
-            loadState.update { it.copy(isRefreshing = false, hasMore = newSources.any { s -> s.hasMore }) }
+            entries.value = merge(emptyList(), firstPage)
+            loadState.update { it.copy(isRefreshing = false, hasMore = hasMore) }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -186,35 +153,19 @@ class ReportHistoryViewModel(
     }
 
     private suspend fun loadNext() {
-        val session = sessionManager.getSession()
-        if (session == null) {
-            loadState.update { it.copy(isLoadingMore = false) }
-            return
-        }
         try {
-            // Sources are independent: one failing doesn't drop what the others returned,
-            // and it retries from the same offset next time
-            val results = coroutineScope {
-                sources.filter { it.hasMore }.map { source ->
-                    async {
-                        try {
-                            source.next()
-                        } catch (e: CancellationException) {
-                            throw e
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Failed to load more ${source.kind} reports", e)
-                            null
-                        }
-                    }
-                }.awaitAll()
+            val fetched = try {
+                fetch(from = skip)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // Retries from the same offset next time
+                Log.e(TAG, "Failed to load more reports", e)
+                null
             }
-            entries.update { merge(it, results.filterNotNull().flatten(), session) }
+            fetched?.let { page -> entries.update { merge(it, page) } }
             loadState.update {
-                it.copy(
-                    isLoadingMore = false,
-                    loadMoreFailed = results.any { r -> r == null },
-                    hasMore = sources.any { s -> s.hasMore }
-                )
+                it.copy(isLoadingMore = false, loadMoreFailed = fetched == null, hasMore = hasMore)
             }
         } catch (e: CancellationException) {
             loadState.update { it.copy(isLoadingMore = false) }
@@ -225,19 +176,18 @@ class ReportHistoryViewModel(
     /** Appends [fetched] to [existing]; a report that shifted to another page keeps its first place. */
     private fun merge(
         existing: List<Entry>,
-        fetched: List<Pair<Kind, Inventory>>,
-        session: Session
+        fetched: List<Inventory>
     ): List<Entry> {
         val byId = LinkedHashMap<String, Entry>()
         existing.forEach { byId[it.item.id] = it }
-        fetched.forEach { (kind, inventory) ->
-            val entry = inventory.toEntry(session, kind)
+        fetched.forEach { inventory ->
+            val entry = inventory.toEntry()
             byId[entry.item.id] = entry
         }
         return byId.values.toList()
     }
 
-    private fun Inventory.toEntry(session: Session, kind: Kind): Entry {
+    private fun Inventory.toEntry(): Entry {
         return Entry(
             createdAt = createdAt,
             item = ReportItem(
@@ -248,7 +198,7 @@ class ReportHistoryViewModel(
                 reviewerName = reviewer,
                 createdAt = createdAt.format(dateFormatter),
                 status = status.toHistoryStatus(),
-                canReview = kind == Kind.DEPARTMENT && status == InventoryStatus.Input.UNDER_REVIEW
+                canReview = viewerRole.value == ReportViewerRole.GERENTE && status == InventoryStatus.Input.UNDER_REVIEW
             )
         )
     }

@@ -198,9 +198,7 @@ class HomeViewModel(
                 } else {
                     homeRepository.getLastSubmittedInventory()
                 }
-                val inventoryCount = homeRepository.getInventoryCount().let {
-                    if (isManager) it.reviewedCount else it.submittedCount
-                }
+                val inventoryCount = homeRepository.getHistoryCount()
                 lastInventory to inventoryCount
             }
             listOfNotNull(
@@ -225,7 +223,7 @@ class HomeViewModel(
     private suspend fun getHeroCard(
         isManager: Boolean,
         lastInventory: Inventory?,
-        inventoryCount: Int
+        inventoryCount: Long
     ): HomeHeroCard? {
         val lastDate = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE
 
@@ -272,10 +270,10 @@ class HomeViewModel(
     private fun getReportsSummaryCard(
         isManager: Boolean,
         lastInventory: Inventory?,
-        inventoryCount: Int
+        inventoryCount: Long
     ): HomeHeroCard? =
         ReportsSummaryHomeCard(
-            title = if (isManager) "Relatórios analisados" else "Relatórios realizados",
+            title = if (isManager) "Relatórios" else "Relatórios realizados",
             lastSubmittedLabel = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE,
             count = "$inventoryCount",
             onViewHistoryClick = {

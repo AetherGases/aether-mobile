@@ -53,6 +53,10 @@ class HomeRepositoryImpl(
     override suspend fun getInventoryCount(): InventoryCount =
         inventoryApi.countInventories().toDomain()
 
+    // The count is the totalCount of a one-item page
+    override suspend fun getHistoryCount(): Long =
+        inventoryApi.getInventoryHistory(take = 1).totalCount
+
     override suspend fun getSealProgress(): SealProgress =
         inventoryApi.getSealProgress().toDomain()
 }

@@ -22,17 +22,12 @@ class ReportsRepositoryImpl(
     private val hubApi: HubApi
 ) : ReportsRepository {
 
-    override suspend fun getMyReports(skip: Int, take: Int): ReportsPage =
-        inventoryApi.getMyInventories(skip = skip, take = take)
-            .let { page -> ReportsPage(page.inventories.map { it.toDomain() }, page.totalCount) }
-
     override suspend fun getPendingReports(skip: Int, take: Int): ReportsPage =
         inventoryApi.getPendingInventories(skip = skip, take = take)
             .let { page -> ReportsPage(page.inventories.map { it.toDomain() }, page.totalCount) }
 
-    override suspend fun getReviewedReports(skip: Int, take: Int): ReportsPage =
-        inventoryApi.getReviewedInventories(skip = skip, take = take)
-            .let { page -> ReportsPage(page.inventories.map { it.toDomain() }, page.totalCount) }
+    override suspend fun getHistory(skip: Int, take: Int): ReportsPage =
+        inventoryApi.getInventoryHistory(skip = skip, take = take).toDomain()
 
     override suspend fun getReport(id: Long, asReviewer: Boolean): ReportDetails {
         // Owners read through mine/{id}, reviewers through their department's reviewed/{id};
