@@ -11,6 +11,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 
 private const val PROFILE = "api/profile"
+private const val SUPPORT = "api/support"
 
 interface ProfileApi {
 
@@ -21,9 +22,9 @@ interface ProfileApi {
     suspend fun updateProfile(@Body request: UpdateProfileRequest)
 
     /** Categories a problem can be reported under (PROBLEM_CATEGORY), with their display labels. */
-    @GET("$PROFILE/problem/categories")
+    @GET("$SUPPORT/categories")
     suspend fun getProblemCategories(): List<ProblemCategoryResponse>
 
-    @POST("$PROFILE/problem")
+    @POST(SUPPORT)
     suspend fun reportProblem(@Body request: ReportProblemRequest): ReportProblemResponse
 }

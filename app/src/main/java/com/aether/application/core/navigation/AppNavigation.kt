@@ -92,6 +92,7 @@ import com.aether.application.feature.proximity.presentation.screen.ProximityGat
 import com.aether.application.feature.proximity.presentation.viewmodel.ProximityViewModel
 
 private const val REPORT_REVIEWED_KEY = "report_reviewed"
+private const val SETTINGS_SCREEN_FALLBACK = "Configurações"
 
 @Composable
 fun AppNavigation(
@@ -593,7 +594,13 @@ private fun AppNavHost(
                     onThemeClick = { showThemePicker = true },
                     onLanguageClick = { /* TODO: no translated resources yet */ },
                     onTalkToAekoClick = { navController.navigate(ChatbotRoute) },
-                    onReportProblemClick = { navController.navigate(ReportProblemRoute) },
+                    onReportProblemClick = {
+                        // The screen the user came to Settings from is where the problem happened
+                        val screen = screenNameOf(navController.previousBackStackEntry?.destination)
+                            ?: screenNameOf(navController.currentDestination)
+                            ?: SETTINGS_SCREEN_FALLBACK
+                        navController.navigate(ReportProblemRoute(screen))
+                    },
                     onTermsOfUseClick = { navController.navigate(TermsOfUseRoute) },
                     onPrivacyPolicyClick = { navController.navigate(PrivacyPolicyRoute) },
                     onLogoutClick = viewModel::onLogoutClick,
@@ -612,8 +619,11 @@ private fun AppNavHost(
                 }
             }
 
-            composable<ReportProblemRoute> {
-                val viewModel = koinViewModel<ProblemViewModel>()
+            composable<ReportProblemRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<ReportProblemRoute>()
+                val viewModel = koinViewModel<ProblemViewModel> {
+                    parametersOf(route.screen)
+                }
                 ReportProblemRoot(
                     viewModel = viewModel,
                     onBackClick = { navController.popBackStack() }

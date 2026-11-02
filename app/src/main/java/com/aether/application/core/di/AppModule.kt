@@ -162,8 +162,8 @@ object AppModule {
             )
         }
 
-        viewModel {
-            ProblemViewModel(problemRepository = get())
+        viewModel { (screen: String) ->
+            ProblemViewModel(problemRepository = get(), screen = screen)
         }
 
         viewModel {
