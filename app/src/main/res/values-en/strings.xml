@@ -407,6 +407,11 @@
     <string name="settings_problem_attach">Attach screenshot </string>
     <string name="settings_problem_optional">(Optional)</string>
     <string name="settings_problem_submit">Submit</string>
+    <string name="settings_problem_error_categories">Could not load the categories. Please try again.</string>
+    <string name="settings_problem_error_image_type">Select a PNG, JPG or JPEG image.</string>
+    <string name="settings_problem_error_upload">Could not upload the screenshot. Please try again.</string>
+    <string name="settings_problem_error_submit">Could not send the problem. Please try again.</string>
+    <string name="settings_problem_error_incomplete">Choose a category and describe the problem.</string>
     <string name="settings_problem_select_file">Select a file</string>
     <string name="settings_problem_file_types">PNG, JPG, JPEG</string>
 

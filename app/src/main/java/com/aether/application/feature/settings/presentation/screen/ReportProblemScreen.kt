@@ -37,6 +37,7 @@ import com.aether.application.core.ui.components.FormErrorText
 import com.aether.application.core.ui.components.FormDropdownField
 import com.aether.application.core.ui.theme.*
 import com.aether.application.R
+import com.aether.application.core.utils.UiText
 import com.aether.application.feature.profile.domain.model.MAX_PROBLEM_DESCRIPTION_LENGTH
 
 private const val MAX_DESCRIPTION_LENGTH = MAX_PROBLEM_DESCRIPTION_LENGTH
@@ -55,9 +56,9 @@ fun ReportProblemScreen(
     onSubmitClicked: () -> Unit,
     modifier: Modifier = Modifier,
     categoriesLoading: Boolean = false,
-    categoriesError: String? = null,
+    categoriesError: UiText? = null,
     onRetryCategoriesClicked: () -> Unit = {},
-    errorMessage: String? = null,
+    errorMessage: UiText? = null,
     isSubmitting: Boolean = false,
     canSubmit: Boolean = true
 ) {
@@ -77,7 +78,7 @@ fun ReportProblemScreen(
             Spacer(Modifier.height(16.dp))
 
             if (categoriesError != null) {
-                FormErrorText(categoriesError)
+                FormErrorText(categoriesError.asString())
                 Spacer(Modifier.height(8.dp))
                 Text(
                     stringResource(R.string.common_try_again),
@@ -147,7 +148,7 @@ fun ReportProblemScreen(
 
             if (errorMessage != null) {
                 Spacer(Modifier.height(8.dp))
-                FormErrorText(errorMessage)
+                FormErrorText(errorMessage.asString())
             }
 
             Box(

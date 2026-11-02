@@ -2,6 +2,9 @@ package com.aether.application.feature.profile.data.repository
 
 import android.net.Uri
 import android.util.Log
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
 import com.aether.application.core.network.cloudinary.CloudinaryApi
 import com.aether.application.core.network.cloudinary.CloudinaryFileType
 import com.aether.application.core.network.cloudinary.CloudinaryUploader
@@ -28,7 +31,7 @@ class ProblemRepositoryImpl(
 ) : ProblemRepository {
 
     override suspend fun getCategories(): List<ProblemCategory> =
-        call("Não foi possível carregar as categorias. Tente novamente.") {
+        call(uiText(R.string.settings_problem_error_categories)) {
             profileApi.getProblemCategories().map { ProblemCategory(code = it.code, label = it.label) }
         }
 
@@ -49,8 +52,8 @@ class ProblemRepositoryImpl(
     ) {
         val image = if (screenshotUri != null && screenshotName != null) {
             val mimeType = screenshotMimeType(screenshotName)
-                ?: throw ProblemException("Selecione uma imagem PNG, JPG ou JPEG.")
-            call("Não foi possível enviar o print. Tente novamente.") {
+                ?: throw ProblemException(uiText(R.string.settings_problem_error_image_type))
+            call(uiText(R.string.settings_problem_error_upload)) {
                 val signature = cloudinaryApi.getUploadSignature(CloudinaryFileType.IMAGE)
                 val url = uploader.upload(Uri.parse(screenshotUri), screenshotName, mimeType, signature)
                 ImageRequest(imageName = screenshotName, imageUrl = url)
@@ -59,7 +62,7 @@ class ProblemRepositoryImpl(
             null
         }
 
-        call("Não foi possível enviar o problema. Tente novamente.") {
+        call(uiText(R.string.settings_problem_error_submit)) {
             profileApi.reportProblem(
                 ReportProblemRequest(
                     category = categoryCode,
@@ -71,7 +74,7 @@ class ProblemRepositoryImpl(
         }
     }
 
-    private suspend fun <T> call(fallbackMessage: String, block: suspend () -> T): T =
+    private suspend fun <T> call(fallbackMessage: UiText, block: suspend () -> T): T =
         try {
             block()
         } catch (e: CancellationException) {
@@ -80,10 +83,10 @@ class ProblemRepositoryImpl(
             Log.e(TAG, "Request failed (${e.code()})", e)
             // Only 4xx messages are written for the user; a 5xx carries the raw exception text
             val serverMessage = if (e.code() in 400..499 && e.code() != 404) e.readErrorMessage() else null
-            throw ProblemException(serverMessage ?: fallbackMessage, e)
+            throw ProblemException(serverMessage?.let(::uiText) ?: fallbackMessage, e)
         } catch (e: IOException) {
             Log.e(TAG, "Request failed", e)
-            throw ProblemException("Sem conexão com o servidor. Tente novamente.", e)
+            throw ProblemException(uiText(R.string.common_error_no_connection_retry), e)
         } catch (e: SerializationException) {
             Log.e(TAG, "Unexpected response", e)
             throw ProblemException(fallbackMessage, e)

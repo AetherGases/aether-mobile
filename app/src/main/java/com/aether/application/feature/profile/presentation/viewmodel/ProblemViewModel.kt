@@ -4,8 +4,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.R
+import com.aether.application.core.utils.uiText
+import com.aether.application.core.utils.userMessage
 import com.aether.application.feature.profile.domain.model.MAX_PROBLEM_DESCRIPTION_LENGTH
-import com.aether.application.feature.profile.domain.model.ProblemException
 import com.aether.application.feature.profile.domain.model.screenshotMimeType
 import com.aether.application.feature.profile.domain.repository.ProblemRepository
 import com.aether.application.feature.profile.presentation.state.ProblemEvent
@@ -67,7 +69,7 @@ class ProblemViewModel(
     fun onScreenshotSelected(uri: Uri) {
         val name = problemRepository.displayName(uri.toString())
         if (name == null || screenshotMimeType(name) == null) {
-            _uiState.update { it.copy(errorMessage = "Selecione uma imagem PNG, JPG ou JPEG.") }
+            _uiState.update { it.copy(errorMessage = uiText(R.string.settings_problem_error_image_type)) }
             return
         }
         screenshotUri = uri
@@ -84,7 +86,7 @@ class ProblemViewModel(
         val category = state.selectedCategory
         if (state.isSubmitting) return
         if (category == null || state.description.isBlank()) {
-            _uiState.update { it.copy(errorMessage = "Escolha a categoria e descreva o problema.") }
+            _uiState.update { it.copy(errorMessage = uiText(R.string.settings_problem_error_incomplete)) }
             return
         }
 
@@ -114,6 +116,4 @@ class ProblemViewModel(
         _uiState.update { it.copy(errorMessage = null) }
     }
 
-    private fun Exception.userMessage(): String =
-        (this as? ProblemException)?.message ?: "Algo deu errado. Tente novamente."
 }
