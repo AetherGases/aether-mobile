@@ -1,0 +1,62 @@
+package com.aether.application.feature.auth.presentation.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.aether.application.core.utils.userMessage
+import com.aether.application.feature.auth.domain.usecase.RequestPasswordRecoveryUseCase
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+
+class PasswordRecoveryViewModel(
+    email: String,
+    private val requestPasswordRecoveryUseCase: RequestPasswordRecoveryUseCase
+): ViewModel() {
+    private val _uiState = MutableStateFlow(RecoveryUiState(email = email))
+    val uiState: StateFlow<RecoveryUiState> = _uiState.asStateFlow()
+
+    private val _events = Channel<SendCodeEvent>(Channel.BUFFERED)
+    val events: Flow<SendCodeEvent> = _events.receiveAsFlow()
+
+    fun onEmailChange(email: String) {
+        _uiState.update { it.copy(email = email) }
+    }
+
+    fun onSendCodeClick(email: String = _uiState.value.email) {
+        if (_uiState.value.isLoading)
+            return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+
+            val trimmedEmail = email.trim()
+
+            requestPasswordRecoveryUseCase.invoke(trimmedEmail)
+                .onSuccess {
+                    _events.send(SendCodeEvent.CodeSent(trimmedEmail))
+                }
+                .onFailure { throwable ->
+                    _uiState.update {
+                        it.copy(errorMessage = throwable.userMessage())
+                    }
+                }
+
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+}
+
+data class RecoveryUiState(
+    val email: String = "",
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
+)
+
+sealed interface SendCodeEvent {
+    data class CodeSent(val email: String) : SendCodeEvent
+}
