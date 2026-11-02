@@ -30,7 +30,7 @@ data class ReportProblemRequest(
     val category: String,
     /** The screen the problem happened on, 2 to 50 characters. */
     val screen: String,
-    /** Required, trimmed, 3 to 200 characters (reported_problem.description). */
+    /** Required, trimmed, 3 to 500 characters (reported_problem.description). */
     val description: String,
     val image: ImageRequest? = null,
 )
