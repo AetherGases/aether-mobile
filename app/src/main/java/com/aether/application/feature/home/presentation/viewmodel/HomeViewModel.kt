@@ -190,12 +190,13 @@ class HomeViewModel(
             if (canReview) add(true)
         }
 
-        // The count is the same for every role, so it is fetched once
-        val inventoryCount = loadSection("inventory count") { homeRepository.getHistoryCount() }
+        // One request has both counts: submitted for the employee cards, reviewed for the manager ones
+        val inventoryCount = loadSection("inventory count") { homeRepository.getInventoryCount() }
 
         val roleCards = roles.flatMap { isManager ->
             // The hero and summary cards share these, so they are fetched once per role
-            val summary = inventoryCount?.let { count ->
+            val summary = inventoryCount?.let { counts ->
+                val count = if (isManager) counts.reviewedCount else counts.submittedCount
                 loadSection("inventory summary") {
                     val lastInventory = if (isManager) {
                         homeRepository.getLastReviewedInventory()
@@ -227,7 +228,7 @@ class HomeViewModel(
     private suspend fun getHeroCard(
         isManager: Boolean,
         lastInventory: Inventory?,
-        inventoryCount: Long
+        inventoryCount: Int
     ): HomeHeroCard? {
         val lastDate = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE
 
@@ -274,10 +275,10 @@ class HomeViewModel(
     private fun getReportsSummaryCard(
         isManager: Boolean,
         lastInventory: Inventory?,
-        inventoryCount: Long
+        inventoryCount: Int
     ): HomeHeroCard? =
         ReportsSummaryHomeCard(
-            title = if (isManager) "Relatórios" else "Relatórios realizados",
+            title = if (isManager) "Relatórios analisados" else "Relatórios realizados",
             lastSubmittedLabel = lastInventory?.createdAt?.format(dateFormatter) ?: NO_VALUE,
             count = "$inventoryCount",
             onViewHistoryClick = {
