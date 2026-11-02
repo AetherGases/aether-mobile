@@ -190,23 +190,27 @@ class HomeViewModel(
             if (canReview) add(true)
         }
 
+        // The count is the same for every role, so it is fetched once
+        val inventoryCount = loadSection("inventory count") { homeRepository.getHistoryCount() }
+
         val roleCards = roles.flatMap { isManager ->
             // The hero and summary cards share these, so they are fetched once per role
-            val summary = loadSection("inventory summary") {
-                val lastInventory = if (isManager) {
-                    homeRepository.getLastReviewedInventory()
-                } else {
-                    homeRepository.getLastSubmittedInventory()
+            val summary = inventoryCount?.let { count ->
+                loadSection("inventory summary") {
+                    val lastInventory = if (isManager) {
+                        homeRepository.getLastReviewedInventory()
+                    } else {
+                        homeRepository.getLastSubmittedInventory()
+                    }
+                    lastInventory to count
                 }
-                val inventoryCount = homeRepository.getHistoryCount()
-                lastInventory to inventoryCount
             }
             listOfNotNull(
-                summary?.let { (lastInventory, inventoryCount) ->
-                    loadSection("hero card") { getHeroCard(isManager, lastInventory, inventoryCount) }
+                summary?.let { (lastInventory, count) ->
+                    loadSection("hero card") { getHeroCard(isManager, lastInventory, count) }
                 },
-                summary?.let { (lastInventory, inventoryCount) ->
-                    getReportsSummaryCard(isManager, lastInventory, inventoryCount)
+                summary?.let { (lastInventory, count) ->
+                    getReportsSummaryCard(isManager, lastInventory, count)
                 }
             )
         }

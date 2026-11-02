@@ -198,7 +198,10 @@ class ReportHistoryViewModel(
                 reviewerName = reviewer,
                 createdAt = createdAt.format(dateFormatter),
                 status = status.toHistoryStatus(),
-                canReview = viewerRole.value == ReportViewerRole.GERENTE && status == InventoryStatus.Input.UNDER_REVIEW
+                // Nobody reviews their own report; the list has no owner id, so the author name is compared
+                canReview = viewerRole.value == ReportViewerRole.GERENTE &&
+                    status == InventoryStatus.Input.UNDER_REVIEW &&
+                    author != sessionManager.getSession()?.name
             )
         )
     }
