@@ -1,0 +1,79 @@
+package com.aether.application.feature.auth.data.storage
+
+import android.util.Log
+import com.aether.application.core.auth.data.SessionStorage
+import com.aether.application.core.auth.model.Session
+import com.aether.application.core.auth.storage.SessionManager
+import com.aether.application.feature.auth.domain.model.AppPermission
+import java.time.Instant
+import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+private const val TAG = "SessionManager"
+
+class SessionManagerImpl(
+    private val sessionStorage: SessionStorage,
+    private val onLogout: suspend () -> Unit = {}
+): SessionManager {
+    private var session: Session? = null
+    // A restored session was remembered by definition
+    private var remember = true
+    private val _authState = MutableStateFlow(false)
+    override val authState: StateFlow<Boolean> = _authState.asStateFlow()
+
+    private val _sessionExpired = MutableStateFlow(false)
+    override val sessionExpired: StateFlow<Boolean> = _sessionExpired.asStateFlow()
+
+    override fun consumeSessionExpired() {
+        _sessionExpired.value = false
+    }
+
+    override suspend fun restoreSession() {
+        session = sessionStorage.get()
+        _authState.value = isAuthenticated()
+    }
+
+    override fun getSession(): Session? {
+        return session
+    }
+
+    override suspend fun isAuthenticated(): Boolean {
+        val currentSession = session ?: return false
+        // An expired access token is refreshed on the first 401: only an expired refresh token ends the session
+        val sessionExpiration = currentSession.refreshExpiration ?: currentSession.expiration
+        if (sessionExpiration.isBefore(Instant.now())) {
+            logout(expired = true)
+            return false
+        }
+        return true
+    }
+
+    override suspend fun hasPermission(permission: AppPermission): Boolean {
+        return session?.permissions.orEmpty().any { it.name.contains(permission.value) }
+    }
+
+    override suspend fun save(session: Session, remember: Boolean?): Boolean {
+        return try {
+            remember?.let { this.remember = it }
+            if (this.remember) sessionStorage.save(session)
+            this.session = session
+            _authState.value = true
+            true
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to save session", e)
+            false
+        }
+    }
+
+    override suspend fun logout(expired: Boolean) {
+        sessionStorage.clear()
+        onLogout()
+        session = null
+        _sessionExpired.value = expired
+        _authState.value = false
+    }
+}

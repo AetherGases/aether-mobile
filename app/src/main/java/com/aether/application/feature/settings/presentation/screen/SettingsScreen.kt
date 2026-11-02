@@ -1,0 +1,613 @@
+package com.aether.application.feature.settings.presentation.screen
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.res.stringResource
+import com.aether.application.core.ui.components.FormErrorText
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import android.net.Uri
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.annotation.DrawableRes
+import com.aether.application.core.ui.theme.*
+import com.aether.application.core.utils.UiText
+import coil3.compose.AsyncImage
+import com.aether.application.R
+
+private val CardShadowElevation = 6.dp
+private val CardShape = RoundedCornerShape(20.dp)
+private val RowVerticalPadding = 16.dp
+private val RowIconSize = 20.dp
+private val ChevronSize = 14.dp
+private val AvatarSize = 112.dp
+private val HeaderHeight = 200.dp
+private val HeaderMargin = 12.dp
+private val HeaderShape = RoundedCornerShape(28.dp)
+
+@Composable
+fun SettingsScreen(
+    userName: String,
+    avatarUrl: String?,
+    isUploadingAvatar: Boolean,
+    avatarErrorMessage: UiText?,
+    onAvatarPicked: (Uri) -> Unit,
+    reportsCount: Int,
+    reviewedCount: Int? = null,
+    entryDate: String,
+    notificationsEnabled: Boolean,
+    emailNotificationsEnabled: Boolean,
+    themeLabel: String,
+    languageLabel: String,
+    canTalkToAeko: Boolean,
+    onNotificationsChanged: (Boolean) -> Unit,
+    onEmailNotificationsChanged: (Boolean) -> Unit,
+    onThemeClick: () -> Unit,
+    onLanguageClick: () -> Unit,
+    onTalkToAekoClick: () -> Unit,
+    onReportProblemClick: () -> Unit,
+    onTermsOfUseClick: () -> Unit,
+    onPrivacyPolicyClick: () -> Unit,
+    onLogoutClick: () -> Unit,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var showAvatarSource by remember { mutableStateOf(false) }
+
+    if (showAvatarSource) {
+        AvatarSourceDialog(
+            onDismiss = { showAvatarSource = false },
+            onPicked = onAvatarPicked
+        )
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
+    ) {
+        ProfileHeader(
+            userName = userName,
+            avatarUrl = avatarUrl,
+            isUploadingAvatar = isUploadingAvatar,
+            onAvatarClick = { showAvatarSource = true },
+            onBackClick = onBackClick
+        )
+        if (avatarErrorMessage != null) {
+            FormErrorText(
+                message = avatarErrorMessage.asString(),
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 12.dp)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            StatsCard(reportsCount = reportsCount, reviewedCount = reviewedCount, entryDate = entryDate)
+
+            Spacer(Modifier.height(20.dp))
+
+            SettingsSection(title = stringResource(R.string.settings_section_preferences)) {
+                SettingsToggleRow(
+                    icon = R.drawable.ic_notification,
+                    label = stringResource(R.string.settings_notification),
+                    checked = notificationsEnabled,
+                    onCheckedChange = onNotificationsChanged
+                )
+                RowDivider()
+                SettingsToggleRow(
+                    icon = R.drawable.ic_email,
+                    label = stringResource(R.string.settings_email_notification),
+                    checked = emailNotificationsEnabled,
+                    onCheckedChange = onEmailNotificationsChanged
+                )
+                RowDivider()
+                SettingsNavigationRow(
+                    icon = R.drawable.ic_theme,
+                    label = stringResource(R.string.settings_theme),
+                    value = themeLabel,
+                    onClick = onThemeClick
+                )
+                RowDivider()
+                SettingsNavigationRow(
+                    icon = R.drawable.ic_language,
+                    label = stringResource(R.string.settings_language),
+                    value = languageLabel,
+                    onClick = onLanguageClick
+                )
+            }
+
+            Spacer(Modifier.height(20.dp))
+            SettingsSection(title = stringResource(R.string.settings_section_support)) {
+                if (canTalkToAeko) {
+                    SettingsActionRow(
+                        icon = R.drawable.ic_chatbot_profile,
+                        label = stringResource(R.string.settings_talk_to_aeko),
+                        onClick = onTalkToAekoClick,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    RowDivider()
+                }
+                SettingsActionRow(
+                    icon = R.drawable.ic_report_problem,
+                    label = stringResource(R.string.settings_report_problem),
+                    onClick = onReportProblemClick,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                RowDivider()
+                SettingsActionRow(
+                    icon = R.drawable.ic_terms,
+                    label = stringResource(R.string.settings_terms_of_use),
+                    onClick = onTermsOfUseClick,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                RowDivider()
+                SettingsActionRow(
+                    icon = R.drawable.ic_privacy,
+                    label = stringResource(R.string.settings_privacy_policy),
+                    onClick = onPrivacyPolicyClick,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Spacer(Modifier.height(20.dp))
+
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = CardShadowElevation,
+                        shape = CardShape,
+                        ambientColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                        spotColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.08f)
+                    ),
+                shape = CardShape,
+                color = MaterialTheme.colorScheme.surface,
+                shadowElevation = 0.dp
+            ) {
+                SettingsActionRow(
+                    icon = R.drawable.ic_logout,
+                    label = stringResource(R.string.settings_sign_out),
+                    onClick = onLogoutClick,
+                    tint = MaterialTheme.colorScheme.error,
+                    labelColor = MaterialTheme.colorScheme.error,
+                    showChevron = false,
+                    horizontalPadding = 20.dp
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun ProfileHeader(
+    userName: String,
+    avatarUrl: String?,
+    isUploadingAvatar: Boolean,
+    onAvatarClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Image(
+            painter = painterResource(id = R.drawable.bg_profile_header),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = HeaderMargin, vertical = HeaderMargin)
+                .height(HeaderHeight)
+                .shadow(
+                    elevation = 20.dp,
+                    shape = HeaderShape,
+                    ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                    spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                )
+                .clip(HeaderShape)
+        )
+
+        // Sits on the purple header, so it is white regardless of the theme
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(start = HeaderMargin + 8.dp, top = HeaderMargin + 8.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_chevron_left),
+                contentDescription = stringResource(R.string.common_back),
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(top = HeaderMargin + HeaderHeight - (AvatarSize / 2)),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(AvatarSize)
+                    .clickable(
+                        enabled = !isUploadingAvatar,
+                        onClickLabel = stringResource(R.string.settings_change_avatar),
+                        onClick = onAvatarClick
+                    )
+            ) {
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = stringResource(R.string.settings_profile_photo),
+                    placeholder = painterResource(id = R.drawable.ic_avatar_placeholder),
+                    error = painterResource(id = R.drawable.ic_avatar_placeholder),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clip(CircleShape)
+                        .border(width = 4.dp, color = MaterialTheme.colorScheme.surface, shape = CircleShape)
+                )
+
+                if (isUploadingAvatar) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.4f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = Color.White)
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                        .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.PhotoCamera,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+        }
+    }
+
+    Spacer(Modifier.height(16.dp))
+
+    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+        Text(userName, style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+    }
+
+    Spacer(Modifier.height(20.dp))
+}
+
+private val BothCountsMinWidth = 400.dp
+
+@Composable
+private fun StatsCard(reportsCount: Int, reviewedCount: Int?, entryDate: String) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), shape = CardShape)
+            .shadow(
+                elevation = CardShadowElevation,
+                shape = CardShape,
+                ambientColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.08f),
+                spotColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.08f)
+            ),
+        shape = CardShape,
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 0.dp
+    ) {
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            // Both counts only fit side by side on wider screens; otherwise keep the bigger one
+            val showBoth = reviewedCount != null && maxWidth >= BothCountsMinWidth
+            val single = if (reviewedCount != null && reviewedCount > reportsCount) {
+                reviewedCount to stringResource(R.string.settings_stat_reviewed)
+            } else {
+                reportsCount to stringResource(if (reviewedCount != null) R.string.settings_stat_done else R.string.settings_stat_reports)
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                if (showBoth && reviewedCount != null) {
+                    StatItem(
+                        icon = R.drawable.ic_reports,
+                        iconTint = MaterialTheme.colorScheme.secondary,
+                        value = reportsCount.toString(),
+                        label = stringResource(R.string.settings_stat_done)
+                    )
+
+                    StatDivider()
+
+                    StatItem(
+                        icon = R.drawable.ic_reports,
+                        iconTint = MaterialTheme.colorScheme.secondary,
+                        value = reviewedCount.toString(),
+                        label = stringResource(R.string.settings_stat_reviewed)
+                    )
+                } else {
+                    StatItem(
+                        icon = R.drawable.ic_reports,
+                        iconTint = MaterialTheme.colorScheme.secondary,
+                        value = single.first.toString(),
+                        label = single.second
+                    )
+                }
+
+                StatDivider()
+
+                StatItem(
+                    icon = R.drawable.ic_calendar,
+                    iconTint = MaterialTheme.colorScheme.secondary,
+                    value = entryDate,
+                    label = stringResource(R.string.settings_stat_entry_date)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatDivider() {
+    Box(
+        modifier = Modifier
+            .width(1.dp)
+            .height(36.dp)
+            .background(MaterialTheme.colorScheme.outlineVariant)
+    )
+}
+
+@Composable
+private fun StatItem(
+    @DrawableRes icon: Int,
+    iconTint: Color,
+    value: String,
+    label: String
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            tint = iconTint,
+            modifier = Modifier.size(RowIconSize)
+        )
+        Spacer(Modifier.width(8.dp))
+        Column {
+            Text(value, style = titleMediumMD, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            Text(label, style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
+        }
+    }
+}
+
+@Composable
+private fun SettingsSection(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column {
+        Text(
+            title,
+            style = titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(start = 4.dp, bottom = 12.dp)
+        )
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = CardShadowElevation,
+                    shape = CardShape,
+                    ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                    spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                ),
+            shape = CardShape,
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = 0.dp
+        ) {
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+private fun RowDivider() {
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+}
+
+@Composable
+private fun SettingsToggleRow(
+    @DrawableRes icon: Int,
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = RowVerticalPadding),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(RowIconSize)
+            )
+            Spacer(Modifier.width(14.dp))
+            Text(label, style = bodyLargeMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = MaterialTheme.colorScheme.secondary,
+                checkedThumbColor = MaterialTheme.colorScheme.surface
+            )
+        )
+    }
+}
+
+@Composable
+private fun SettingsNavigationRow(
+    @DrawableRes icon: Int,
+    label: String,
+    value: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickableRow(onClick)
+            .padding(vertical = RowVerticalPadding),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(RowIconSize)
+            )
+            Spacer(Modifier.width(14.dp))
+            Text(label, style = bodyLargeMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(value, style = bodyMediumMd, color = MaterialTheme.colorScheme.outline)
+            Spacer(Modifier.width(4.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_chevron_right),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.size(ChevronSize)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingsActionRow(
+    @DrawableRes icon: Int,
+    label: String,
+    onClick: () -> Unit,
+    tint: Color = MaterialTheme.colorScheme.outline,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
+    showChevron: Boolean = true,
+    horizontalPadding: Dp = 0.dp
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickableRow(onClick)
+            .padding(vertical = RowVerticalPadding, horizontal = horizontalPadding),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                tint = tint,
+                modifier = Modifier.size(RowIconSize)
+            )
+            Spacer(Modifier.width(14.dp))
+            Text(label, style = bodyLargeMedium, color = labelColor)
+        }
+        if (showChevron) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_chevron_right),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(ChevronSize)
+            )
+        }
+    }
+}
+
+private fun Modifier.clickableRow(onClick: () -> Unit): Modifier =
+    this.clip(RoundedCornerShape(12.dp)).clickable(onClick = onClick)
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, heightDp = 1200)
+@Composable
+fun SettingsScreenPreview() {
+    AetherTheme {
+        SettingsScreen(
+            userName = "Daniel Sagaz",
+            avatarUrl = null,
+            isUploadingAvatar = false,
+            avatarErrorMessage = null,
+            onAvatarPicked = {},
+            reportsCount = 4539,
+            entryDate = "24/02/23",
+            notificationsEnabled = true,
+            emailNotificationsEnabled = true,
+            themeLabel = "Claro",
+            languageLabel = "Português (BR)",
+            canTalkToAeko = true,
+            onNotificationsChanged = {},
+            onEmailNotificationsChanged = {},
+            onThemeClick = {},
+            onLanguageClick = {},
+            onTalkToAekoClick = {},
+            onReportProblemClick = {},
+            onTermsOfUseClick = {},
+            onPrivacyPolicyClick = {},
+            onLogoutClick = {},
+            onBackClick = {}
+        )
+    }
+}

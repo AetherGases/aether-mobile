@@ -1,0 +1,23 @@
+package com.aether.application.feature.settings.presentation.state
+
+import com.aether.application.R
+import com.aether.application.core.utils.UiText
+import com.aether.application.core.utils.uiText
+import com.aether.application.feature.settings.domain.model.ThemePreference
+
+data class SettingsUiState(
+    val userName: String = "",
+    val avatarUrl: String? = null,
+    val isUploadingAvatar: Boolean = false,
+    /** Shown under the header until the next upload attempt. */
+    val avatarErrorMessage: UiText? = null,
+    val reportsCount: Int = 0,
+    /** Only set for someone who both makes and reviews reports; [reportsCount] is then the ones made. */
+    val reviewedCount: Int? = null,
+    val entryDate: String = "",
+    /** Push and e-mail switches, loaded from the server; off until they arrive. */
+    val notificationsEnabled: Boolean = false,
+    val emailNotificationsEnabled: Boolean = false,
+    val theme: ThemePreference = ThemePreference.SYSTEM,
+    val canTalkToAeko: Boolean = false,
+)

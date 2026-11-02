@@ -1,0 +1,567 @@
+package com.aether.application.feature.home.presentation.screen
+
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import com.aether.application.R
+import com.aether.application.core.utils.uiText
+import com.aether.application.feature.home.presentation.components.QuickAction
+import com.aether.application.feature.home.presentation.components.QuickActionContainer
+import com.aether.application.feature.home.presentation.components.RecentReport
+import com.aether.application.core.ui.components.AppHeader
+import com.aether.application.core.ui.components.EmployeeHeroCard
+import com.aether.application.core.ui.components.HomeHeroCard
+import com.aether.application.core.ui.components.ManagerHeroCard
+import com.aether.application.core.ui.components.ReportsSummaryHomeCard
+import com.aether.application.core.ui.components.SealProgressHomeCard
+import com.aether.application.core.ui.components.UnitEmissionsHomeCard
+import com.aether.application.feature.home.presentation.model.ReportStatus
+import com.aether.application.core.ui.theme.*
+
+private val SCREEN_PADDING = 24.dp
+private val CARD_WIDTH = 335.dp
+private val QUICK_ACTION_SIZE = 100.dp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(
+    userName: String,
+    userLastName: String,
+    avatarUrl: String?,
+    hasUnreadNotifications: Boolean,
+    cards: List<HomeHeroCard>,
+    quickActions: List<QuickAction>,
+    recentReports: List<RecentReport>,
+    cardsFailed: Boolean,
+    quickActionsFailed: Boolean,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    onNotificationsClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onSeeAllReportsClick: () -> Unit,
+    onReportClick: (RecentReport) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        val primaryContainer = MaterialTheme.colorScheme.primaryContainer
+        val secondaryContainer = MaterialTheme.colorScheme.secondaryContainer
+        val backgroundColor = MaterialTheme.colorScheme.background
+
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(90.dp)
+        ) {
+            drawCircle(
+                color = primaryContainer.copy(alpha = 0.6f),
+                radius = size.width * 0.55f,
+                center = Offset(x = size.width * -0.1f, y = size.height * 0.08f)
+            )
+            drawCircle(
+                color = secondaryContainer.copy(alpha = 0.6f),
+                radius = size.width * 0.5f,
+                center = Offset(x = size.width * 0.9f, y = size.height * 0.05f)
+            )
+            drawCircle(
+                color = backgroundColor,
+                radius = size.width * 0.6f,
+                center = Offset(x = size.width * 0.4f, y = size.height * 0.45f)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = SCREEN_PADDING)
+        ) {
+            Spacer(Modifier.height(24.dp))
+
+            AppHeader(
+                userName = "$userName $userLastName",
+                avatarUrl = avatarUrl,
+                hasUnreadNotifications = hasUnreadNotifications,
+                onNotificationsClick = onNotificationsClick,
+                onSettingsClick = onSettingsClick
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            if (cards.isEmpty() && cardsFailed) {
+                Text(stringResource(R.string.home_overview), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                Spacer(Modifier.height(16.dp))
+                SectionLoadError(
+                    icon = Icons.Outlined.CloudOff,
+                    message = stringResource(R.string.home_overview_load_failed)
+                )
+                Spacer(Modifier.height(24.dp))
+            } else if (cards.isNotEmpty()) {
+                Text(stringResource(R.string.home_overview), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                Spacer(Modifier.height(16.dp))
+
+                val pagerState = rememberPagerState(pageCount = { cards.size })
+                HorizontalPager(
+                    state = pagerState,
+                    // Cards keep their size and the next ones peek in, so wide screens show more than one
+                    pageSize = PageSize.Fixed(CARD_WIDTH),
+                    pageSpacing = 16.dp,
+                    contentPadding = PaddingValues(horizontal = SCREEN_PADDING),
+                    // Let the cards scroll to the screen edges instead of being cut at the screen padding
+                    modifier = Modifier.layout { measurable, constraints ->
+                        val extra = SCREEN_PADDING.roundToPx()
+                        val placeable = measurable.measure(
+                            constraints.copy(maxWidth = constraints.maxWidth + extra * 2)
+                        )
+                        layout(constraints.maxWidth, placeable.height) {
+                            placeable.place(-extra, 0)
+                        }
+                    }
+                ) { page ->
+                    val cardDescription = stringResource(R.string.home_card_position, page + 1, cards.size)
+                    BoxWithConstraints(
+                        modifier = Modifier
+                            .semantics {
+                                stateDescription = cardDescription
+                            }
+                            .shadow(
+                                elevation = 10.dp,
+                                shape = RoundedCornerShape(20.dp),
+                                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+                            )
+                    ) {
+                        val containerSize  = LocalWindowInfo.current.containerSize
+
+                        val isPortrait = containerSize.height > containerSize.width
+
+                        val width = if (isPortrait) maxWidth else 335.dp
+                        val height = width * (205f / 335f)
+
+                        cards[page].Render(Modifier.width(width).height(height))
+                    }
+                }
+                // Only worth showing when there is something to scroll to
+                if (pagerState.canScrollForward || pagerState.canScrollBackward) {
+                    Spacer(Modifier.height(18.dp))
+                    // Decorative: the position is already announced by each card
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clearAndSetSemantics {},
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        // With fixed-size pages the last ones never become the current page
+                        val selectedPage = if (pagerState.canScrollForward) {
+                            pagerState.currentPage
+                        } else {
+                            pagerState.pageCount - 1
+                        }
+                        repeat(pagerState.pageCount) { index ->
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 3.dp)
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (index == selectedPage)
+                                            MaterialTheme.colorScheme.secondary
+                                        else
+                                            MaterialTheme.colorScheme.outlineVariant
+                                    )
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+            }
+
+            Text(stringResource(R.string.home_quick_actions), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+            Spacer(Modifier.height(16.dp))
+
+            if (quickActions.isEmpty() && quickActionsFailed) {
+                SectionLoadError(
+                    icon = Icons.Outlined.ErrorOutline,
+                    message = stringResource(R.string.home_quick_actions_load_failed)
+                )
+            } else {
+                BoxWithConstraints(Modifier.fillMaxWidth()) {
+                    val count = quickActions.size
+                    val spacing = 16.dp
+                    val fillsBar = count >= 4 && (QUICK_ACTION_SIZE * count + spacing * (count - 1)) <= maxWidth
+                    if (fillsBar) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(spacing)) {
+                            quickActions.forEach { action ->
+                                QuickActionItem(action = action, fillWidth = true, modifier = Modifier.weight(1f))
+                            }
+                        }
+                    } else {
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(spacing)
+                        ) {
+                            items(quickActions) { action ->
+                                QuickActionItem(action = action)
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(32.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(stringResource(R.string.home_recent_reports), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+                if (!recentReports.isEmpty()) {
+                    Text(
+                        stringResource(R.string.home_see_all),
+                        style = titleSmall,
+                        color = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.clickable { onSeeAllReportsClick() }
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                if (recentReports.isEmpty()) {
+                    Image(
+                        painter = painterResource(id = R.drawable.empty_inventory),
+                        contentDescription = stringResource(R.string.home_no_recent_reports),
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                } else {
+                    recentReports.forEach { report ->
+                        RecentReportItem(
+                            report = report,
+                            onClick = { onReportClick(report) })
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(100.dp))
+        }
+    }
+}
+
+@Composable
+private fun SectionLoadError(
+    icon: ImageVector,
+    message: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(28.dp)
+        )
+        Spacer(Modifier.width(12.dp))
+        Text(
+            text = message,
+            style = bodySmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+fun QuickActionItem(action: QuickAction, modifier: Modifier = Modifier, fillWidth: Boolean = false) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .then(if (fillWidth) Modifier else Modifier.width(QUICK_ACTION_SIZE))
+            .clickable { action.onClick() }
+    ) {
+        BoxWithConstraints(
+            modifier = (if (fillWidth) Modifier.fillMaxWidth().aspectRatio(1f) else Modifier.size(QUICK_ACTION_SIZE))
+                .background(
+                    when (action.container) {
+                        QuickActionContainer.PRIMARY -> MaterialTheme.colorScheme.primaryContainer
+                        QuickActionContainer.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer
+                    },
+                    RoundedCornerShape(16.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            val iconScale = maxWidth / QUICK_ACTION_SIZE
+            Image(
+                painter = painterResource(id = if (action.iconRes != 0) action.iconRes else R.drawable.ic_home),
+                contentDescription = stringResource(action.labelRes),
+                modifier = Modifier
+                    .size(action.iconSize * iconScale)
+                    .offset(x = action.offsetX * iconScale, y = action.offsetY * iconScale)
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+        Text(
+            text = stringResource(action.labelRes),
+            style = bodyMediumMd,
+            color = MaterialTheme.colorScheme.onBackground,
+            maxLines = 1
+        )
+    }
+}
+
+@Composable
+fun RecentReportItem(
+    report: RecentReport,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(20.dp),
+                ambientColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f),
+                spotColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f)
+            )
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(
+                width = 0.5.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(16.dp)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.Top
+    ) {
+        AsyncImage(
+            model = report.ownerAvatarUrl,
+            contentDescription = stringResource(R.string.common_avatar_description, report.ownerName),
+            placeholder = painterResource(R.drawable.ic_avatar),
+            error = painterResource(R.drawable.ic_avatar),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(64.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        )
+
+        Spacer(Modifier.width(16.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    text = report.name,
+                    style = titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(Modifier.height(6.dp))
+
+            Text(
+                text = stringResource(R.string.home_report_performed_by, report.ownerName),
+                style = bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = report.createdAt,
+                    style = bodySmall.copy(fontWeight = FontWeight.Medium),
+                    color = MaterialTheme.colorScheme.secondary
+                )
+
+                Spacer(Modifier.weight(1f))
+
+                StatusBadge(status = report.status)
+            }
+        }
+    }
+}
+
+@Composable
+fun StatusBadge(status: ReportStatus) {
+    val (color, backgroundColor) = when (status) {
+        ReportStatus.PENDENTE -> MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.primaryContainer
+        ReportStatus.APROVADO -> MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.secondaryContainer
+        ReportStatus.RECUSADO -> MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.errorContainer
+    }
+
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(backgroundColor)
+            .padding(horizontal = 10.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = status.iconRes),
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(14.dp)
+        )
+        Spacer(Modifier.width(4.dp))
+        Text(
+            text = stringResource(status.labelRes),
+            style = labelSmall.copy(fontWeight = FontWeight.SemiBold),
+            color = color
+        )
+    }
+}
+
+@Preview(showBackground = true, device = Devices.TABLET)
+@Composable
+fun HomeScreenEmployeePreview() {
+    AetherTheme {
+        HomeScreen(
+            userName = "Daniel",
+            userLastName = "Sagaz",
+            avatarUrl = "https://i.pravatar.cc/150?img=12",
+            hasUnreadNotifications = true,
+            cards = listOf(
+                EmployeeHeroCard(
+                    lastSubmittedLabel = "29/05/2026",
+                    reportingPeriodLabel = uiText("Jan–Mar 2026"),
+                    statusLabel = "Aguardando revisão há 2 dias",
+                    summaryCount = "506"
+                ),
+                ReportsSummaryHomeCard(uiText(R.string.home_reports_done), "29/05/2026", "506") {},
+                UnitEmissionsHomeCard("2.403", uiText(R.string.common_emission_unit_per_month), uiText(R.string.home_unit_change, "12")),
+                SealProgressHomeCard("50%", uiText(R.string.home_seal_criteria, "2", "4"))
+            ),
+            quickActions = listOf(
+                QuickAction(R.string.home_action_create_report, R.drawable.ic_create_report, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction(R.string.home_action_calculate, R.drawable.ic_calculator_purple, 50.dp, 0.dp, 0.dp, QuickActionContainer.PRIMARY) {},
+                QuickAction(R.string.home_action_history, R.drawable.ic_history_green, 60.dp, 3.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction(R.string.home_action_chatbot, R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
+            ),
+            recentReports = listOf(
+                RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
+                RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
+                RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
+            ),
+            cardsFailed = false,
+            quickActionsFailed = false,
+            isRefreshing = false,
+            onRefresh = {},
+            onNotificationsClick = {},
+            onSettingsClick = {},
+            onSeeAllReportsClick = {},
+            onReportClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, device = Devices.TABLET)
+@Composable
+fun HomeScreenManagerPreview() {
+    AetherTheme {
+        HomeScreen(
+            userName = "Nisflei",
+            userLastName = "Grandão",
+            avatarUrl = "https://i.pravatar.cc/150?img=33",
+            hasUnreadNotifications = true,
+            cards = listOf(
+                ManagerHeroCard(
+                    lastSubmittedLabel = "26/01/2026",
+                    totalEmissions = "2.1M",
+                    reductionAchieved = "8,3%",
+                    summaryCount = "450"
+                ),
+                ReportsSummaryHomeCard(uiText(R.string.home_reports_analyzed), "26/01/2026", "450") {},
+                UnitEmissionsHomeCard("2.403", uiText(R.string.common_emission_unit_per_month), uiText(R.string.home_unit_change, "12")),
+                SealProgressHomeCard("50%", uiText(R.string.home_seal_criteria, "2", "4"))
+            ),
+            quickActions = listOf(
+                QuickAction(R.string.home_action_history, R.drawable.ic_history_purple, 60.dp, 3.dp, 0.dp, QuickActionContainer.PRIMARY) {},
+                QuickAction(R.string.home_action_calculate, R.drawable.ic_calculator_green, 60.dp, 0.dp, 0.dp, QuickActionContainer.SECONDARY) {},
+                QuickAction(R.string.home_action_chatbot, R.drawable.ic_aeko, 90.dp, 3.dp, 10.dp, QuickActionContainer.PRIMARY) {}
+            ),
+            recentReports = listOf(
+                RecentReport(1, "Relatório fulano town", "Daniel Sagaz", null, "29/12/2025", ReportStatus.PENDENTE),
+                RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
+                RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
+            ),
+            cardsFailed = false,
+            quickActionsFailed = false,
+            isRefreshing = false,
+            onRefresh = {},
+            onNotificationsClick = {},
+            onSettingsClick = {},
+            onSeeAllReportsClick = {},
+            onReportClick = {}
+        )
+    }
+}

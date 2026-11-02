@@ -1,0 +1,1672 @@
+{
+  "uuid": "51f38e9a-a823-447f-aa38-6bca0cd27ad5",
+  "lastMigration": 33,
+  "name": "Aether api",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 8080,
+  "hostname": "0.0.0.0",
+  "folders": [
+    {
+      "uuid": "c1d03ce8-9581-4ac6-bd97-05b3a50f60ab",
+      "name": "Auth",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "74c0789e-994e-4dd6-af58-2f281f1cd6ef"
+        },
+        {
+          "type": "route",
+          "uuid": "8a36155c-debc-4a07-aa28-6f27e5f4f086"
+        },
+        {
+          "type": "route",
+          "uuid": "1e65487b-7545-4f73-acba-e03f07ce49cf"
+        },
+        {
+          "type": "route",
+          "uuid": "eb59a976-8793-4c29-b69d-6d43e90e2b80"
+        },
+        {
+          "type": "route",
+          "uuid": "898b4c3c-71e7-422b-aef6-5f5f1398f8ab"
+        },
+        {
+          "type": "route",
+          "uuid": "5e6130f8-bf76-4e5a-be5e-efdc5d1e0c43"
+        }
+      ]
+    },
+    {
+      "uuid": "39cd6416-1924-4db4-82a7-414c723ea1bd",
+      "name": "Profile",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "fb515b07-6ce3-4b82-a0b6-99168681ee9c"
+        },
+        {
+          "type": "route",
+          "uuid": "8dd78489-5878-447a-bda0-a1e1899d65cf"
+        }
+      ]
+    },
+    {
+      "uuid": "07a154aa-3785-4f3a-9fa4-ba83083f9ca1",
+      "name": "Inventories",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "839b6fb9-4e75-4264-8022-28f69f27d619"
+        },
+        {
+          "type": "route",
+          "uuid": "5728451a-a1dc-468b-8c84-44e806a53d09"
+        },
+        {
+          "type": "route",
+          "uuid": "6ba858d3-16dc-4147-926a-02dc0c449353"
+        },
+        {
+          "type": "route",
+          "uuid": "6b08148e-ccc8-4fde-ac86-9d7ec4693c53"
+        },
+        {
+          "type": "route",
+          "uuid": "2b688aee-8205-46d6-8b95-91268c37d48b"
+        },
+        {
+          "type": "route",
+          "uuid": "748b0011-6614-4992-a978-bf5d28f115fb"
+        },
+        {
+          "type": "route",
+          "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d"
+        },
+        {
+          "type": "route",
+          "uuid": "18174f78-56ca-40b9-8f64-000aca6dd89e"
+        },
+        {
+          "type": "route",
+          "uuid": "0cf12fcf-e4b1-40c1-a7ee-f30bb326471b"
+        },
+        {
+          "type": "route",
+          "uuid": "aa5cce69-38dd-4e7f-996b-ab7225c8a720"
+        },
+        {
+          "type": "route",
+          "uuid": "bd9fd1a4-801a-40bf-b8c2-45b6821f6e41"
+        },
+        {
+          "type": "route",
+          "uuid": "e984a8cb-2f76-48af-a1c7-da6d542e7f8e"
+        },
+        {
+          "type": "route",
+          "uuid": "7b16615c-c3f5-46e8-a533-f74372a6eebe"
+        },
+        {
+          "type": "route",
+          "uuid": "b7e24c10-3d58-4f6a-8c91-0a5d2e7f3b64"
+        },
+        {
+          "type": "route",
+          "uuid": "51c7c689-bee3-4e80-8c46-a29bd4a3b807"
+        }
+      ]
+    },
+    {
+      "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75",
+      "name": "Seal",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10"
+        }
+      ]
+    },
+    {
+      "uuid": "125d73f5-27f8-42b7-a28b-f9cc251aba04",
+      "name": "Hub",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "4e20ceeb-73eb-40ce-9973-ce811146beb9"
+        }
+      ]
+    },
+    {
+      "uuid": "2fc9fd4a-6825-4d29-b565-b675e5ace465",
+      "name": "Cloudinary",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "dbd453e1-f5b9-4a02-885d-2ee4fff120ed"
+        },
+        {
+          "type": "route",
+          "uuid": "5e0a9c47-2b6d-4f1e-9a3c-7d8e1f2a4b60"
+        }
+      ]
+    },
+    {
+      "uuid": "737848b5-6fb7-49df-b5e7-d0e30d20f3ea",
+      "name": "Chatbot",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "91221fd5-2a42-4233-9f1e-5ec833cc5313"
+        },
+        {
+          "type": "route",
+          "uuid": "c4d88dcb-42de-48a9-bf1f-ec825f17c061"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "uuid": "5e6130f8-bf76-4e5a-be5e-efdc5d1e0c43",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "api/auth/login",
+      "responses": [
+        {
+          "uuid": "db9a2bde-3a0c-4937-a423-f73ca34191c7",
+          "body": "{\n  \"email\": \"aether@example.com\",\n  \"authenticated\": true,\n  \"created\": \"2026-09-04T10:00:00Z\",\n  \"expiration\": \"2099-01-01T00:00:00Z\",\n  \"accessToken\": \"mock-access-token-123456\",\n  \"refreshToken\": \"mock-refresh-token-123456\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "74c0789e-994e-4dd6-af58-2f281f1cd6ef",
+      "type": "http",
+      "documentation": "",
+      "method": "put",
+      "endpoint": "api/auth/refresh/:email",
+      "responses": [
+        {
+          "uuid": "653259a6-0a2d-467b-89a2-bb56abbbf04b",
+          "body": "{\n  \"email\": \"{{urlParam 'email'}}\",\n  \"authenticated\": true,\n  \"created\": \"2026-09-04T10:00:00Z\",\n  \"expiration\": \"2099-01-01T00:00:00Z\",\n  \"accessToken\": \"mock-access-token-refreshed\",\n  \"refreshToken\": \"mock-refresh-token-refreshed\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "8a36155c-debc-4a07-aa28-6f27e5f4f086",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "api/auth/reset-password/send-code",
+      "responses": [
+        {
+          "uuid": "298b3cb9-ec5a-40e3-8990-52bdcf2c538a",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "898b4c3c-71e7-422b-aef6-5f5f1398f8ab",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "api/auth/reset-password/resend-code",
+      "responses": [
+        {
+          "uuid": "dd607589-1e31-4542-b6e3-54023e92054d",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "eb59a976-8793-4c29-b69d-6d43e90e2b80",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "api/auth/reset-password/validate-code",
+      "responses": [
+        {
+          "uuid": "4f2c53a4-73a9-4124-8ee1-2d436a72343c",
+          "body": "{\n  \"key\": \"mock-reset-password-key-123456\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "1e65487b-7545-4f73-acba-e03f07ce49cf",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "api/auth/reset-password/change-password",
+      "responses": [
+        {
+          "uuid": "fc152fbe-5061-4c7f-a18a-c1d48bf1daaa",
+          "body": "",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "fb515b07-6ce3-4b82-a0b6-99168681ee9c",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/profile",
+      "responses": [
+        {
+          "uuid": "4869549d-a7c5-471f-b506-cab41880b7f5",
+          "body": "{\n  \"id\": 1,\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"name\": \"Aether Mock User\",\n  \"phone\": \"11999999999\",\n  \"image\": {\n    \"id\": 1,\n    \"name\": \"avatar.png\",\n    \"path\": \"https://i.pravatar.cc/150?img=12\"\n  },\n  \"permissions\": [\n    {\n      \"id\": 1,\n      \"name\": \"inventory:analysis\",\n      \"description\": \"Analisar inventários\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"inventory:register\",\n      \"description\": \"Criar e editar inventários\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"calculator:gases\",\n      \"description\": \"Usar a calculadora de CO2\"\n    },\n    {\n      \"id\": 4,\n      \"name\": \"chatbot\",\n      \"description\": \"Usar o chatbot\"\n    }\n  ],\n  \"enterprise\": {\n    \"id\": 1,\n    \"name\": \"Aether Alimentos LTDA\",\n    \"tradeName\": \"Aether Alimentos\",\n    \"cnpj\": \"12345678000190\",\n    \"address\": {\n      \"id\": 1,\n      \"zipCode\": \"80215901\",\n      \"state\": \"PR\",\n      \"city\": \"Curitiba\",\n      \"neighborhood\": \"Prado Velho\",\n      \"street\": \"Rua Imaculada Conceição\",\n      \"number\": 1155,\n      \"complement\": null\n    }\n  },\n  \"unit\": {\n    \"id\": 1,\n    \"cnae\": \"1011201\",\n    \"cnpj\": \"12345678000271\",\n    \"isActive\": true,\n    \"address\": {\n      \"id\": 2,\n      \"zipCode\": \"80215901\",\n      \"state\": \"PR\",\n      \"city\": \"Curitiba\",\n      \"neighborhood\": \"Prado Velho\",\n      \"street\": \"Rua Imaculada Conceição\",\n      \"number\": 1155,\n      \"complement\": null\n    }\n  },\n  \"createdAt\": \"2023-02-25\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "8dd78489-5878-447a-bda0-a1e1899d65cf",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "api/profile",
+      "responses": [
+        {
+          "uuid": "3656c451-38ed-436e-adc6-66ceabf2cdde",
+          "body": "{\n  \"id\": 1,\n  \"name\": \"Aether Mock User\",\n  \"cpf\": \"12345678900\",\n  \"email\": \"aether@example.com\",\n  \"phone\": \"11999999999\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "839b6fb9-4e75-4264-8022-28f69f27d619",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/mine",
+      "responses": [
+        {
+          "uuid": "ace919ab-a679-4e01-883e-8b1438ddb7a3",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"status\": \"UNDER_REVIEW\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Inventário Q2\",\n      \"createdAt\": \"2026-09-12T10:00:00\",\n      \"status\": \"APPROVED\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Inventário Q1\",\n      \"createdAt\": \"2026-09-13T10:00:00\",\n      \"status\": \"REJECTED\",\n      \"type\": \"INPUT\"\n    }\n  ],\n  \"totalCount\": 3\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "5728451a-a1dc-468b-8c84-44e806a53d09",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/pending",
+      "responses": [
+        {
+          "uuid": "310b2cf1-7a3f-4d96-85ba-569a2906a5b8",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": null,\n      \"status\": \"UNDER_REVIEW\",\n      \"type\": \"INPUT\"\n    }\n  ],\n  \"totalCount\": 1\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "6ba858d3-16dc-4147-926a-02dc0c449353",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/unit-info",
+      "responses": [
+        {
+          "uuid": "64791859-f8f6-4685-9c99-894e251bb1b1",
+          "body": "{\n  \"emissions\": 2403,\n  \"reductionPercentage\": 12\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "6b08148e-ccc8-4fde-ac86-9d7ec4693c53",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/enterprise-info",
+      "responses": [
+        {
+          "uuid": "db10513f-a8ad-4e78-92fc-ce693183f301",
+          "body": "{\n  \"totalReductions\": 1250,\n  \"totalEmissions\": 8940\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "2b688aee-8205-46d6-8b95-91268c37d48b",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/reviewed/last",
+      "responses": [
+        {
+          "uuid": "b449699f-45b0-44fb-b025-4b027fe65019",
+          "body": "{\n  \"id\": 2,\n  \"name\": \"Inventário Q2\",\n  \"author\": {\n    \"name\": \"Maria Souza\",\n    \"imageUrl\": null\n  },\n  \"period\": {\n    \"start\": \"2026-01-01\",\n    \"end\": \"2026-06-30\"\n  },\n  \"status\": \"APPROVED\",\n  \"type\": \"INPUT\",\n  \"createdAt\": \"2026-09-12T10:00:00\",\n  \"updatedAt\": \"2026-09-12T10:00:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "748b0011-6614-4992-a978-bf5d28f115fb",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/mine/last",
+      "responses": [
+        {
+          "uuid": "b959cb2c-085d-42b4-9f02-3ad320da22c3",
+          "body": "{\n  \"id\": 1,\n  \"name\": \"Inventário 1º semestre\",\n  \"author\": {\n    \"name\": \"Aether Mock User\",\n    \"imageUrl\": null\n  },\n  \"period\": {\n    \"start\": \"2026-01-01\",\n    \"end\": \"2026-06-30\"\n  },\n  \"status\": \"UNDER_REVIEW\",\n  \"type\": \"INPUT\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "fcc01839-4d88-4fd3-a89b-5720e30bce6d",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/count",
+      "responses": [
+        {
+          "uuid": "b38a02cd-f9d3-4a7e-abee-5ae3ced04da6",
+          "body": "{\n  \"submittedCount\": 3,\n  \"reviewedCount\": 3\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "3f0c2d9e-7a41-4b6e-9d58-1c2e8a6b7f10",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/seal/progress",
+      "responses": [
+        {
+          "uuid": "a8d5e1b4-2c63-4f97-8e0a-5b9c4d3f2e61",
+          "body": "{\n  \"criteriaMet\": 2,\n  \"criteriaTotal\": 4\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "18174f78-56ca-40b9-8f64-000aca6dd89e",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/:id/analysis",
+      "responses": [
+        {
+          "uuid": "468bb61d-d67c-4655-afdb-def181112d85",
+          "body": "{\n  \"totalEmissions\": 2403,\n  \"changePercent\": 12,\n  \"scopes\": [\n    {\n      \"name\": \"Escopo 1\",\n      \"percent\": 63\n    },\n    {\n      \"name\": \"Escopo 2\",\n      \"percent\": 27\n    },\n    {\n      \"name\": \"Escopo 3\",\n      \"percent\": 10\n    }\n  ],\n  \"priorityReplacement\": {\n    \"reduction\": 817,\n    \"percent\": 34,\n    \"technology\": \"Biometano\",\n    \"scope\": \"Escopo 1\"\n  },\n  \"secondaryReplacement\": {\n    \"reduction\": 264,\n    \"percent\": 11,\n    \"technology\": \"Energia solar fotovoltaica\",\n    \"scope\": \"Escopo 2\"\n  },\n  \"monthlySavings\": 87400,\n  \"initialInvestment\": 1220000\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "0cf12fcf-e4b1-40c1-a7ee-f30bb326471b",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "api/inventories/pending/:id/approve",
+      "responses": [
+        {
+          "uuid": "e49347bf-3e2d-4f28-a511-3de4746b527e",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"validationMessage\": \"{{body 'message'}}\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-10-19T10:00:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "aa5cce69-38dd-4e7f-996b-ab7225c8a720",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "api/inventories/pending/:id/reject",
+      "responses": [
+        {
+          "uuid": "d372014c-82b2-42b6-9cda-6fc73e7032ca",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"validationMessage\": \"{{body 'message'}}\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-10-19T10:00:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "4e20ceeb-73eb-40ce-9973-ce811146beb9",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "hub/ai/report/:id",
+      "responses": [
+        {
+          "uuid": "e02b7de9-4be2-4da1-8d02-750fb15aa0ab",
+          "body": "{\n  \"defined_problem\": \"Elevada emissão no processo produtivo\",\n  \"solving_method\": \"Substituir combustível fóssil por biometano.\",\n  \"reasoning\": \"A utilização de biometano pode reduzir as emissões associadas ao consumo de combustíveis fósseis, dependendo das características do processo produtivo e da origem do combustível.\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "0e49c824-e11c-4f87-9a5a-31134daee0b5",
+          "body": "{\n  \"detail\": \"Improvement plan with id_external_inventory {{urlParam 'id'}} not found.\"\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "No plan",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "404",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "bd9fd1a4-801a-40bf-b8c2-45b6821f6e41",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/mine/:id",
+      "responses": [
+        {
+          "uuid": "3c794100-b8aa-484e-88d4-1344d9f28015",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"UNDER_REVIEW\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Pending",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "92bd5622-d33d-4e5b-b343-041851ca4b1a",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório detalhado, vai ajudar muito na nossa análise.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Approved",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "2",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "b9a872b4-4263-460a-bc21-faef7d0e48ad",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório com informações não coerentes.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Rejected",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "3",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "e984a8cb-2f76-48af-a1c7-da6d542e7f8e",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/reviewed/:id",
+      "responses": [
+        {
+          "uuid": "6b714db6-7233-43c7-8055-c9d59452a6f8",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"UNDER_REVIEW\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Pending",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "df7a701c-1639-4177-b8b9-f56c79143374",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"APPROVED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório detalhado, vai ajudar muito na nossa análise.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Approved",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "2",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "ef4af226-83be-4988-ad16-838f3813e79f",
+          "body": "{\n  \"id\": {{urlParam 'id'}},\n  \"name\": \"Inventário 1º semestre\",\n  \"description\": \"Inventário de emissões da unidade referente ao primeiro semestre.\",\n  \"consolidationApproach\": \"Controle operacional\",\n  \"inventoryPeriodStart\": \"2026-01-01\",\n  \"inventoryPeriodEnd\": \"2026-06-30\",\n  \"type\": \"INPUT\",\n  \"status\": \"REJECTED\",\n  \"createdAt\": \"2026-09-11T10:00:00\",\n  \"updatedAt\": \"2026-09-11T10:00:00\",\n  \"owner\": {\n    \"id\": 1,\n    \"name\": \"Aether Mock User\"\n  },\n  \"storageFile\": {\n    \"id\": 1,\n    \"fileName\": \"inventario.xlsx\",\n    \"path\": \"https://res.cloudinary.com/mock-cloud/raw/upload/spreadsheets/inventario.xlsx\",\n    \"createdAt\": \"2026-09-11T10:00:00\"\n  },\n  \"validator\": {\n    \"id\": 7,\n    \"name\": \"Nisflei Grandão\",\n    \"imageUrl\": null\n  },\n  \"validationMessage\": \"Relatório com informações não coerentes.\",\n  \"emissions\": [\n    {\n      \"quantityCo2e\": 1240,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 312.5,\n      \"scope\": {\n        \"id\": 1,\n        \"name\": \"Escopo 1\"\n      },\n      \"gas\": {\n        \"id\": 2,\n        \"name\": \"Metano\",\n        \"formula\": \"CH4\"\n      }\n    },\n    {\n      \"quantityCo2e\": 540,\n      \"scope\": {\n        \"id\": 2,\n        \"name\": \"Escopo 2\"\n      },\n      \"gas\": {\n        \"id\": 1,\n        \"name\": \"Gás carbônico\",\n        \"formula\": \"CO2\"\n      }\n    },\n    {\n      \"quantityCo2e\": 48,\n      \"scope\": {\n        \"id\": 3,\n        \"name\": \"Escopo 3\"\n      },\n      \"gas\": {\n        \"id\": 3,\n        \"name\": \"Óxido nitroso\",\n        \"formula\": \"N2O\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Rejected",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "id",
+              "value": "3",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "dbd453e1-f5b9-4a02-885d-2ee4fff120ed",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/cloudinary/upload-signature",
+      "responses": [
+        {
+          "uuid": "270c4ed2-1cb3-4e99-a5c9-4c2773bb60e3",
+          "body": "{\n  \"message\": \"Informar o tipo do arquivo é obrigatório.\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "fileType missing",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "fileType",
+              "value": "",
+              "invert": false,
+              "operator": "null"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "455e6d86-6f43-426d-84b2-3aed8001707f",
+          "body": "{\n  \"message\": \"Valor inválido para o parâmetro 'fileType': '{{queryParam 'fileType'}}'. Valores permitidos: IMAGE, XLSX.\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "fileType not IMAGE or XLSX",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "fileType",
+              "value": "^(IMAGE|XLSX)$",
+              "invert": true,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "4564d8bd-1dd0-4f9c-96f7-5b2d432334ee",
+          "body": "{\n  \"signature\": \"mock-signature\",\n  \"timestamp\": 1760000000,\n  \"apiKey\": \"mock-api-key\",\n  \"cloudName\": \"mock-cloud\",\n  \"cloudinaryFolder\": \"images\",\n  \"cloudinaryResourceType\": \"image\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Image signature",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "fileType",
+              "value": "IMAGE",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "c682a62d-d10f-45cb-9d86-1e6227dd3214",
+          "body": "{\n  \"signature\": \"mock-signature\",\n  \"timestamp\": 1790000000,\n  \"apiKey\": \"mock-api-key\",\n  \"cloudName\": \"mock-cloud\",\n  \"cloudinaryFolder\": \"spreadsheets\",\n  \"cloudinaryResourceType\": \"raw\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Signature",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "5e0a9c47-2b6d-4f1e-9a3c-7d8e1f2a4b60",
+      "type": "http",
+      "documentation": "Stands in for api.cloudinary.com. Debug builds call it only when the signature uses cloudName mock-cloud. Set an error response as default to test a failed upload.",
+      "method": "post",
+      "endpoint": "v1_1/:cloud/:type/upload",
+      "responses": [
+        {
+          "uuid": "54f3a345-dead-4462-a2a4-0279a4fbd87a",
+          "body": "{\n  \"asset_id\": \"{{faker 'string.uuid'}}\",\n  \"public_id\": \"spreadsheets/{{faker 'string.alphanumeric' 20}}.xlsx\",\n  \"resource_type\": \"{{urlParam 'type'}}\",\n  \"secure_url\": \"https://res.cloudinary.com/{{urlParam 'cloud'}}/{{urlParam 'type'}}/upload/spreadsheets/{{faker 'string.alphanumeric' 20}}.xlsx\"\n}",
+          "latency": 1500,
+          "statusCode": 200,
+          "label": "Uploaded",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "a7c3e1f0-5b2d-4c8e-9f6a-3d1b7e2c4a90",
+          "body": "{\n  \"asset_id\": \"{{faker 'string.uuid'}}\",\n  \"public_id\": \"images/{{faker 'string.alphanumeric' 20}}\",\n  \"resource_type\": \"image\",\n  \"secure_url\": \"https://i.pravatar.cc/300?u={{faker 'string.uuid'}}\"\n}",
+          "latency": 1500,
+          "statusCode": 200,
+          "label": "Uploaded image",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "type",
+              "value": "image",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "dd3367ea-6cb9-4972-95a5-db250c60be2f",
+          "body": "{\n  \"error\": {\n    \"message\": \"Invalid Signature mock-signature. String to sign - 'folder=spreadsheets&timestamp=1790000000'.\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Invalid signature",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "e8b4fa57-37db-4291-aa93-a0cc44bbc146",
+          "body": "{\n  \"error\": {\n    \"message\": \"File size too large. Got 20971520. Maximum is 10485760.\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "File too large",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "7b16615c-c3f5-46e8-a533-f74372a6eebe",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "api/inventories",
+      "responses": [
+        {
+          "uuid": "d3b600de-ddfb-4f73-9fa6-955efda5e0c0",
+          "body": "{\n  \"message\": \"O nome deve conter apenas letras.\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "Name with digits or symbols",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "name",
+              "value": "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:\\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)*$",
+              "invert": true,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "7ab89d42-4428-4e16-b225-78982c634e9e",
+          "body": "{\n  \"id\": {{faker 'number.int' min=100 max=999}},\n  \"name\": \"{{body 'name'}}\",\n  \"type\": \"INPUT\",\n  \"status\": \"PROCESSING\",\n  \"storageFile\": {\n    \"id\": {{faker 'number.int' min=1 max=999}},\n    \"fileName\": \"{{body 'fileName'}}\",\n    \"path\": \"{{body 'path'}}\"\n  }\n}",
+          "latency": 800,
+          "statusCode": 201,
+          "label": "Created",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "92723d6d-a29a-439b-b59f-84245c741d8b",
+          "body": "{\n  \"message\": \"O nome deve ter entre 3 e 150 caracteres.\\nA mensagem de abordagem é obrigatória.\\nO caminho do arquivo deve ser um HTTPS válido.\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "Several validation errors",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "34a19768-7d88-4692-83b8-f835f284e619",
+          "body": "{\n  \"message\": \"Corpo da requisição inválido ou malformado\",\n  \"status\": \"BAD_REQUEST\"\n}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "Malformed body",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "e1631db3-6ae4-4aea-9277-1e953b436deb",
+          "body": "{\n  \"message\": \"Usuário e/ou senha inválidos.\",\n  \"status\": \"UNAUTHORIZED\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "User is not an employee",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "39920f72-1da9-4b97-9114-d5749fb06444",
+          "body": "{\n  \"timestamp\": \"2026-10-22T10:00:00.000+00:00\",\n  \"status\": 401,\n  \"error\": \"Unauthorized\",\n  \"message\": \"\",\n  \"path\": \"/api/inventories\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Missing or invalid token (Spring default body)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "015f32b1-c09d-4452-abd5-f48cb57fc960",
+          "body": "",
+          "latency": 0,
+          "statusCode": 403,
+          "label": "No permission for /api/inventories",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "b2cebce2-4de7-4e94-a535-7a91127c2ab5",
+          "body": "{\n  \"message\": \"could not execute statement [ERROR: value too long for type character varying(255)]\",\n  \"status\": \"INTERNAL_SERVER_ERROR\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "Unhandled exception (raw message)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "b7e24c10-3d58-4f6a-8c91-0a5d2e7f3b64",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/reviewed",
+      "responses": [
+        {
+          "uuid": "e91c6a3f-5b07-4d28-a4f2-7c80d1b9e352",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 10,\n      \"name\": \"Inventário Frota 2025\",\n      \"createdAt\": \"2026-09-20T09:30:00\",\n      \"author\": \"Camila Bezerra\",\n      \"authorImageUrl\": null,\n      \"status\": \"APPROVED\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 11,\n      \"name\": \"Inventário Energia Q3\",\n      \"createdAt\": \"2026-09-18T14:10:00\",\n      \"author\": \"Bruno Maldades\",\n      \"authorImageUrl\": null,\n      \"status\": \"REJECTED\",\n      \"type\": \"INPUT\"\n    }\n  ],\n  \"totalCount\": 2\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "91221fd5-2a42-4233-9f1e-5ec833cc5313",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "hub/ai/session/:sessionId/messages",
+      "responses": [
+        {
+          "uuid": "ffe3f44c-f9e0-42f3-a625-7ff4d8db74b9",
+          "body": "[\n  {\n    \"input_message\": \"Como funciona o Aether?\",\n    \"output_message\": \"O Aether ajuda sua empresa a registrar o inventário de emissões e a acompanhar o Selo Paraná.\",\n    \"submitted_at\": \"2026-10-17T14:30:00\"\n  },\n  {\n    \"input_message\": \"E como crio um relatório?\",\n    \"output_message\": \"Na tela inicial, toque em Criar relatório e envie o arquivo do inventário.\",\n    \"submitted_at\": \"2026-10-17T14:31:10\"\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "c4d88dcb-42de-48a9-bf1f-ec825f17c061",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "hub/ai/user/session/message",
+      "responses": [
+        {
+          "uuid": "8d77aced-a512-4431-90ef-9e5b43ebfa1c",
+          "body": "{\n  \"input_message\": \"{{body 'input'}}\",\n  \"output_message\": \"Esta é uma resposta simulada da Aeko.\",\n  \"submitted_at\": \"2026-10-17T14:32:00\",\n  \"id_session\": \"{{#if (body 'id_session')}}{{body 'id_session'}}{{else}}65a8b3d6c0f8e1d7f4b2c003{{/if}}\",\n  \"session_name\": \"Conversa simulada\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "6576d3e9-1386-4274-a997-3c7fdb749dba",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "hub/ai/sessions/user/:userId",
+      "responses": [
+        {
+          "uuid": "db109117-8e8a-4370-afd3-0194e0565e8f",
+          "body": "[\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c001\",\n    \"name\": \"Funcionamento do Aether\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c002\",\n    \"name\": \"Como reduzir emissões\"\n  },\n  {\n    \"id\": \"65a8b3d6c0f8e1d7f4b2c003\",\n    \"name\": \"Criação de relatório\"\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "51c7c689-bee3-4e80-8c46-a29bd4a3b807",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/inventories/history",
+      "responses": [
+        {
+          "uuid": "a91efb63-19db-409c-9d14-9cea7c226233",
+          "body": "{\n  \"inventories\": [\n    {\n      \"id\": 1,\n      \"name\": \"Inventário 1º semestre\",\n      \"createdAt\": \"2026-09-11T10:00:00\",\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": \"https://i.pravatar.cc/150?img=12\",\n      \"status\": \"UNDER_REVIEW\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Inventário Q2\",\n      \"createdAt\": \"2026-09-12T10:00:00\",\n      \"author\": \"Maria Souza\",\n      \"authorImageUrl\": \"https://i.pravatar.cc/150?img=12\",\n      \"status\": \"APPROVED\",\n      \"type\": \"INPUT\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Inventário Q1\",\n      \"createdAt\": \"2026-09-13T10:00:00\",\n      \"author\": \"Aether Mock User\",\n      \"authorImageUrl\": \"https://i.pravatar.cc/150?img=12\",\n      \"status\": \"REJECTED\",\n      \"type\": \"INPUT\"\n    }\n  ],\n  \"totalCount\": 3\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "folder",
+      "uuid": "c1d03ce8-9581-4ac6-bd97-05b3a50f60ab"
+    },
+    {
+      "type": "folder",
+      "uuid": "39cd6416-1924-4db4-82a7-414c723ea1bd"
+    },
+    {
+      "type": "folder",
+      "uuid": "07a154aa-3785-4f3a-9fa4-ba83083f9ca1"
+    },
+    {
+      "type": "folder",
+      "uuid": "5d9b7c32-6e18-4a0f-b3c4-9e2f1a8d0c75"
+    },
+    {
+      "type": "folder",
+      "uuid": "125d73f5-27f8-42b7-a28b-f9cc251aba04"
+    },
+    {
+      "type": "folder",
+      "uuid": "737848b5-6fb7-49df-b5e7-d0e30d20f3ea"
+    },
+    {
+      "type": "route",
+      "uuid": "6576d3e9-1386-4274-a997-3c7fdb749dba"
+    },
+    {
+      "type": "folder",
+      "uuid": "2fc9fd4a-6825-4d29-b565-b675e5ace465"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "https://aethergases.org",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": []
+}
