@@ -36,8 +36,9 @@ import com.aether.application.core.ui.components.FormErrorText
 import com.aether.application.core.ui.components.FormDropdownField
 import com.aether.application.core.ui.theme.*
 import com.aether.application.R
+import com.aether.application.feature.profile.domain.model.MAX_PROBLEM_DESCRIPTION_LENGTH
 
-private const val MAX_DESCRIPTION_LENGTH = 100
+private const val MAX_DESCRIPTION_LENGTH = MAX_PROBLEM_DESCRIPTION_LENGTH
 
 @Composable
 fun ReportProblemScreen(

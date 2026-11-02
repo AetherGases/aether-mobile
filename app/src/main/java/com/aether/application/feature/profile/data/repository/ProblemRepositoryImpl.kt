@@ -9,6 +9,7 @@ import com.aether.application.core.network.readErrorMessage
 import com.aether.application.feature.auth.data.remote.ProfileApi
 import com.aether.application.feature.profile.data.remote.dto.ImageRequest
 import com.aether.application.feature.profile.data.remote.dto.ReportProblemRequest
+import com.aether.application.feature.profile.domain.model.MAX_PROBLEM_SCREEN_LENGTH
 import com.aether.application.feature.profile.domain.model.ProblemCategory
 import com.aether.application.feature.profile.domain.model.ProblemException
 import com.aether.application.feature.profile.domain.model.screenshotMimeType
@@ -41,6 +42,7 @@ class ProblemRepositoryImpl(
 
     override suspend fun reportProblem(
         categoryCode: String,
+        screen: String,
         description: String,
         screenshotUri: String?,
         screenshotName: String?
@@ -59,7 +61,12 @@ class ProblemRepositoryImpl(
 
         call("Não foi possível enviar o problema. Tente novamente.") {
             profileApi.reportProblem(
-                ReportProblemRequest(category = categoryCode, description = description, image = image)
+                ReportProblemRequest(
+                    category = categoryCode,
+                    screen = screen.take(MAX_PROBLEM_SCREEN_LENGTH),
+                    description = description,
+                    image = image
+                )
             )
         }
     }

@@ -1,6 +1,10 @@
 package com.aether.application.feature.profile.domain.model
 
-const val MAX_PROBLEM_DESCRIPTION_LENGTH = 100
+/** ms-auth `POST /api/support` accepts a description of 3 to 500 characters. */
+const val MAX_PROBLEM_DESCRIPTION_LENGTH = 500
+
+/** ... and a screen name of 2 to 50 characters. */
+const val MAX_PROBLEM_SCREEN_LENGTH = 50
 
 /** A PROBLEM_CATEGORY from the backend; [code] is what the report sends back, [label] is shown to the user. */
 data class ProblemCategory(val code: String, val label: String)

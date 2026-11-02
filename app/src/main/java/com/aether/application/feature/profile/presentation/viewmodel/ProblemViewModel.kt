@@ -23,7 +23,9 @@ import kotlinx.coroutines.launch
 private const val TAG = "ProblemViewModel"
 
 class ProblemViewModel(
-    private val problemRepository: ProblemRepository
+    private val problemRepository: ProblemRepository,
+    /** Where the user was when they opened the report; sent along so the team knows where it happened. */
+    private val screen: String
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProblemUiState())
@@ -91,6 +93,7 @@ class ProblemViewModel(
             try {
                 problemRepository.reportProblem(
                     categoryCode = category.code,
+                    screen = screen,
                     description = state.description.trim(),
                     screenshotUri = screenshotUri?.toString(),
                     screenshotName = state.attachedFileName

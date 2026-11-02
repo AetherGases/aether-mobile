@@ -12,6 +12,7 @@ interface ProblemRepository {
     /** Uploads the screenshot, when there is one, and then registers the problem. */
     suspend fun reportProblem(
         categoryCode: String,
+        screen: String,
         description: String,
         screenshotUri: String?,
         screenshotName: String?

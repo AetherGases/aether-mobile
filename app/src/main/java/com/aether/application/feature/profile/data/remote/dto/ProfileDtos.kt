@@ -23,23 +23,25 @@ data class ImageRequest(
     val imageUrl: String,
 )
 
-/** Body of `POST /api/profile/problem`; [image] is the optional screenshot, already uploaded to Cloudinary. */
+/** Body of ms-auth `POST /api/support`; [image] is the optional screenshot, already uploaded to Cloudinary. */
 @Serializable
 data class ReportProblemRequest(
-    /** A [ProblemCategoryResponse.code] from `GET /api/profile/problem/categories`. */
+    /** A [ProblemCategoryResponse.code] from `GET /api/support/categories`. */
     val category: String,
-    /** Required, trimmed, at most 100 characters (reported_problem.description). */
+    /** The screen the problem happened on, 2 to 50 characters. */
+    val screen: String,
+    /** Required, trimmed, 3 to 500 characters (reported_problem.description). */
     val description: String,
     val image: ImageRequest? = null,
 )
 
-/** Response of `POST /api/profile/problem` (201). */
+/** Response of `POST /api/support` (200); the echoed category, screen, description and image are ignored. */
 @Serializable
 data class ReportProblemResponse(
     val id: Long,
 )
 
-/** One item of `GET /api/profile/problem/categories`, mirroring the PROBLEM_CATEGORY enum. */
+/** One item of `GET /api/support/categories`, mirroring the PROBLEM_CATEGORY enum. */
 @Serializable
 data class ProblemCategoryResponse(
     /** Enum name, e.g. `LOGIN_AND_ACCOUNT`; this is what the report request sends back. */
