@@ -3,7 +3,9 @@ package com.aether.application.core.network.cloudinary
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.OpenableColumns
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
@@ -92,12 +94,13 @@ class CloudinaryUploader(
             .post(body)
             .build()
 
-        return client.newCall(request).await().use { response ->
+        // Reading the body is network I/O: off the caller's thread, which is Main from the view models
+        return withContext(Dispatchers.IO) { client.newCall(request).await().use { response ->
             val json = response.body?.string().orEmpty()
             if (!response.isSuccessful) throw IOException(errorMessage(json) ?: "HTTP ${response.code}")
             Json.parseToJsonElement(json).jsonObject["secure_url"]?.jsonPrimitive?.contentOrNull
                 ?: throw IOException("Cloudinary did not return the file URL")
-        }
+        } }
     }
 
     private fun errorMessage(json: String): String? = try {
