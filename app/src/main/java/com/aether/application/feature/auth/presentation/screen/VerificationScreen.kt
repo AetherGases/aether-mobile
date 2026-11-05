@@ -25,8 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -161,7 +161,7 @@ fun VerificationScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
             ){
                 val focusRequesters = remember {
                     List(code.size) { FocusRequester() }
@@ -185,8 +185,9 @@ fun VerificationScreen(
                         modifier = Modifier
                             .width(48.dp)
                             .height(54.dp)
+                            .background(MaterialTheme.colorScheme.background)
                             .focusRequester(focusRequesters[index])
-                            .onKeyEvent { event ->
+                            .onPreviewKeyEvent { event ->
                                 if (
                                     event.type == KeyEventType.KeyDown &&
                                     event.key == Key.Backspace &&
