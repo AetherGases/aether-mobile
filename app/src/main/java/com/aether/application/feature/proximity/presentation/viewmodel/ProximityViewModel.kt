@@ -3,6 +3,7 @@ package com.aether.application.feature.proximity.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.application.core.auth.storage.SessionManager
 import com.aether.application.feature.proximity.domain.ProximityStatus
 import com.aether.application.feature.proximity.domain.WorkplaceProximityChecker
 import kotlinx.coroutines.CancellationException
@@ -18,14 +19,15 @@ private const val TAG = "ProximityViewModel"
 data class ProximityUiState(
     /** Null until the first check finishes. */
     val status: ProximityStatus? = null,
-    val isChecking: Boolean = false,
+    val isChecking: Boolean = false
 ) {
     val isBlocked: Boolean
         get() = status != null && status != ProximityStatus.Allowed
 }
 
 class ProximityViewModel(
-    private val proximityChecker: WorkplaceProximityChecker
+    private val proximityChecker: WorkplaceProximityChecker,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProximityUiState())
     val uiState: StateFlow<ProximityUiState> = _uiState.asStateFlow()
@@ -52,5 +54,9 @@ class ProximityViewModel(
     fun reset() {
         checkJob?.cancel()
         _uiState.value = ProximityUiState()
+    }
+
+    fun onLogoutClick() {
+        viewModelScope.launch { sessionManager.logout() }
     }
 }
