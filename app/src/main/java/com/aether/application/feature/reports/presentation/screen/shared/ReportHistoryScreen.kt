@@ -276,7 +276,7 @@ fun ReportHistoryScreen(
                         } else {
                             stringResource(R.string.reports_history_empty)
                         },
-                        style = bodySmall,
+                        style = titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
@@ -656,6 +656,38 @@ fun ReportHistoryScreenManagerPreview() {
                     canReview = true
                 )
             ),
+            searchQuery = "",
+            selectedTimeFilters = setOf(ReportTimeFilter.MAIS_RECENTES),
+            selectedStatusFilters = setOf(ReportStatus.EM_ANALISE),
+            isRefreshing = false,
+            loadFailed = false,
+            isLoadingMore = false,
+            loadMoreFailed = false,
+            hasMore = false,
+            onRefresh = {},
+            onLoadMore = {},
+            onSearchQueryChanged = {},
+            onTimeFilterToggled = {},
+            onStatusFilterToggled = {},
+            onDaySelected = {},
+            onMonthChanged = {},
+            onReviewClick = {},
+            onBackClicked = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Composable
+fun ReportHistoryScreenNoInventories() {
+    AetherTheme {
+        ReportHistoryScreen(
+            viewerRole = ReportViewerRole.FUNCIONARIO,
+            currentWeek = sampleCurrentWeek,
+            month = YearMonth.of(2026, 9),
+            reportDates = sampleReportDates,
+            selectedDate = LocalDate.of(2026, 9, 8),
+            reportItems = listOf(),
             searchQuery = "",
             selectedTimeFilters = setOf(ReportTimeFilter.MAIS_RECENTES),
             selectedStatusFilters = setOf(ReportStatus.EM_ANALISE),
