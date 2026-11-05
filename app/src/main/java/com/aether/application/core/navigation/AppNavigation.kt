@@ -141,7 +141,8 @@ fun AppNavigation(
             ProximityGateScreen(
                 status = proximityState.status,
                 isChecking = proximityState.isChecking,
-                onRetry = proximityViewModel::check
+                onRetry = proximityViewModel::check,
+                onLogout = proximityViewModel::onLogoutClick
             )
         }
     }

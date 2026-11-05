@@ -218,7 +218,10 @@ object AppModule {
         }
 
         viewModel {
-            ProximityViewModel(proximityChecker = get())
+            ProximityViewModel(
+                proximityChecker = get(),
+                sessionManager = get()
+            )
         }
     }
 }
