@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -42,7 +41,6 @@ import com.aether.application.feature.proximity.domain.WORKPLACE_RADIUS_METERS
 import com.aether.application.feature.proximity.presentation.qa.QaProximityBypass
 import com.aether.application.core.ui.theme.AetherTheme
 import com.aether.application.core.ui.theme.bodyMediumMd
-import com.aether.application.core.ui.theme.purple500
 import com.aether.application.core.ui.theme.titleLarge
 import com.aether.application.core.ui.theme.titleMediumMD
 
@@ -55,6 +53,7 @@ fun ProximityGateScreen(
     status: ProximityStatus?,
     isChecking: Boolean,
     onRetry: () -> Unit,
+    onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -132,7 +131,10 @@ fun ProximityGateScreen(
 
             when (status) {
                 ProximityStatus.PermissionRequired -> {
-                    GateButton(text = stringResource(R.string.proximity_allow_location), enabled = !isChecking) {
+                    GateButton(
+                        text = stringResource(R.string.proximity_allow_location),
+                        enabled = !isChecking
+                    ) {
                         permissionLauncher.launch(
                             arrayOf(
                                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -149,27 +151,71 @@ fun ProximityGateScreen(
                             )
                         )
                     }) {
-                        Text(stringResource(R.string.proximity_open_settings), style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
+                        Text(
+                            stringResource(R.string.proximity_open_settings),
+                            style = titleMediumMD,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
+
                 ProximityStatus.LocationDisabled -> {
-                    GateButton(text = stringResource(R.string.proximity_enable_location), enabled = !isChecking) {
+                    GateButton(
+                        text = stringResource(R.string.proximity_enable_location),
+                        enabled = !isChecking
+                    ) {
                         context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                     }
                     TextButton(onClick = onRetry, enabled = !isChecking) {
-                        Text(stringResource(R.string.common_try_again), style = titleMediumMD, color = MaterialTheme.colorScheme.primary)
+                        Text(
+                            stringResource(R.string.common_try_again),
+                            style = titleMediumMD,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
-                else -> GateButton(
-                    text = stringResource(if (isChecking) R.string.proximity_checking else R.string.common_try_again),
-                    enabled = !isChecking,
-                    onClick = onRetry
-                )
+
+                else -> {
+                    GateButton(
+                        text = stringResource(if (isChecking) R.string.proximity_checking else R.string.common_try_again),
+                        enabled = !isChecking,
+                        onClick = onRetry
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    LogoutButton(
+                        text = stringResource(R.string.settings_sign_out),
+                        onClick = onLogout
+                    )
+                }
             }
 
             // No-op outside debug builds
             if (status is ProximityStatus.TooFar) QaProximityBypass.Button()
         }
+    }
+}
+
+@Composable
+private fun LogoutButton(
+    text: String,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(100))
+            .background(MaterialTheme.colorScheme.errorContainer)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            style = titleMediumMD,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
     }
 }
 
@@ -184,11 +230,7 @@ private fun GateButton(
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(100))
-            .background(
-                Brush.linearGradient(
-                    listOf(Color(0xFF8B5CF6), purple500).map { if (enabled) it else it.copy(alpha = 0.4f) }
-                )
-            )
+            .background(MaterialTheme.colorScheme.primary.copy(if (enabled) 1f else 0.4f))
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
@@ -205,7 +247,8 @@ private fun ProximityGateTooFarPreview() {
         ProximityGateScreen(
             status = ProximityStatus.TooFar(distanceMeters = 12_400),
             isChecking = false,
-            onRetry = {}
+            onRetry = {},
+            onLogout = {}
         )
     }
 }
@@ -217,7 +260,8 @@ private fun ProximityGatePermissionPreview() {
         ProximityGateScreen(
             status = ProximityStatus.PermissionRequired,
             isChecking = false,
-            onRetry = {}
+            onRetry = {},
+            onLogout = {}
         )
     }
 }
