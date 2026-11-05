@@ -39,6 +39,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -222,10 +223,11 @@ fun HomeScreen(
                 Spacer(Modifier.height(24.dp))
             }
 
-            Text(stringResource(R.string.home_quick_actions), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
-            Spacer(Modifier.height(16.dp))
-
             if (quickActions.isEmpty() && quickActionsFailed) {
+                Text(stringResource(R.string.home_quick_actions), style = titleLarge, color = MaterialTheme.colorScheme.onBackground)
+
+                Spacer(Modifier.height(16.dp))
+
                 SectionLoadError(
                     icon = Icons.Outlined.ErrorOutline,
                     message = stringResource(R.string.home_quick_actions_load_failed)
@@ -280,6 +282,16 @@ fun HomeScreen(
                         painter = painterResource(id = R.drawable.empty_inventory),
                         contentDescription = stringResource(R.string.home_no_recent_reports),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Text(
+                        text = if (recentReports.isEmpty()) {
+                            stringResource(R.string.reports_history_load_failed)
+                        } else {
+                            stringResource(R.string.reports_history_empty)
+                        },
+                        style = titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
                     )
                 } else {
                     recentReports.forEach { report ->
@@ -482,7 +494,7 @@ fun StatusBadge(status: ReportStatus) {
     }
 }
 
-@Preview(showBackground = true, device = Devices.TABLET)
+@Preview(showBackground = true)
 @Composable
 fun HomeScreenEmployeePreview() {
     AetherTheme {
@@ -525,7 +537,7 @@ fun HomeScreenEmployeePreview() {
     }
 }
 
-@Preview(showBackground = true, device = Devices.TABLET)
+@Preview(showBackground = true)
 @Composable
 fun HomeScreenManagerPreview() {
     AetherTheme {
@@ -555,6 +567,30 @@ fun HomeScreenManagerPreview() {
                 RecentReport(2, "Relatório fulano town", "Bruno Maldades", null, "29/12/2025", ReportStatus.APROVADO),
                 RecentReport(3, "Relatório fulano town", "Camila Bezerra", null, "29/12/2025", ReportStatus.RECUSADO)
             ),
+            cardsFailed = false,
+            quickActionsFailed = false,
+            isRefreshing = false,
+            onRefresh = {},
+            onNotificationsClick = {},
+            onSettingsClick = {},
+            onSeeAllReportsClick = {},
+            onReportClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EmptyHomeScreenPreview() {
+    AetherTheme {
+        HomeScreen(
+            userName = "Nisflei",
+            userLastName = "Grandão",
+            avatarUrl = "https://i.pravatar.cc/150?img=33",
+            hasUnreadNotifications = true,
+            cards = listOf(),
+            quickActions = listOf(),
+            recentReports = listOf(),
             cardsFailed = false,
             quickActionsFailed = false,
             isRefreshing = false,
