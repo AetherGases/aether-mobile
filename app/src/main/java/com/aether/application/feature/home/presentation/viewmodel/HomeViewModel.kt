@@ -74,7 +74,6 @@ class HomeViewModel(
     private val _events = Channel<HomeEvent>(Channel.BUFFERED)
     val events: Flow<HomeEvent> = _events.receiveAsFlow()
 
-
     init {
         loadFirstTime()
     }
@@ -341,21 +340,6 @@ class HomeViewModel(
 
     private suspend fun getQuickActions(): List<QuickAction> {
         val quickActions = mutableListOf<QuickAction>()
-        if (sessionManager.hasPermission(AppPermission.INVENTORY_VIEW)) {
-            quickActions.add(
-                QuickAction(
-                    labelRes = R.string.home_action_history,
-                    iconRes = R.drawable.ic_history_green,
-                    iconSize = 60.dp,
-                    offsetX = 3.dp,
-                    offsetY = 0.dp,
-                    container = QuickActionContainer.PRIMARY,
-                    onClick = { viewModelScope.launch {
-                        _events.send(HomeEvent.NavigateToHistory)
-                    }}
-                )
-            )
-        }
         if (sessionManager.hasPermission(AppPermission.INVENTORY_CREATING)) {
             quickActions.add(
                 QuickAction(
@@ -382,6 +366,21 @@ class HomeViewModel(
                     container = QuickActionContainer.PRIMARY,
                     onClick = { viewModelScope.launch {
                         _events.send(HomeEvent.NavigateToCalculator)
+                    }}
+                )
+            )
+        }
+        if (sessionManager.hasPermission(AppPermission.INVENTORY_VIEW)) {
+            quickActions.add(
+                QuickAction(
+                    labelRes = R.string.home_action_history,
+                    iconRes = R.drawable.ic_history_green,
+                    iconSize = 60.dp,
+                    offsetX = 3.dp,
+                    offsetY = 0.dp,
+                    container = QuickActionContainer.SECONDARY,
+                    onClick = { viewModelScope.launch {
+                        _events.send(HomeEvent.NavigateToHistory)
                     }}
                 )
             )

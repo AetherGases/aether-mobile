@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
@@ -453,7 +454,7 @@ fun RecentReportItem(
 
 @Composable
 fun StatusBadge(status: ReportStatus) {
-    val (color, backgroundColor) = when (status) {
+    val (textColor, backgroundColor) = when (status) {
         ReportStatus.PENDENTE -> MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.primaryContainer
         ReportStatus.APROVADO -> MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.secondaryContainer
         ReportStatus.RECUSADO -> MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.errorContainer
@@ -462,21 +463,21 @@ fun StatusBadge(status: ReportStatus) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(50))
-            .background(backgroundColor)
+            .background(backgroundColor.copy(0.4f))
             .padding(horizontal = 10.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(id = status.iconRes),
             contentDescription = null,
-            tint = color,
+            tint = textColor,
             modifier = Modifier.size(14.dp)
         )
         Spacer(Modifier.width(4.dp))
         Text(
             text = stringResource(status.labelRes),
             style = labelSmall.copy(fontWeight = FontWeight.SemiBold),
-            color = color
+            color = textColor
         )
     }
 }

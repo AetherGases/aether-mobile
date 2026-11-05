@@ -17,9 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -156,15 +163,42 @@ fun VerificationScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
+                val focusRequesters = remember {
+                    List(code.size) { FocusRequester() }
+                }
                 code.forEachIndexed { index, digit ->
                     OutlinedTextField(
                         value = digit,
                         onValueChange = { newValue ->
-                            if (newValue.length <= 1){
-                                onCodeChange(code.toMutableList().also { it[index] = newValue })
+                            if (newValue.length <= 1 && newValue.all { it.isDigit() }) {
+                                onCodeChange(
+                                    code.toMutableList().also {
+                                        it[index] = newValue
+                                    }
+                                )
+
+                                if (newValue.isNotEmpty() && index < code.lastIndex) {
+                                    focusRequesters[index + 1].requestFocus()
+                                }
                             }
                         },
-                        modifier = Modifier.width(48.dp).height(54.dp),
+                        modifier = Modifier
+                            .width(48.dp)
+                            .height(54.dp)
+                            .focusRequester(focusRequesters[index])
+                            .onKeyEvent { event ->
+                                if (
+                                    event.type == KeyEventType.KeyDown &&
+                                    event.key == Key.Backspace &&
+                                    digit.isEmpty() &&
+                                    index > 0
+                                ) {
+                                    focusRequesters[index - 1].requestFocus()
+                                    true
+                                } else {
+                                    false
+                                }
+                            },
                         singleLine = true,
                         textStyle = bodyLarge.copy(textAlign = TextAlign.Center),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
